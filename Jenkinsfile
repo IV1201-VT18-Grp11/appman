@@ -18,7 +18,7 @@ pipeline {
 
         stage('Building assets') {
             steps {
-                sh "sbt stageWeb"
+                sh "sbt webStage"
             }
         }
 
