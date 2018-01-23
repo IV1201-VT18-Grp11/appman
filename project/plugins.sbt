@@ -1,5 +1,5 @@
 // sbt-webpack 1.2.1 is only released for 0.13.x, use custom port to 1.x
-resolvers += Resolver.bintrayRepo("teozkr", "IV1201-sbt-plugins")
+resolvers += Resolver.bintrayIvyRepo("teozkr", "IV1201-sbt-plugins").ivyStyle()
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.11")
 addSbtPlugin("com.github.stonexx.sbt" % "sbt-webpack" % "1.2.1")
