@@ -1,3 +1,5 @@
+import com.typesafe.sbt.web.pipeline.Pipeline
+
 name := """appman"""
 organization := "com.appman"
 
@@ -6,6 +8,16 @@ version := "1.0-SNAPSHOT"
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion in ThisBuild := "2.12.4"
+
+val webpackGen = taskKey[Seq[File]]("Webpack generator")
+
+webpackGen := {
+  webpack.toTask("").value
+  val target = WebKeys.webTarget.value / "webpack"
+  target.allPaths.filter(!_.isDirectory).get
+}
+
+sourceGenerators in Assets += webpackGen.taskValue
 
 libraryDependencies ++= Seq(
   guice,
