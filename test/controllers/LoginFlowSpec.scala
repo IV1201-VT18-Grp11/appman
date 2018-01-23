@@ -11,15 +11,13 @@ import play.api.test.Helpers._
  *
  * For more information, see https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
  */
-class LoginFlowSpec extends PlaySpec with GuiceOneServerPerTest with OneBrowserPerTest with ChromeFactory with Injecting {
-  "HomeController GET" should {
-    "render the index page from the router" in {
-      val request = FakeRequest(GET, "/")
-      val home = route(app, request).get
-
-      status(home) mustBe OK
-      contentType(home) mustBe Some("text/html")
-      contentAsString(home) must include ("Welcome to Play")
-    }
+class LoginFlowSpec extends PlaySpec with GuiceOneServerPerTest with OneBrowserPerTest with FirefoxFactory with Injecting {
+  "login should work" in {
+    go to (s"http://localhost:$port/")
+    click on find(id("nav-login")).value
+    textField(name("username")).value = "donald_duck"
+    pwdField(name("password")).value = "123456"
+    click on find(id("login")).value
+    eventually { find(id("messages")).value.text must include("You have been logged in") }
   }
 }

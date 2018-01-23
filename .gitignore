@@ -9,3 +9,4 @@ target
 .ensime
 .ensime_cache
 node_modules
+application.local.conf
