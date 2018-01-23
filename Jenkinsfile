@@ -24,7 +24,7 @@ pipeline {
 
         stage('Running tests') {
             steps {
-                sh "sbt test"
+                sh "xvfb-run sbt test"
             }
         }
     }
