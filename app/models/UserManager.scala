@@ -11,6 +11,12 @@ import scala.concurrent.{ ExecutionContext, Future }
 @ImplementedBy(classOf[DbUserManager])
 trait UserManager {
   /**
+    * Finds the user with a given ID
+    *  @return Some(user) if the user exists, otherwise None
+    */
+  def find(id: Long): Future[Option[User]]
+
+  /**
     * Finds the user with a given username and password
     * @return Some(user) if the user exists and the password is correct, otherwise None
     */
@@ -21,6 +27,8 @@ class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProv
   // TODO: Replace with better hashing algorithm
   private def hashPassword(plaintext: String): String = plaintext
   private def comparePassword(hashed: String, plaintext: String): Boolean = hashed == plaintext
+
+  override def find(id: Long): Future[Option[User]] = ???
 
   override def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]] = db.run {
     Users
