@@ -6,12 +6,11 @@ import com.google.inject.ImplementedBy
 import database.PgProfile.api._
 import database.{PgProfile, User, Users}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 
 @ImplementedBy(classOf[DbUserManager])
 trait UserManager {
-  def login(username: String, password: String): Future[Option[User]]
+  def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]]
 }
 
 class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserManager with HasDatabaseConfigProvider[PgProfile] {
@@ -19,7 +18,7 @@ class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProv
   private def hashPassword(plaintext: String): String = plaintext
   private def comparePassword(hashed: String, plaintext: String): Boolean = hashed == plaintext
 
-  override def login(username: String, password: String): Future[Option[User]] = db.run {
+  override def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]] = db.run {
     Users
       .filter(user => user.username === username)
       .result.headOption

@@ -11,7 +11,7 @@ import play.api.mvc._
 @Singleton
 class LoginController @Inject()(cc: ControllerComponents)
   extends AbstractController(cc) {
-  def login(username: String, password: String) = Action { implicit request: Request[AnyContent] =>
+  def login() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.login())
   }
 }
