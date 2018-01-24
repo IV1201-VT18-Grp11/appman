@@ -17,7 +17,7 @@ webpackGen := {
   target.allPaths.filter(!_.isDirectory).get
 }
 
-sourceGenerators in Assets += webpackGen.taskValue
+//sourceGenerators in Assets += webpackGen.taskValue
 
 testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/test-report")
 
@@ -25,6 +25,7 @@ libraryDependencies ++= Seq(
   guice,
   "com.typesafe.play" %% "play-slick" % "3.0.0",
   "com.typesafe.play" %% "play-slick-evolutions" % "3.0.0",
+  "com.github.tminglei" %% "slick-pg" % "0.15.6",
   "org.postgresql" % "postgresql" % "42.2.0",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
 )

@@ -11,6 +11,11 @@ import scala.concurrent.{ ExecutionContext, Future }
 @ImplementedBy(classOf[DbUserManager])
 trait UserManager {
   def find(id: Long): Future[Option[User]]
+
+  /**
+    * Finds the user with a given username and password
+    * @return Some(user) if the user exists and the password is correct, otherwise None
+    */
   def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]]
 }
 

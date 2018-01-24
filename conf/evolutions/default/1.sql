@@ -6,7 +6,8 @@ CREATE TABLE users (
   name     TEXT,
   surname  TEXT,
   password TEXT NOT NULL,
-  email    TEXT
+  email    TEXT,
+  employee BOOLEAN
 );
 
 CREATE TABLE availability (
@@ -27,11 +28,11 @@ CREATE TABLE field (
 );
 
 CREATE TABLE job (
-  job_id    SERIAL PRIMARY KEY,
-  field_id  INTEGER REFERENCES field,
-  name      TEXT,
-  from_date DATE,
-  to_date   DATE
+  job_id    SERIAL NOT NULL PRIMARY KEY,
+  field_id  INTEGER NOT NULL REFERENCES field,
+  name      TEXT NOT NULL ,
+  from_date TIMESTAMP NOT NULL ,
+  to_date   TIMESTAMP
 );
 
 # --- !Downs
