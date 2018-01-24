@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject._
-import models.PgProfile
+import database.PgProfile
 import play.api._
 import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
 import play.api.mvc._
