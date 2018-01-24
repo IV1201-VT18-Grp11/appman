@@ -16,3 +16,5 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
   // These columns make up the User object
   override def * = (id, username, password, name) <> (User.tupled, User.unapply)
 }
+
+object Users extends TableQuery[Users](new Users(_))
