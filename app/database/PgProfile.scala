@@ -1,4 +1,4 @@
-package models
+package database
 
 import slick.jdbc.PostgresProfile
 

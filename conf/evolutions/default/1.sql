@@ -1,17 +1,17 @@
 # --- !Ups
 
 CREATE TABLE users (
-  users_id SERIAL PRIMARY KEY,
-  username TEXT,
+  users_id SERIAL NOT NULL PRIMARY KEY,
+  username TEXT NOT NULL,
   name     TEXT,
   surname  TEXT,
-  password TEXT,
+  password TEXT NOT NULL,
   email    TEXT
 );
 
 CREATE TABLE availability (
   availability_id SERIAL PRIMARY KEY,
-  users_id        SERIAL REFERENCES users,
+  users_id        INTEGER REFERENCES users,
   from_date       DATE,
   to_date         DATE
 );
@@ -28,7 +28,7 @@ CREATE TABLE field (
 
 CREATE TABLE job (
   job_id    SERIAL PRIMARY KEY,
-  field_id  SERIAL REFERENCES field,
+  field_id  INTEGER REFERENCES field,
   name      TEXT,
   from_date DATE,
   to_date   DATE
