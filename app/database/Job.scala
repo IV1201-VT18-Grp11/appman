@@ -4,15 +4,18 @@ import java.sql.Timestamp
 import PgProfile.api._
 
 
-case class Job (id: Long,
+case class Job (id: Id[Job],
                 field_id: Long,
                 name: String,
                 from_date: Timestamp,
-                to_date: Option[Timestamp])
+                to_date: Option[Timestamp]) extends HasId {
+  type Self = Job
+  type IdType = Long
+}
 
 
 class Jobs(tag: Tag) extends Table[Job](tag, "jobs") {
-  def id = column[Long]("job_id", O.PrimaryKey, O.AutoInc)
+  def id = column[Id[Job]]("job_id", O.PrimaryKey, O.AutoInc)
   def field_id = column[Long] ("field_id")
   def name = column[String] ("name")
   def from_date = column[Timestamp] ("from_date")

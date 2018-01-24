@@ -3,17 +3,20 @@ package database
 import PgProfile.api._
 
 // case class works as a DTO, taking the required columns from the database
-case class User(id: Long,
+case class User(id: Id[User],
                 username: String,
                 password: String,
-                name: Option[String])
+                name: Option[String]) extends HasId {
+  type Self = User
+  type IdType = Long
+}
 
 /**
   * SLICK scala code instead of raw SQL, allowing low coupling
   * Selecting the columns from the table
    */
 class Users(tag: Tag) extends Table[User](tag, "users") {
-  def id = column[Long]("users_id", O.PrimaryKey, O.AutoInc)
+  def id = column[Id[User]]("users_id", O.PrimaryKey, O.AutoInc)(idColumnType)
   def username = column[String] ("username")
   def password = column[String] ("password")
   def name = column[Option[String]] ("name")
