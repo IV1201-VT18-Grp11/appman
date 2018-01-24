@@ -25,6 +25,7 @@ libraryDependencies ++= Seq(
   guice,
   "com.typesafe.play" %% "play-slick" % "3.0.0",
   "com.typesafe.play" %% "play-slick-evolutions" % "3.0.0",
+  "com.github.tminglei" %% "slick-pg" % "0.15.6",
   "org.postgresql" % "postgresql" % "42.2.0",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
 )
