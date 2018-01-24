@@ -10,6 +10,10 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 @ImplementedBy(classOf[DbUserManager])
 trait UserManager {
+  /**
+    * Finds the user with a given ID
+    *  @return Some(user) if the user exists, otherwise None
+    */
   def find(id: Long): Future[Option[User]]
 
   /**
