@@ -19,6 +19,8 @@ webpackGen := {
 
 sourceGenerators in Assets += webpackGen.taskValue
 
+testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/test-report")
+
 libraryDependencies ++= Seq(
   guice,
   "com.typesafe.play" %% "play-slick" % "3.0.0",
