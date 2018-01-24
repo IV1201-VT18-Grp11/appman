@@ -12,7 +12,8 @@ pipeline {
 
         stage('Compiling') {
             steps {
-                sh "sbt compile test:compile"
+                sh "sbt compile test:compile stage"
+                archiveArtifacts artifacts: "target/scala-*/*.jar", fingerprint: true
             }
         }
 
