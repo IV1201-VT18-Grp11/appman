@@ -29,10 +29,6 @@ class HomeController @Inject()(protected val dbConfigProvider: DatabaseConfigPro
     Ok(views.html.register())
   }
 
-  def login() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.login())
-  }
-
   def joblist() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.joblist())
   }

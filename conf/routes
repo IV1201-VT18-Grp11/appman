@@ -3,11 +3,10 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-POST        /api/login           controllers.LoginController.login
-
 # An example controller showing a sample home page
 GET         /                    controllers.HomeController.index
-GET         /login               controllers.HomeController.login
+GET         /login               controllers.LoginController.login
+POST        /login               controllers.LoginController.doLogin
 GET         /register            controllers.HomeController.register
 GET         /joblist             controllers.HomeController.joblist
 GET         /logout              controllers.HomeController.logout
