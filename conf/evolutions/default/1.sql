@@ -6,7 +6,8 @@ CREATE TABLE users (
   name     TEXT,
   surname  TEXT,
   password TEXT NOT NULL,
-  email    TEXT
+  email    TEXT,
+  employee BOOLEAN
 );
 
 CREATE TABLE availability (

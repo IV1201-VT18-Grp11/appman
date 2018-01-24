@@ -17,7 +17,7 @@ webpackGen := {
   target.allPaths.filter(!_.isDirectory).get
 }
 
-sourceGenerators in Assets += webpackGen.taskValue
+//sourceGenerators in Assets += webpackGen.taskValue
 
 testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/test-report")
 
