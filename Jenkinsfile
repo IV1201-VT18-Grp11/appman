@@ -12,7 +12,7 @@ pipeline {
 
         stage('Compiling') {
             steps {
-                sh "sbt compile"
+                sh "sbt compile test:compile"
             }
         }
 
