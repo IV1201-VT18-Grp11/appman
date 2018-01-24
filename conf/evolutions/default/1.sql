@@ -27,17 +27,18 @@ CREATE TABLE field (
   name     TEXT
 );
 
-CREATE TABLE job (
+CREATE TABLE jobs (
   job_id    SERIAL NOT NULL PRIMARY KEY,
   field_id  INTEGER NOT NULL REFERENCES field,
   name      TEXT NOT NULL ,
   from_date TIMESTAMP NOT NULL ,
-  to_date   TIMESTAMP
+  to_date   TIMESTAMP,
+  country   TEXT
 );
 
 # --- !Downs
 DROP TABLE availability;
 DROP TABLE users;
 DROP TABLE competence;
-DROP TABLE job;
+DROP TABLE jobs;
 DROP TABLE field;

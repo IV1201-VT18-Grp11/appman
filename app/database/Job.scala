@@ -8,7 +8,8 @@ case class Job (id: Long,
                 field_id: Long,
                 name: String,
                 from_date: Timestamp,
-                to_date: Option[Timestamp])
+                to_date: Option[Timestamp],
+                country: String)
 
 
 class Jobs(tag: Tag) extends Table[Job](tag, "jobs") {
@@ -17,11 +18,12 @@ class Jobs(tag: Tag) extends Table[Job](tag, "jobs") {
   def name = column[String] ("name")
   def from_date = column[Timestamp] ("from_date")
   def to_date = column[Option[Timestamp]] ("to_date")
+  def country = column[String] ("country")
 
   /**
     *
     */
-  override def * = (id, field_id, name, from_date, to_date) <> (Job.tupled, Job.unapply)
+  override def * = (id, field_id, name, from_date, to_date, country) <> (Job.tupled, Job.unapply)
 }
 
 /**

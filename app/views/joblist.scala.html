@@ -1,5 +1,39 @@
-@()
+@(listings: Seq[database.Job])
 
-@main("List of jobs") {
-    <h1>Here we will collect all the available jobs</h1>
-}
+    @main("List of jobs") {
+        <h1>Here we will collect all the available jobs</h1>
+        <table style="width: 100%" border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Field</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Country</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(listing <- listings) {
+                    <tr>
+                        <td>@listing.name</td>
+                        <td>@listing.field_id</td>
+                        <td>@listing.from_date</td>
+                        <td>@listing.to_date</td>
+                        <td>@listing.country</td>
+                    </tr>
+                }
+                <tr>
+                    <td>HTML magician</td>
+                    <td>IT/Software development</td>
+                    <td>2018-01-24</td>
+                    <td>2019-01-24</td>
+                </tr>
+                <tr>
+                    <td>Scala wizard</td>
+                    <td>IT/Software development</td>
+                    <td>NOW!</td>
+                    <td>FOREVER!</td>
+                </tr>
+            </tbody>
+        </table>
+    }

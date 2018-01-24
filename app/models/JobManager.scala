@@ -1,11 +1,15 @@
+package models
+
 import javax.inject.Inject
 
+import com.google.inject.ImplementedBy
 import database.PgProfile.api._
 import database._
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@ImplementedBy(classOf[DbJobManager])
 trait JobManager {
   /**
     * We want to show 0 or more jobs, as a sequence

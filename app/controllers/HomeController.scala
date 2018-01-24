@@ -1,9 +1,12 @@
 package controllers
 
 import javax.inject._
+
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import database.PgProfile
+import models.JobManager
 import play.api._
-import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.mvc._
 
 /**
@@ -11,8 +14,8 @@ import play.api.mvc._
   * application's home page.
   */
 @Singleton
-class HomeController @Inject()(protected val dbConfigProvider: DatabaseConfigProvider, cc: ControllerComponents)
-    extends AbstractController(cc) with HasDatabaseConfigProvider[PgProfile] {
+class HomeController @Inject()(jobManager: JobManager, cc: ControllerComponents)
+    extends AbstractController(cc) {
 
   /**
     * Create an Action to render an HTML page.
@@ -33,8 +36,10 @@ class HomeController @Inject()(protected val dbConfigProvider: DatabaseConfigPro
     Ok(views.html.login())
   }
 
-  def joblist() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.joblist())
+  def joblist() = Action.async { implicit request: Request[AnyContent] =>
+    for {
+      listings <- jobManager.jobListings()
+    } yield Ok(views.html.joblist(listings))
   }
 
   def logout() = Action { implicit request: Request[AnyContent] =>
