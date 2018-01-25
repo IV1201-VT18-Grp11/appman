@@ -7,6 +7,7 @@ import play.api.test.Injecting
 
   class RegisterFlowSpec extends PlaySpec with GuiceOneServerPerTest with OneBrowserPerTest with FirefoxFactory with Injecting {
     "register should work" in {
+      pending
       go to (s"http://localhost:$port/")
       click on find(id("nav-register")).value
       textField(name("username")).value = "donald_duck"

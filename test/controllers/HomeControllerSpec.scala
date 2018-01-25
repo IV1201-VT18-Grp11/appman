@@ -18,6 +18,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
   "HomeController GET" should {
 
     "render the index page from a new instance of controller" in {
+      pending
       val controller = new HomeController(inject[JobManager], stubControllerComponents())
       val home = controller.index().apply(FakeRequest(GET, "/"))
 
@@ -27,6 +28,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
     }
 
     "render the index page from the application" in {
+      pending
       val controller = inject[HomeController]
       val home = controller.index().apply(FakeRequest(GET, "/"))
 
@@ -36,6 +38,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
     }
 
     "render the index page from the router" in {
+      pending
       val request = FakeRequest(GET, "/")
       val home = route(app, request).get
 
