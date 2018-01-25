@@ -32,10 +32,6 @@ class HomeController @Inject()(jobManager: JobManager, cc: ControllerComponents)
     Ok(views.html.register())
   }
 
-  def login() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.login())
-  }
-
   def joblist() = Action.async { implicit request: Request[AnyContent] =>
     for {
       listings <- jobManager.jobListings()
