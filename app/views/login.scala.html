@@ -1,14 +1,15 @@
-@(form: Form[LoginController.LoginForm])(implicit messages: MessagesProvider)
+@(form: Form[LoginController.LoginForm])(implicit messages: MessagesProvider, req: RequestHeader)
 
     @main("Login") {
         <h1>UNDER CONSTRUCTION =) </h1>
 
         <div class="loginsquare">
         @helper.form(routes.LoginController.doLogin()) {
+            @helper.CSRF.formField
             <fieldset>
                 <p>Welcome back user.</p>
                 @helper.inputText(form("username"), '_label -> "Username")
-                @helper.inputText(form("password"), '_label -> "Password")
+                @helper.inputPassword(form("password"), '_label -> "Password")
                 <input type="submit" id="login" value="Login">
             </fieldset>
         }

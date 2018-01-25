@@ -18,6 +18,6 @@ class LoginFlowSpec extends PlaySpec with GuiceOneServerPerTest with OneBrowserP
     textField(name("username")).value = "donald_duck"
     pwdField(name("password")).value = "123456"
     click on find(id("login")).value
-    eventually { find(id("messages")).value.text must include("You have been logged in") }
+    eventually { find(id("message")).value.text must include("You have been logged in") }
   }
 }
