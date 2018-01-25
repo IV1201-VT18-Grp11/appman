@@ -30,9 +30,7 @@ class HomeController @Inject()(implicit jobManager: JobManager,
     Ok(views.html.index())
   }
 
-  def register() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.register())
-  }
+
 
   def joblist() = Action.async { implicit request: Request[AnyContent] =>
     for {
@@ -43,4 +41,5 @@ class HomeController @Inject()(implicit jobManager: JobManager,
   def logout() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.logout())
   }
+
 }

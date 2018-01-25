@@ -7,7 +7,8 @@
 GET         /                    controllers.HomeController.index
 GET         /login               controllers.LoginController.login
 POST        /login               controllers.LoginController.doLogin
-GET         /register            controllers.HomeController.register
+GET         /register            controllers.LoginController.register
+POST        /register            controllers.LoginController.doRegister
 GET         /joblist             controllers.HomeController.joblist
 GET         /logout              controllers.HomeController.logout
 

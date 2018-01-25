@@ -1,20 +1,21 @@
-@()(implicit req: RequestHeader)
+@(form: Form[LoginController.RegisterForm])(implicit messages: MessagesProvider, req: RequestHeader)
 
 @main("Register") {
     <h1>UNDER CONSTRUCTION =)</h1>
 
     <div class="registersquare">
-        <form action="register.php" method="post">
+    @helper.form(routes.LoginController.doRegister()) {
+
             <fieldset>
                 <p>Hi there new user.</p>
-                <br>
-                Username:<br>
-                <input type="text" name="username"><br>
-                Password:<br>
-                <input type="password" name="password"><br><br>
-
+                @helper.inputText(form("username"), '_label -> "Username")
+                @helper.inputText(form("password"), '_label -> "Password")
+                @helper.inputText(form("confirmPassword"), '_label -> "Confirm password")
+                @helper.inputText(form("firstname"), '_label -> "First Name")
+                @helper.inputText(form("surname"), '_label -> "Surname")
+                @helper.inputText(form("email"), '_label -> "Email address")
                 <input type="submit" id="register" value="Register"> <br>
             </fieldset>
-        </form>
     </div>
+}
 }
