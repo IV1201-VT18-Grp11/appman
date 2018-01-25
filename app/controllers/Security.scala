@@ -22,7 +22,7 @@ trait Security { this: AbstractController =>
     }
   }
 
-  protected def setUser(respose: Result, request: RequestHeader, user: User): Result =
+  protected def setUser(response: Result, request: RequestHeader, user: User): Result =
     respose.addingToSession(Security.sessionKey -> user.id.toString())(request)
 }
 
