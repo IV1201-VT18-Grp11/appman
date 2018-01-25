@@ -22,14 +22,14 @@ CREATE TABLE competence (
   name          TEXT
 );
 
-CREATE TABLE field (
+CREATE TABLE fields (
   field_id SERIAL PRIMARY KEY,
   name     TEXT
 );
 
 CREATE TABLE jobs (
   job_id    SERIAL NOT NULL PRIMARY KEY,
-  field_id  INTEGER NOT NULL REFERENCES field,
+  field_id  INTEGER NOT NULL REFERENCES fields,
   name      TEXT NOT NULL ,
   from_date TIMESTAMP NOT NULL ,
   to_date   TIMESTAMP,
@@ -41,4 +41,4 @@ DROP TABLE availability;
 DROP TABLE users;
 DROP TABLE competence;
 DROP TABLE jobs;
-DROP TABLE field;
+DROP TABLE fields;

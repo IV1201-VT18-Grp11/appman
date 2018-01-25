@@ -1,4 +1,4 @@
-@(listings: Seq[database.Job])
+@(listings: Seq[(database.Job, database.Field)])
 
     @main("List of jobs") {
         <h1>Here we will collect all the available jobs</h1>
@@ -13,10 +13,10 @@
                 </tr>
             </thead>
             <tbody>
-                @for(listing <- listings) {
+                @for((listing, field) <- listings) {
                     <tr>
                         <td>@listing.name</td>
-                        <td>@listing.field_id</td>
+                        <td>@field.name</td>
                         <td>@listing.from_date</td>
                         <td>@listing.to_date</td>
                         <td>@listing.country</td>
