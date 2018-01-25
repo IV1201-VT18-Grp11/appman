@@ -1,25 +1,26 @@
-@(form: Form[LoginController.LoginForm])(implicit messages: MessagesProvider)
+@(form: Form[LoginController.LoginForm])(implicit messages: MessagesProvider, req: RequestHeader)
 
-@main("Login") {
-    <html lang="en">
+    @main("Login") {
+        <html lang="en">
         <head>
         </head>
-        <body class="text-center">
-            <form class="form-signin">
-            @helper.form(routes.LoginController.doLogin()) {
-                <fieldset>
-                    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-                    @helper.inputText(form("username"), 'class -> "form-control", 'placeholder -> "Username", '_label -> "Username")
-                    @helper.inputText(form("password"), 'class -> "form-control", 'placeholder -> "Password", '_label -> "Password")
-                    <div class="checkbox mb-3">
+<body class="text-center">
+        <form class="form-signin">
+        @helper.form(routes.LoginController.doLogin()) {
+            @helper.CSRF.formField
+            <fieldset>
+                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+                @helper.inputText(form("username"), 'class -> "form-control", 'placeholder -> "Username", '_label -> "Username")
+                @helper.inputPassword(form("password"), 'class -> "form-control", 'placeholder -> "Password", '_label -> "Password")
+                <div class="checkbox mb-3">
                         <label>
                             <input type="checkbox" value="remember-me"> Remember me
                         </label>
                     </div>
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-                </fieldset>
-            </form>
-        </body>
-    </html>
+            </fieldset>
+        </form>
+</body>
+        </html>
 }
 }

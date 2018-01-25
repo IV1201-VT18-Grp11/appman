@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject._
 
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import scala.concurrent.ExecutionContext
 import database.PgProfile
 import models.JobManager
 import play.api._
@@ -14,7 +14,9 @@ import play.api.mvc._
   * application's home page.
   */
 @Singleton
-class HomeController @Inject()(jobManager: JobManager, cc: ControllerComponents)
+class HomeController @Inject()(implicit jobManager: JobManager,
+                               cc: ControllerComponents,
+                               executionContext: ExecutionContext)
     extends AbstractController(cc) {
 
   /**

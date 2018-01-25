@@ -1,26 +1,26 @@
-@(listings: Seq[(database.Job, database.Field)])
+@(listings: Seq[(database.Job, database.Field)])(implicit req: RequestHeader)
 
-    @main("List of jobs") {
-        <h1>Here we will collect all the available jobs</h1>
-        <table style="width: 100%" border="1">
-            <thead>
+@main("List of jobs") {
+    <h1>Here we will collect all the available jobs</h1>
+    <table style="width: 100%" border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Field</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Country</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for((listing, field) <- listings) {
                 <tr>
-                    <th>Name</th>
-                    <th>Field</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Country</th>
+                    <td>@listing.name</td>
+                    <td>@field.name</td>
+                    <td>@listing.from_date</td>
+                    <td>@listing.to_date</td>
+                    <td>@listing.country</td>
                 </tr>
-            </thead>
-            <tbody>
-                @for((listing, field) <- listings) {
-                    <tr>
-                        <td>@listing.name</td>
-                        <td>@field.name</td>
-                        <td>@listing.from_date</td>
-                        <td>@listing.to_date</td>
-                        <td>@listing.country</td>
-                    </tr>
                 }
                 <tr>
                     <td>HTML magician</td>
@@ -34,6 +34,6 @@
                     <td>NOW!</td>
                     <td>FOREVER!</td>
                 </tr>
-            </tbody>
-        </table>
-    }
+        </tbody>
+    </table>
+}
