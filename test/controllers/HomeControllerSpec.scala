@@ -3,7 +3,6 @@ package controllers
 import models.JobManager
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
-import play.api.db.slick.DatabaseConfigProvider
 import play.api.test._
 import play.api.test.Helpers._
 import scala.concurrent.ExecutionContext.Implicits.global
