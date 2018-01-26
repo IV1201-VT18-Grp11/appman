@@ -29,5 +29,5 @@ trait Security { this: AbstractController =>
 object Security {
   val user = TypedKey[User]("user")
 
-  private[Security] val sessionKey = "USER"
+  val sessionKey = "USER"
 }

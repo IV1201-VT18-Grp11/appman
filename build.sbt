@@ -28,6 +28,7 @@ libraryDependencies ++= Seq(
   "com.github.tminglei" %% "slick-pg" % "0.15.6",
   "org.postgresql" % "postgresql" % "42.2.0",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
+  "org.mockito" % "mockito-core" % "2.13.0" % Test,
 )
 
 // Adds additional packages into Twirl

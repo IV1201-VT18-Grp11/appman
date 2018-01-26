@@ -17,7 +17,7 @@ import scala.concurrent.{Future, ExecutionContext}
   */
 @Singleton
 class LoginController @Inject()(implicit cc: ControllerComponents,
-                                protected val userManager: UserManager,
+                                val userManager: UserManager,
                                 executionContext: ExecutionContext)
   extends AbstractController(cc) with I18nSupport with Security {
   private val loginForm = Form(
