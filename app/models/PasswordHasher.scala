@@ -1,6 +1,7 @@
 package models
 
 import com.google.inject.ImplementedBy
+import java.security.SecureRandom
 import org.apache.commons.codec.binary.Hex
 import org.bouncycastle.crypto.PasswordConverter
 import org.bouncycastle.crypto.digests.Blake2bDigest
@@ -16,6 +17,12 @@ trait PasswordHasher {
 class ScryptPasswordHasher extends PasswordHasher {
   private val pwConverter = PasswordConverter.UTF8
   private val rng = new DigestRandomGenerator(new Blake2bDigest(512))
+  rng.addSeedMaterial {
+    val seeder = SecureRandom.getInstanceStrong
+    val seed = Array.ofDim[Byte](1024)
+    seeder.nextBytes(seed)
+    seed
+  }
 
   private def newSalt: Array[Byte] = {
     val buf = Array.ofDim[Byte](32)

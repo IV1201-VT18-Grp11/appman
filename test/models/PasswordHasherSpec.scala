@@ -6,7 +6,7 @@ import org.scalatestplus.play.guice._
 import play.api.test._
 import play.api.test.Helpers._
 
-abstract class PasswordHasherSpec(hasher: PasswordHasher) extends PlaySpec {
+abstract class PasswordHasherSpec(hasher: => PasswordHasher) extends PlaySpec {
   "calling hash()" should {
     "not return the original value" in {
       hasher.hash("very secret") mustNot include("very secret")
