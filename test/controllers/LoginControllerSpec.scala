@@ -32,12 +32,7 @@ class LoginControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injectin
                      when(manager.login(anyString, anyString)(any[ExecutionContext]))
                        .thenReturn(Future.successful(None))
                      when(manager.login(equ("gyro_gearloose"), equ("little_helper"))(any[ExecutionContext]))
-                       .thenReturn(Future.successful(Some(User(
-                                                            Id[User](3),
-                                                            "gyro_gearloose",
-                                                            "little_helper",
-                                                            None
-                                                          ))))
+                       .thenReturn(Future.successful(Some(TestUsers.gyroGearloose)))
                      manager
                    }
                  ))
@@ -69,7 +64,7 @@ class LoginControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injectin
                     ))
         val login = route(app, request).get
 
-        session(login).get(Security.sessionKey) mustBe "3"
+        session(login).get(Security.sessionKey).value mustBe "3"
         redirectLocation(login) mustBe defined
       }
     }

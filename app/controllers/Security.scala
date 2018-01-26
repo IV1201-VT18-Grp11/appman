@@ -3,11 +3,11 @@ package controllers
 import database.{ Id, User }
 import models.UserManager
 import play.api.libs.typedmap.TypedKey
-import play.api.mvc.{ Result, _ }
+import play.api.mvc._
 import scala.concurrent.{ ExecutionContext, Future }
 
 
-trait Security { this: AbstractController =>
+trait Security {
   protected def userManager: UserManager
 
   protected def checkUser(implicit ec: ExecutionContext) = new ActionRefiner[Request, Request] {
@@ -22,10 +22,10 @@ trait Security { this: AbstractController =>
     }
   }
 
-  protected def getUserId(request: RequestHeader): Option[Id[User]] =
+  def getUserId(request: RequestHeader): Option[Id[User]] =
     request.session.get(Security.sessionKey).map(id => Id[User](id.toLong))
 
-  protected def getUser(request: RequestHeader): Future[Option[User]] =
+  def getUser(request: RequestHeader): Future[Option[User]] =
     getUserId(request) match {
       case Some(id) =>
         userManager.find(id)
@@ -33,10 +33,10 @@ trait Security { this: AbstractController =>
         Future.successful(None)
     }
 
-  protected def setUserId(response: Result, request: RequestHeader, userId: Id[User]): Result =
-    response.addingToSession(Security.sessionKey -> userId.toString())(request)
+  def setUserId(response: Result, request: RequestHeader, userId: Id[User]): Result =
+    response.addingToSession(Security.sessionKey -> userId.raw.toString())(request)
 
-  protected def setUser(response: Result, request: RequestHeader, user: User): Result =
+  def setUser(response: Result, request: RequestHeader, user: User): Result =
     setUserId(response, request, user.id)
 }
 
