@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.google.inject.ImplementedBy
 import database.PgProfile.api._
-import database.{PgProfile, User, Users}
+import database.{PgProfile, User, Users, Id}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -14,7 +14,7 @@ trait UserManager {
     * Finds the user with a given ID
     *  @return Some(user) if the user exists, otherwise None
     */
-  def find(id: Long): Future[Option[User]]
+  def find(id: Id[User]): Future[Option[User]]
 
   /**
     * Finds the user with a given username and password
@@ -30,7 +30,7 @@ class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProv
   private def hashPassword(plaintext: String): String = plaintext
   private def comparePassword(hashed: String, plaintext: String): Boolean = hashed == plaintext
 
-  override def find(id: Long): Future[Option[User]] = ???
+  override def find(id: Id[User]): Future[Option[User]] = ???
 
   override def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]] = db.run {
     Users
