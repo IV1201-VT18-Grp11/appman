@@ -27,6 +27,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick-evolutions" % "3.0.0",
   "com.github.tminglei" %% "slick-pg" % "0.15.6",
   "org.postgresql" % "postgresql" % "42.2.0",
+  "org.bouncycastle" % "bcprov-jdk15on" % "1.59",
+  "commons-codec" % "commons-codec" % "1.11",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
   "org.mockito" % "mockito-core" % "2.13.0" % Test,
 )
