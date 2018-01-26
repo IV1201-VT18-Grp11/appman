@@ -22,7 +22,7 @@ trait UserManager {
     */
   def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]]
 
-  def register(username: String, password: String): Future[Option[User]]
+  def register(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]]
 }
 
 class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserManager with HasDatabaseConfigProvider[PgProfile] {
@@ -39,5 +39,13 @@ class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProv
       .map(maybeUser => maybeUser.filter(user => comparePassword(user.password, password)))
   }
 
-  override def register(username: String, password: String): Future[Option[User]] = ???
+  override def register(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]] = db.run {
+    (for {
+       userId <- Users.returning(Users.map(_.id)) += User(Id[User](-1),
+                                                          username = username,
+                                                          password = hashPassword(password),
+                                                          name = None)
+       user <- Users.filter(_.id === userId).result.headOption
+     } yield user).transactionally
+  }
 }
