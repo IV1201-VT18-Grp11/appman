@@ -13,11 +13,6 @@ trait PasswordHasher {
   def compare(hashed: String, plaintext: String): Boolean
 }
 
-class NoopPasswordHasher extends PasswordHasher {
-  override def hash(plaintext: String): String = plaintext
-  override def compare(hashed: String, plaintext: String): Boolean = hashed == plaintext
-}
-
 class ScryptPasswordHasher extends PasswordHasher {
   private val pwConverter = PasswordConverter.UTF8
   private val rng = new DigestRandomGenerator(new Blake2bDigest(512))
