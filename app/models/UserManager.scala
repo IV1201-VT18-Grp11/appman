@@ -21,6 +21,8 @@ trait UserManager {
     * @return Some(user) if the user exists and the password is correct, otherwise None
     */
   def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]]
+
+  def register(username: String, password: String): Future[Option[User]]
 }
 
 class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserManager with HasDatabaseConfigProvider[PgProfile] {
@@ -36,4 +38,6 @@ class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProv
       .result.headOption
       .map(maybeUser => maybeUser.filter(user => comparePassword(user.password, password)))
   }
+
+  override def register(username: String, password: String): Future[Option[User]] = ???
 }
