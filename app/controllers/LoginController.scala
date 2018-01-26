@@ -54,7 +54,7 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
       val creds = form.value.get
       userManager.login(creds.username, creds.password).map {
         case Some(user) =>
-          setUser(Redirect(routes.HomeController.index()), request, user)
+          setUser(Redirect(routes.HomeController.index()), request, user).flashing("message" -> "You have been logged in")
         case None =>
           val failedForm = form.withError("password", "Invalid username or password")
           BadRequest(views.html.login(failedForm))
