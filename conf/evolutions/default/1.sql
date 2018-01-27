@@ -2,7 +2,7 @@
 
 CREATE TABLE users (
   users_id SERIAL NOT NULL PRIMARY KEY,
-  username TEXT NOT NULL,
+  username TEXT NOT NULL UNIQUE,
   name     TEXT,
   surname  TEXT,
   password TEXT NOT NULL,
