@@ -6,6 +6,7 @@ import org.scalatestplus.play.guice._
 import play.api.test._
 import play.api.test.Helpers._
 import scala.concurrent.ExecutionContext.Implicits.global
+import utils.DbOneAppPerTest
 
 /**
  * Add your spec here.
@@ -13,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
  *
  * For more information, see https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
  */
-class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting {
+class HomeControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
   "HomeController GET" should {
 
     "render the index page from a new instance of controller" in {

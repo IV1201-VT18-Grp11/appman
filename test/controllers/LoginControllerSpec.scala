@@ -16,6 +16,7 @@ import play.api.test.Helpers._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import utils.DbOneAppPerTest
 
 /**
   * Add your spec here.
@@ -23,7 +24,7 @@ import scala.concurrent.Future
   *
   * For more information, see https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
   */
-class LoginControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting with MockitoSugar {
+class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting with MockitoSugar {
   override def fakeApplication() =
     new GuiceApplicationBuilder()
       .overrides(Seq(

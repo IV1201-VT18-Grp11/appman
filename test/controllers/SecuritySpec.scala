@@ -6,7 +6,6 @@ import org.mockito.ArgumentMatchers._
 import models.UserManager
 import org.scalatestplus.play._
 import org.scalatest.mockito.MockitoSugar
-import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.mvc.{ AbstractController, BaseController, ControllerComponents, Results }
 import play.api.test._
 import play.api.test.Helpers._
