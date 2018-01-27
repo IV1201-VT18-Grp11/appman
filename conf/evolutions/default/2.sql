@@ -14,18 +14,18 @@ VALUES (1, 'Software');
 INSERT INTO jobs (field_id, name, from_date, to_date, country)
 VALUES (1, 'Scala Magician', '2018-02-01', '2018-10-01', 'Sweden');
 
+ALTER SEQUENCE users_users_id_seq MINVALUE 3 START WITH 3 RESTART WITH 3;
+ALTER SEQUENCE availability_availability_id_seq MINVALUE 2 START WITH 2 RESTART WITH 2;
+ALTER SEQUENCE fields_field_id_seq MINVALUE 2 START WITH 2 RESTART WITH 2;
+ALTER SEQUENCE jobs_job_id_seq MINVALUE 2 START WITH 2 RESTART WITH 2;
+
 # --- !Downs
-DELETE FROM availability
-WHERE availability_id = 1;
+DELETE FROM availability;
+DELETE FROM users;
+DELETE FROM jobs;
+DELETE FROM fields;
 
-DELETE FROM users
-WHERE users_id = 1;
-
-DELETE FROM users
-WHERE users_id = 2;
-
-DELETE FROM jobs
-WHERE field_id = 1;
-
-DELETE FROM fields
-WHERE field_id = 1;
+ALTER SEQUENCE users_users_id_seq MINVALUE 1 START WITH 1 RESTART WITH 1;
+ALTER SEQUENCE availability_availability_id_seq MINVALUE 1 START WITH 1 RESTART WITH 1;
+ALTER SEQUENCE fields_field_id_seq MINVALUE 1 START WITH 1 RESTART WITH 1;
+ALTER SEQUENCE jobs_job_id_seq MINVALUE 1 START WITH 1 RESTART WITH 1;
