@@ -16,9 +16,16 @@ class LoginFlowSpec extends PlaySpec with DbOneServerPerTest with OneBrowserPerT
   "login should work" in {
     go to (s"http://localhost:$port/")
     click on find(id("nav-login")).value
+
+    textField(name("username")).value = "donald_duck"
+    pwdField(name("password")).value = "12345"
+    click on find(id("login")).value
+    find(id("message")).value.text mustNot include("You have been logged in")
+    find(tagName("body")).value.text must include("Invalid username or password")
+
     textField(name("username")).value = "donald_duck"
     pwdField(name("password")).value = "123456"
     click on find(id("login")).value
-    eventually { find(id("message")).value.text must include("You have been logged in") }
+    find(id("message")).value.text must include("You have been logged in")
   }
 }
