@@ -11,19 +11,19 @@ CREATE TABLE users (
 );
 
 CREATE TABLE availability (
-  id        SERIAL PRIMARY KEY,
+  id        SERIAL NOT NULL PRIMARY KEY,
   "user"    INTEGER REFERENCES users,
   from_date DATE,
   to_date   DATE
 );
 
 CREATE TABLE competences (
-  id   SERIAL PRIMARY KEY,
+  id   SERIAL NOT NULL PRIMARY KEY,
   name TEXT
 );
 
 CREATE TABLE fields (
-  id   SERIAL PRIMARY KEY,
+  id   SERIAL NOT NULL PRIMARY KEY,
   name TEXT
 );
 
