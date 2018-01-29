@@ -22,6 +22,10 @@ trait UserManager {
     */
   def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]]
 
+  /**
+    * Tries to create a user with the given fields
+    * @return None if a user with the given username already exists, otherwise Some(user)
+    */
   def register(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]]
 }
 
@@ -42,7 +46,7 @@ class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProv
                                                           username = username,
                                                           password = passwordHasher.hash(password),
                                                           name = None)
-       user <- Users.filter(_.id === userId).result.headOption
-     } yield user).transactionally
+       user <- Users.filter(_.id === userId).result.head
+     } yield user).transactionally.asTry.map(_.toOption)
   }
 }
