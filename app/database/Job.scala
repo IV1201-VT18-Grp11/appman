@@ -5,7 +5,7 @@ import PgProfile.api._
 
 
 case class Job (id: Id[Job],
-                field_id: Id[Field],
+                fieldId: Id[Field],
                 name: String,
                 from_date: Timestamp,
                 to_date: Option[Timestamp],
@@ -16,8 +16,8 @@ case class Job (id: Id[Job],
 
 
 class Jobs(tag: Tag) extends Table[Job](tag, "jobs") {
-  def id = column[Id[Job]]("job_id", O.PrimaryKey, O.AutoInc)
-  def fieldId = column[Id[Field]] ("field_id")
+  def id = column[Id[Job]]("id", O.PrimaryKey, O.AutoInc)
+  def fieldId = column[Id[Field]] ("field")
   def name = column[String] ("name")
   def from_date = column[Timestamp] ("from_date")
   def to_date = column[Option[Timestamp]] ("to_date")
