@@ -10,6 +10,14 @@ CREATE TABLE users (
   employee BOOLEAN
 );
 
+CREATE TABLE sessions (
+  id        SERIAL NOT NULL PRIMARY KEY,
+  "user"    INTEGER NOT NULL REFERENCES users,
+  "from"    TIMESTAMP NOT NULL,
+  refreshed TIMESTAMP NOT NULL,
+  deleted   BOOLEAN NOT NULL
+);
+
 CREATE TABLE availability (
   id        SERIAL NOT NULL PRIMARY KEY,
   "user"    INTEGER REFERENCES users,
@@ -38,6 +46,7 @@ CREATE TABLE jobs (
 
 # --- !Downs
 DROP TABLE availability;
+DROP TABLE sessions;
 DROP TABLE users;
 DROP TABLE competences;
 DROP TABLE jobs;
