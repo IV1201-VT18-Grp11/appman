@@ -31,7 +31,10 @@ trait UserManager {
 
 class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProvider,
                               passwordHasher: PasswordHasher) extends UserManager with HasDatabaseConfigProvider[PgProfile] {
-  override def find(id: Id[User]): Future[Option[User]] = ???
+  override def find(id: Id[User]): Future[Option[User]] = db.run {
+    Users.filter(_.id === id)
+      .result.headOption
+  }
 
   override def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]] = db.run {
     Users

@@ -13,6 +13,11 @@ body {
     background-color: #bcf6ff;
 }
 
+.footer-tiny {
+    font-size: 2pt;
+    color: #00000022;
+}
+
 .form-signin {
     width: 100%;
     max-width: 330px;
