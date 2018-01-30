@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Downloading dependencies') {
             steps {
-                sh "sbt update"
+                sh "sbt update web-assets:webNodeModules"
             }
         }
 
