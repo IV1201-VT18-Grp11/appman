@@ -33,5 +33,11 @@ class LoginFlowSpec extends PlaySpec with DbOneServerPerTest with OneBrowserPerT
     pwdField(name("password")).value = "money"
     click on find(id("login")).value
     find(id("message")).value.text must include("You have been logged in")
+    find(id("nav-login")) mustBe empty
+
+    click on find(id("nav-logout")).value
+    find(id("message")).value.text must include("You have been logged out")
+    find(id("nav-login")) mustBe defined
+    find(id("nav-logout")) mustBe empty
   }
 }

@@ -1,6 +1,7 @@
 package controllers
 
 import javax.inject._
+import models.UserManager
 
 import scala.concurrent.ExecutionContext
 import database.PgProfile
@@ -15,9 +16,10 @@ import play.api.mvc._
   */
 @Singleton
 class HomeController @Inject()(implicit jobManager: JobManager,
+                               val userManager: UserManager,
                                cc: ControllerComponents,
                                executionContext: ExecutionContext)
-    extends AbstractController(cc) {
+    extends AbstractController(cc) with Security {
 
   /**
     * Create an Action to render an HTML page.
@@ -26,20 +28,13 @@ class HomeController @Inject()(implicit jobManager: JobManager,
     * will be called when the application receives a `GET` request with
     * a path of `/`.
     */
-  def index() = Action { implicit request: Request[AnyContent] =>
+  def index() = userAction.apply { implicit request: Request[AnyContent] =>
     Ok(views.html.index())
   }
 
-
-
-  def joblist() = Action.async { implicit request: Request[AnyContent] =>
+  def joblist() = userAction.async { implicit request: Request[AnyContent] =>
     for {
       listings <- jobManager.jobListings()
     } yield Ok(views.html.joblist(listings))
   }
-
-  def logout() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.logout())
-  }
-
 }

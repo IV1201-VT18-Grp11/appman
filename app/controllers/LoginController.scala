@@ -37,13 +37,18 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
     )(RegisterForm.apply)(RegisterForm.unapply)
   )
 
-  def login() = Action { implicit request: Request[AnyContent] =>
+  def login() = userAction.apply { implicit request: Request[AnyContent] =>
     Ok(views.html.login(loginForm))
   }
-  def register() = Action { implicit request: Request[AnyContent] =>
+
+  def register() = userAction.apply { implicit request: Request[AnyContent] =>
     Ok(views.html.register(registerForm))
   }
 
+  def logout() = userAction.apply { implicit request: Request[AnyContent] =>
+    clearUser(Redirect(routes.HomeController.index()), request)
+      .flashing("message" -> "You have been logged out")
+  }
 
   def doLogin() = Action.async { implicit request: Request[AnyContent] =>
     val form = loginForm.bindFromRequest()
@@ -54,7 +59,8 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
       val creds = form.value.get
       userManager.login(creds.username, creds.password).map {
         case Some(user) =>
-          setUser(Redirect(routes.HomeController.index()), request, user).flashing("message" -> "You have been logged in")
+          setUser(Redirect(routes.HomeController.index()), request, user)
+            .flashing("message" -> "You have been logged in")
         case None =>
           val failedForm = form.withError("password", "Invalid username or password")
           BadRequest(views.html.login(failedForm))

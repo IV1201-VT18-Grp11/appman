@@ -22,7 +22,7 @@ class SecuritySpec extends PlaySpec with MockitoSugar {
         val security = new FakeSecurity()
         val request = FakeRequest()
         security.getUserId(request) mustBe None
-        await(security.getUser(request)) mustBe None
+        await(security.findUser(request)) mustBe None
       }
     }
 
@@ -35,7 +35,7 @@ class SecuritySpec extends PlaySpec with MockitoSugar {
         val loginResponse = security.setUserId(Results.Ok(""), FakeRequest(), Id[User](4))
         val request = FakeRequest().withSession(loginResponse.newSession.get.data.toSeq: _*)
         security.getUserId(request).value mustBe Id[User](4)
-        await(security.getUser(request)).value.username mustBe "gyro_gearloose"
+        await(security.findUser(request)).value.username mustBe "gyro_gearloose"
       }
     }
   }

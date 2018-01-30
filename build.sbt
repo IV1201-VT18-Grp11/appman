@@ -34,7 +34,10 @@ libraryDependencies ++= Seq(
 )
 
 // Adds additional packages into Twirl
-//TwirlKeys.templateImports += "com.appman.controllers._"
+TwirlKeys.templateImports ++= Seq(
+  "controllers.Security.UserReqHeader",
+  "database._"
+)
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "com.appman.binders._"
