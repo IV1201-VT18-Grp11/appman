@@ -11,7 +11,9 @@ trait SecurityHelpers {
     request.session.get(Security.sessionKey).map(id => Id[User](id.toLong))
 
   def getUser(request: RequestHeader): Option[User] =
-    request.attrs.get(Security.user)
+    request.attrs
+      .get(Security.user)
+      .getOrElse(throw new NoSessionLoaderException)
 
   def clearUser(response: Result, request: RequestHeader): Result =
     response.removingFromSession(Security.sessionKey)(request)
@@ -28,6 +30,9 @@ trait SecurityHelpers {
   }
 }
 
+class NoSessionLoaderException extends Exception(
+  "attempted to access session before it was loaded, use Security.userAction or checkUser instead of Action")
+
 trait Security extends SecurityHelpers {
   protected def userManager: UserManager
   protected def Action: ActionBuilder[Request, AnyContent]
@@ -35,12 +40,8 @@ trait Security extends SecurityHelpers {
   def checkUser(implicit ec: ExecutionContext) = new ActionRefiner[Request, Request] {
     override def executionContext = ec
     override def refine[A](request: Request[A]) = {
-      findUser(request).map {
-        case Some(user) =>
-          Right(request.addAttr(Security.user, user))
-        case None =>
-          Right(request)
-      }
+      findUser(request).map(user =>
+        Right(request.addAttr(Security.user, user)))
     }
   }
 
@@ -56,7 +57,7 @@ trait Security extends SecurityHelpers {
 }
 
 object Security extends SecurityHelpers {
-  val user = TypedKey[User]("user")
+  val user = TypedKey[Option[User]]("user")
 
   val sessionKey = "USER"
 }

@@ -50,7 +50,7 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
       .flashing("message" -> "You have been logged out")
   }
 
-  def doLogin() = Action.async { implicit request: Request[AnyContent] =>
+  def doLogin() = userAction.async { implicit request: Request[AnyContent] =>
     val form = loginForm.bindFromRequest()
     if (form.hasErrors) {
       Future.successful(BadRequest(views.html.login(form)))
@@ -68,7 +68,7 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
     }
   }
 
-  def doRegister() = Action.async { implicit request: Request[AnyContent] =>
+  def doRegister() = userAction.async { implicit request: Request[AnyContent] =>
     val form = registerForm.bindFromRequest()
     if (form.hasErrors) {
       Future.successful(BadRequest(views.html.register(form)))
