@@ -6,7 +6,7 @@ import org.mockito.ArgumentMatchers._
 import models.UserManager
 import org.scalatestplus.play._
 import org.scalatest.mockito.MockitoSugar
-import play.api.mvc.{ AbstractController, BaseController, ControllerComponents, Results }
+import play.api.mvc.{ AbstractController, ActionBuilder, AnyContent, BaseController, ControllerComponents, Request, Results }
 import play.api.test._
 import play.api.test.Helpers._
 import scala.concurrent.Future
@@ -14,6 +14,7 @@ import scala.concurrent.Future
 class SecuritySpec extends PlaySpec with MockitoSugar {
   private class FakeSecurity extends Security {
     override val userManager = mock[UserManager]
+    override val Action = mock[ActionBuilder[Request, AnyContent]]
   }
 
   "getUserId" when {

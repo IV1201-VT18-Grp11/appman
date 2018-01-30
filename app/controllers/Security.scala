@@ -28,8 +28,9 @@ trait SecurityHelpers {
   }
 }
 
-trait Security extends SecurityHelpers { this: BaseController =>
+trait Security extends SecurityHelpers {
   protected def userManager: UserManager
+  protected def Action: ActionBuilder[Request, AnyContent]
 
   def checkUser(implicit ec: ExecutionContext) = new ActionRefiner[Request, Request] {
     override def executionContext = ec
