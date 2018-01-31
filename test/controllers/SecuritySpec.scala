@@ -1,6 +1,7 @@
 package controllers
 
-import database.{ Id, User }
+import database.{ Id, User, UserSession }
+import java.time.Instant
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers._
 import models.UserManager
@@ -22,21 +23,28 @@ class SecuritySpec extends PlaySpec with MockitoSugar {
       "return None" in {
         val security = new FakeSecurity()
         val request = FakeRequest()
-        security.getUserId(request) mustBe None
+        security.getSessionId(request) mustBe None
         await(security.findUser(request)) mustBe None
       }
     }
 
     "there is a session for a user" should {
-      "return the user's id" in {
+      "return the session's ID" in {
         val security = new FakeSecurity()
-        when(security.userManager.find(Id[User](4)))
-          .thenReturn(Future.successful(Some(TestUsers.gyroGearloose)))
+        when(security.userManager.findSession(Id[UserSession](4)))
+          .thenReturn(Future.successful(Some((TestUsers.gyroGearloose,
+                                              UserSession(
+                                                Id[UserSession](4),
+                                                TestUsers.gyroGearloose.id,
+                                                from = Instant.now(),
+                                                refreshed = Instant.now(),
+                                                deleted = false,
+                                              )))))
 
-        val loginResponse = security.setUserId(Results.Ok(""), FakeRequest(), Id[User](4))
+        val loginResponse = security.setUserSessionId(Results.Ok(""), FakeRequest(), Id[UserSession](4))
         val request = FakeRequest().withSession(loginResponse.newSession.get.data.toSeq: _*)
-        security.getUserId(request).value mustBe Id[User](4)
-        await(security.findUser(request)).value.username mustBe "gyro_gearloose"
+        security.getSessionId(request).value mustBe Id[UserSession](4)
+        await(security.findUser(request)).value._1.username mustBe "gyro_gearloose"
       }
     }
   }

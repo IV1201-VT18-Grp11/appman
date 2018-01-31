@@ -1,6 +1,7 @@
 package controllers
 
-import database.{ Id, User }
+import database.{ Id, User, UserSession }
+import java.time.Instant
 import models.UserManager
 import org.mockito.ArgumentMatchers.{eq => equ, _} // `eq` is already reserved by Scala
 import org.mockito.Mockito._
@@ -33,7 +34,12 @@ class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting w
                      when(manager.login(anyString, anyString)(any[ExecutionContext]))
                        .thenReturn(Future.successful(None))
                      when(manager.login(equ("gyro_gearloose"), equ("little_helper"))(any[ExecutionContext]))
-                       .thenReturn(Future.successful(Some(TestUsers.gyroGearloose)))
+                       .thenReturn(Future.successful(Some(
+                                                       UserSession(Id[UserSession](5),
+                                                                   Id[User](3),
+                                                                   from = Instant.now(),
+                                                                   refreshed = Instant.now(),
+                                                                   deleted = false))))
                      manager
                    }
                  ))
@@ -65,7 +71,7 @@ class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting w
                     ))
         val login = route(app, request).get
 
-        session(login).get(Security.sessionKey).value mustBe "3"
+        session(login).get(Security.sessionKey).value mustBe "5"
         redirectLocation(login) mustBe defined
       }
     }

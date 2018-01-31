@@ -60,12 +60,12 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
     } else {
       val creds = form.value.get
       userManager.login(creds.username, creds.password).map {
-        case Some(user) =>
+        case Some(session) =>
           val redirectTarget =
             target
               .filter(validateRedirect)
               .getOrElse(routes.HomeController.index().url)
-          setUser(Redirect(redirectTarget), request, user)
+          setUserSession(Redirect(redirectTarget), request, session)
             .flashing("message" -> "You have been logged in")
         case None =>
           val failedForm = form.withError("password", "Invalid username or password")
@@ -81,12 +81,14 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
 
     } else {
       val creds = form.value.get
-      userManager.register(creds.username, creds.password).map {
+      userManager.register(creds.username, creds.password).flatMap {
         case Some(user) =>
-          setUser(Redirect(routes.HomeController.index()), request, user)
+          userManager.login(creds.username, creds.password).map { session =>
+              setUserSession(Redirect(routes.HomeController.index()), request, session.get)
+          }
         case None =>
           val failedForm = form.withError("username", "The username is already in use")
-          BadRequest(views.html.register(failedForm))
+          Future.successful(BadRequest(views.html.register(failedForm)))
       }
     }
   }

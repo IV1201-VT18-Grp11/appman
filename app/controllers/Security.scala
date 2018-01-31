@@ -1,14 +1,14 @@
 package controllers
 
-import database.{ Id, User }
+import database.{ Id, User, UserSession }
 import models.UserManager
 import play.api.libs.typedmap.TypedKey
 import play.api.mvc._
 import scala.concurrent.{ ExecutionContext, Future }
 
 trait SecurityHelpers {
-  def getUserId(request: RequestHeader): Option[Id[User]] =
-    request.session.get(Security.sessionKey).map(id => Id[User](id.toLong))
+  def getSessionId(request: RequestHeader): Option[Id[UserSession]] =
+    request.session.get(Security.sessionKey).map(id => Id[UserSession](id.toLong))
 
   def getUser(request: RequestHeader): Option[User] =
     request.attrs
@@ -18,11 +18,11 @@ trait SecurityHelpers {
   def clearUser(response: Result, request: RequestHeader): Result =
     response.removingFromSession(Security.sessionKey)(request)
 
-  def setUserId(response: Result, request: RequestHeader, userId: Id[User]): Result =
-    response.addingToSession(Security.sessionKey -> userId.raw.toString())(request)
+  def setUserSessionId(response: Result, request: RequestHeader, sessionId: Id[UserSession]): Result =
+    response.addingToSession(Security.sessionKey -> sessionId.raw.toString())(request)
 
-  def setUser(response: Result, request: RequestHeader, user: User): Result =
-    setUserId(response, request, user.id)
+  def setUserSession(response: Result, request: RequestHeader, session: UserSession): Result =
+    setUserSessionId(response, request, session.id)
 
   implicit class UserReqHeader(private val req: RequestHeader) {
     def user: Option[User] = getUser(req)
@@ -40,8 +40,10 @@ trait Security extends SecurityHelpers {
   def checkUser(implicit ec: ExecutionContext) = new ActionTransformer[Request, Request] {
     override def executionContext = ec
     override def transform[A](request: Request[A]) =
-      findUser(request).map(user =>
-        request.addAttr(Security.user, user))
+      findUser(request).map(session =>
+        request
+          .addAttr(Security.user, session.map(_._1))
+          .addAttr(Security.session, session.map(_._2)))
   }
 
   def requireUser(implicit ec: ExecutionContext) = new ActionFilter[Request] {
@@ -57,10 +59,10 @@ trait Security extends SecurityHelpers {
   def userAction(implicit ec: ExecutionContext) = checkUser compose Action
   def userRequiredAction(implicit ec: ExecutionContext) = requireUser compose checkUser compose Action
 
-  def findUser(request: RequestHeader): Future[Option[User]] =
-    getUserId(request) match {
+  def findUser(request: RequestHeader): Future[Option[(User, UserSession)]] =
+    getSessionId(request) match {
       case Some(id) =>
-        userManager.find(id)
+        userManager.findSession(id)
       case None =>
         Future.successful(None)
     }
@@ -68,6 +70,7 @@ trait Security extends SecurityHelpers {
 
 object Security extends SecurityHelpers {
   val user = TypedKey[Option[User]]("user")
+  val session = TypedKey[Option[UserSession]]("session")
 
-  val sessionKey = "USER"
+  val sessionKey = "SESSION"
 }

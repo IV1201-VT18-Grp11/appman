@@ -13,9 +13,9 @@ CREATE TABLE users (
 CREATE TABLE sessions (
   id        SERIAL NOT NULL PRIMARY KEY,
   "user"    INTEGER NOT NULL REFERENCES users,
-  "from"    TIMESTAMP NOT NULL,
-  refreshed TIMESTAMP NOT NULL,
-  deleted   BOOLEAN NOT NULL
+  "from"    TIMESTAMP NOT NULL DEFAULT now(),
+  refreshed TIMESTAMP NOT NULL DEFAULT now(),
+  deleted   BOOLEAN NOT NULL DEFAULT false
 );
 
 CREATE TABLE availability (

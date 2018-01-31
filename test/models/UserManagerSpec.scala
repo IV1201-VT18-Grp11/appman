@@ -1,5 +1,6 @@
 package models
 
+import database.{ Id, User }
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
@@ -21,7 +22,7 @@ class UserManagerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
     }
     "the username and password are correct" should {
       "return the user" in {
-        await(inject[UserManager].login("donald_duck", "123456")).map(_.username) mustBe Some("donald_duck")
+        await(inject[UserManager].login("donald_duck", "123456")).map(_.user) mustBe Some(Id[User](2))
       }
     }
   }

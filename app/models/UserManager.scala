@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import com.google.inject.ImplementedBy
 import database.PgProfile.api._
-import database.{PgProfile, User, Users, Id}
+import database.{PgProfile, User, Users, Id, UserSession, UserSessions}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -16,11 +16,13 @@ trait UserManager {
     */
   def find(id: Id[User]): Future[Option[User]]
 
+  def findSession(id: Id[UserSession]): Future[Option[(User, UserSession)]]
+
   /**
-    * Finds the user with a given username and password
-    * @return Some(user) if the user exists and the password is correct, otherwise None
+    * Finds the user with a given username and password and creates a session
+    * @return Some(session) if the user exists and the password is correct, otherwise None
     */
-  def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]]
+  def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[UserSession]]
 
   /**
     * Tries to create a user with the given fields
@@ -36,11 +38,25 @@ class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProv
       .result.headOption
   }
 
-  override def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]] = db.run {
-    Users
-      .filter(user => user.username === username)
-      .result.headOption
-      .map(maybeUser => maybeUser.filter(user => passwordHasher.compare(user.password, password)))
+  override def findSession(id: Id[UserSession]): Future[Option[(User, UserSession)]] = db.run {
+    (for {
+      session <- UserSessions
+      if session.id === id
+      if !session.deleted
+      user <- session.user
+    } yield (user, session)).result.headOption
+  }
+
+  override def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[UserSession]] = db.run {
+    (for {
+      user <- Users
+        .filter(user => user.username === username)
+        .result.head
+      if passwordHasher.compare(user.password, password)
+      session <- UserSessions
+         .map(_.userId)
+         .returning(UserSessions) += user.id
+     } yield session).asTry.map(_.toOption)
   }
 
   override def register(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[User]] = db.run {
