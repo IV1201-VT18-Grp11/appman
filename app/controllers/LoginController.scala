@@ -45,7 +45,7 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
     Ok(views.html.register(registerForm))
   }
 
-  def logout() = userAction.apply { implicit request: Request[AnyContent] =>
+  def logout() = userRequiredAction.apply { implicit request: Request[AnyContent] =>
     clearUser(Redirect(routes.HomeController.index()), request)
       .flashing("message" -> "You have been logged out")
   }

@@ -37,15 +37,25 @@ trait Security extends SecurityHelpers {
   protected def userManager: UserManager
   protected def Action: ActionBuilder[Request, AnyContent]
 
-  def checkUser(implicit ec: ExecutionContext) = new ActionRefiner[Request, Request] {
+  def checkUser(implicit ec: ExecutionContext) = new ActionTransformer[Request, Request] {
     override def executionContext = ec
-    override def refine[A](request: Request[A]) = {
+    override def transform[A](request: Request[A]) =
       findUser(request).map(user =>
-        Right(request.addAttr(Security.user, user)))
+        request.addAttr(Security.user, user))
+  }
+
+  def requireUser(implicit ec: ExecutionContext) = new ActionFilter[Request] {
+    override def executionContext = ec
+    override def filter[A](request: Request[A]) = Future.successful {
+      getUser(request) match {
+        case Some(_) => None
+        case None => Some(Results.Redirect(routes.LoginController.login()))
+      }
     }
   }
 
   def userAction(implicit ec: ExecutionContext) = checkUser compose Action
+  def userRequiredAction(implicit ec: ExecutionContext) = requireUser compose checkUser compose Action
 
   def findUser(request: RequestHeader): Future[Option[User]] =
     getUserId(request) match {
