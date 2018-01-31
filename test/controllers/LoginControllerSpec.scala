@@ -42,7 +42,7 @@ class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting w
   "trying to log in" when {
     "the username or password is incorrect" should {
       "ask the user to try again" in {
-        val request = FakeRequest(routes.LoginController.doLogin())
+        val request = FakeRequest(routes.LoginController.doLogin(None))
          .withFormUrlEncodedBody(
             "username" -> "scrooge_mc_duck",
             "password" -> "password"
@@ -57,7 +57,7 @@ class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting w
 
     "the username and password are correct" should {
       "redirect the user to the home page" in {
-        val request = FakeRequest(routes.LoginController.doLogin())
+        val request = FakeRequest(routes.LoginController.doLogin(None))
           .withCSRFToken
           .withBody(Map(
                       "username" -> Seq("gyro_gearloose"),
