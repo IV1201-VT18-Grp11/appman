@@ -49,7 +49,7 @@ trait Security extends SecurityHelpers {
     override def filter[A](request: Request[A]) = Future.successful {
       getUser(request) match {
         case Some(_) => None
-        case None => Some(Results.Redirect(routes.LoginController.login()))
+        case None => Some(Results.Redirect(routes.LoginController.login(target = Some(request.uri))))
       }
     }
   }

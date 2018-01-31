@@ -37,8 +37,8 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
     )(RegisterForm.apply)(RegisterForm.unapply)
   )
 
-  def login() = userAction.apply { implicit request: Request[AnyContent] =>
-    Ok(views.html.login(loginForm))
+  def login(target: Option[String]) = userAction.apply { implicit request: Request[AnyContent] =>
+    Ok(views.html.login(loginForm, target))
   }
 
   def register() = userAction.apply { implicit request: Request[AnyContent] =>
@@ -50,20 +50,26 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
       .flashing("message" -> "You have been logged out")
   }
 
-  def doLogin() = userAction.async { implicit request: Request[AnyContent] =>
+  private def validateRedirect(target: String) =
+    target.startsWith("/") && !target.startsWith("//")
+
+  def doLogin(target: Option[String]) = userAction.async { implicit request: Request[AnyContent] =>
     val form = loginForm.bindFromRequest()
     if (form.hasErrors) {
-      Future.successful(BadRequest(views.html.login(form)))
-
+      Future.successful(BadRequest(views.html.login(form, target)))
     } else {
       val creds = form.value.get
       userManager.login(creds.username, creds.password).map {
         case Some(user) =>
-          setUser(Redirect(routes.HomeController.index()), request, user)
+          val redirectTarget =
+            target
+              .filter(validateRedirect)
+              .getOrElse(routes.HomeController.index().url)
+          setUser(Redirect(redirectTarget), request, user)
             .flashing("message" -> "You have been logged in")
         case None =>
           val failedForm = form.withError("password", "Invalid username or password")
-          BadRequest(views.html.login(failedForm))
+          BadRequest(views.html.login(failedForm, target))
       }
     }
   }
