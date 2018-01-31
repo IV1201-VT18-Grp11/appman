@@ -11,6 +11,7 @@ import play.api.mvc.{ AbstractController, ActionBuilder, AnyContent, BaseControl
 import play.api.test._
 import play.api.test.Helpers._
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class SecuritySpec extends PlaySpec with MockitoSugar {
   private class FakeSecurity extends Security {

@@ -65,7 +65,7 @@ trait Security extends SecurityHelpers {
   def userAction(implicit ec: ExecutionContext) = checkUser compose Action
   def userRequiredAction(implicit ec: ExecutionContext) = requireUser compose checkUser compose Action
 
-  def findUser(request: RequestHeader): Future[Option[(User, UserSession)]] =
+  def findUser(request: RequestHeader)(implicit ec: ExecutionContext): Future[Option[(User, UserSession)]] =
     getSessionId(request) match {
       case Some(id) =>
         userManager.findSession(id)

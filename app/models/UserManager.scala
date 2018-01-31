@@ -1,5 +1,7 @@
 package models
 
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 import com.google.inject.ImplementedBy
@@ -16,7 +18,7 @@ trait UserManager {
     */
   def find(id: Id[User]): Future[Option[User]]
 
-  def findSession(id: Id[UserSession]): Future[Option[(User, UserSession)]]
+  def findSession(id: Id[UserSession])(implicit ec: ExecutionContext): Future[Option[(User, UserSession)]]
 
   /**
     * Finds the user with a given username and password and creates a session
@@ -38,13 +40,20 @@ class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProv
       .result.headOption
   }
 
-  override def findSession(id: Id[UserSession]): Future[Option[(User, UserSession)]] = db.run {
-    (for {
-      session <- UserSessions
-      if session.id === id
-      if !session.deleted
-      user <- session.user
-    } yield (user, session)).result.headOption
+  override def findSession(id: Id[UserSession])(implicit ec: ExecutionContext): Future[Option[(User, UserSession)]] = db.run {
+    for {
+      session <- (for {
+                    session <- UserSessions
+                    if session.id === id
+                    if !session.deleted
+                    if session.refreshed > Instant.now().minus(1, ChronoUnit.DAYS)
+                    user <- session.user
+                  } yield (user, session)).result.headOption
+      _ <- UserSessions
+        .filter(_.id === session.map(_._2.id))
+        .map(_.refreshed)
+        .update(Instant.now())
+    } yield session
   }
 
   override def login(username: String, password: String)(implicit ec: ExecutionContext): Future[Option[UserSession]] = db.run {
