@@ -10,6 +10,11 @@ trait SecurityHelpers {
   def getSessionId(request: RequestHeader): Option[Id[UserSession]] =
     request.session.get(Security.sessionKey).map(id => Id[UserSession](id.toLong))
 
+  def getUserSession(request: RequestHeader): Option[UserSession] =
+    request.attrs
+      .get(Security.session)
+      .getOrElse(throw new NoSessionLoaderException())
+
   def getUser(request: RequestHeader): Option[User] =
     request.attrs
       .get(Security.user)
@@ -26,6 +31,7 @@ trait SecurityHelpers {
 
   implicit class UserReqHeader(private val req: RequestHeader) {
     def user: Option[User] = getUser(req)
+    def userSession: Option[UserSession] = getUserSession(req)
     def loggedIn: Boolean = user.isDefined
   }
 }
