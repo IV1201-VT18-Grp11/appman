@@ -11,7 +11,9 @@ trait SecurityHelpers {
     request.session.get(Security.sessionKey).map(id => Id[User](id.toLong))
 
   def getUser(request: RequestHeader): Option[User] =
-    request.attrs.get(Security.user)
+    request.attrs
+      .get(Security.user)
+      .getOrElse(throw new NoSessionLoaderException)
 
   def clearUser(response: Result, request: RequestHeader): Result =
     response.removingFromSession(Security.sessionKey)(request)
@@ -28,23 +30,32 @@ trait SecurityHelpers {
   }
 }
 
+class NoSessionLoaderException extends Exception(
+  "attempted to access session before it was loaded, use Security.userAction or checkUser instead of Action")
+
 trait Security extends SecurityHelpers {
   protected def userManager: UserManager
   protected def Action: ActionBuilder[Request, AnyContent]
 
-  def checkUser(implicit ec: ExecutionContext) = new ActionRefiner[Request, Request] {
+  def checkUser(implicit ec: ExecutionContext) = new ActionTransformer[Request, Request] {
     override def executionContext = ec
-    override def refine[A](request: Request[A]) = {
-      findUser(request).map {
-        case Some(user) =>
-          Right(request.addAttr(Security.user, user))
-        case None =>
-          Right(request)
+    override def transform[A](request: Request[A]) =
+      findUser(request).map(user =>
+        request.addAttr(Security.user, user))
+  }
+
+  def requireUser(implicit ec: ExecutionContext) = new ActionFilter[Request] {
+    override def executionContext = ec
+    override def filter[A](request: Request[A]) = Future.successful {
+      getUser(request) match {
+        case Some(_) => None
+        case None => Some(Results.Redirect(routes.LoginController.login(target = Some(request.uri))))
       }
     }
   }
 
   def userAction(implicit ec: ExecutionContext) = checkUser compose Action
+  def userRequiredAction(implicit ec: ExecutionContext) = requireUser compose checkUser compose Action
 
   def findUser(request: RequestHeader): Future[Option[User]] =
     getUserId(request) match {
@@ -56,7 +67,7 @@ trait Security extends SecurityHelpers {
 }
 
 object Security extends SecurityHelpers {
-  val user = TypedKey[User]("user")
+  val user = TypedKey[Option[User]]("user")
 
   val sessionKey = "USER"
 }
