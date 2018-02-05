@@ -1,4 +1,4 @@
-@(form: Form[LoginController.LoginForm])(implicit messages: MessagesProvider, req: RequestHeader)
+@(form: Form[LoginController.LoginForm], target: Option[String])(implicit messages: MessagesProvider, req: RequestHeader)
 
 @main("Login") {
     <html lang="en">
@@ -6,7 +6,7 @@
         </head>
         <body class="text-center">
             <form class="form-signin">
-            @helper.form(routes.LoginController.doLogin()) {
+            @helper.form(routes.LoginController.doLogin(Some("/")), 'class -> "form-signin") {
                 @helper.CSRF.formField
                 <fieldset>
                     <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
