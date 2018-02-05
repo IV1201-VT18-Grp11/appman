@@ -1,8 +1,8 @@
 # --- !Ups
 
 CREATE TABLE users (
-  users_id SERIAL NOT NULL PRIMARY KEY,
-  username TEXT NOT NULL,
+  id       SERIAL NOT NULL PRIMARY KEY,
+  username TEXT NOT NULL UNIQUE,
   name     TEXT,
   surname  TEXT,
   password TEXT NOT NULL,
@@ -10,35 +10,44 @@ CREATE TABLE users (
   employee BOOLEAN
 );
 
-CREATE TABLE availability (
-  availability_id SERIAL PRIMARY KEY,
-  users_id        INTEGER REFERENCES users,
-  from_date       DATE,
-  to_date         DATE
+CREATE TABLE sessions (
+  id        SERIAL NOT NULL PRIMARY KEY,
+  "user"    INTEGER NOT NULL REFERENCES users,
+  "from"    TIMESTAMP NOT NULL DEFAULT now(),
+  refreshed TIMESTAMP NOT NULL DEFAULT now(),
+  deleted   BOOLEAN NOT NULL DEFAULT false
 );
 
-CREATE TABLE competence (
-  competence_id SERIAL PRIMARY KEY,
-  name          TEXT
+CREATE TABLE availability (
+  id        SERIAL NOT NULL PRIMARY KEY,
+  "user"    INTEGER REFERENCES users,
+  from_date DATE,
+  to_date   DATE
+);
+
+CREATE TABLE competences (
+  id   SERIAL NOT NULL PRIMARY KEY,
+  name TEXT
 );
 
 CREATE TABLE fields (
-  field_id SERIAL PRIMARY KEY,
-  name     TEXT
+  id   SERIAL NOT NULL PRIMARY KEY,
+  name TEXT
 );
 
 CREATE TABLE jobs (
-  job_id    SERIAL NOT NULL PRIMARY KEY,
-  field_id  INTEGER NOT NULL REFERENCES fields,
-  name      TEXT NOT NULL ,
-  from_date TIMESTAMP NOT NULL ,
+  id        SERIAL NOT NULL PRIMARY KEY,
+  field     INTEGER NOT NULL REFERENCES fields,
+  name      TEXT NOT NULL,
+  from_date TIMESTAMP NOT NULL,
   to_date   TIMESTAMP,
   country   TEXT
 );
 
 # --- !Downs
 DROP TABLE availability;
+DROP TABLE sessions;
 DROP TABLE users;
-DROP TABLE competence;
+DROP TABLE competences;
 DROP TABLE jobs;
 DROP TABLE fields;

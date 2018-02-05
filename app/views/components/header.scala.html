@@ -1,0 +1,25 @@
+@()(implicit req: RequestHeader)
+
+<header>
+    <ul class="nav-links">
+        <!--  nagivation links requires inverse route logic compared to normal href links -->
+        @if(req.loggedIn) {
+            <li>
+                <a id="nav-logout" href="@routes.LoginController.logout()">Logout</a>
+            </li>
+        } else {
+            <li>
+                <a id="nav-register" href="@routes.LoginController.register()">Register</a>
+            </li>
+            <li>
+                <a id="nav-login" href="@routes.LoginController.login()">Login</a>
+            </li>
+        }
+        <li>
+            <a href="@routes.HomeController.joblist()">List</a>
+        </li>
+    </ul>
+    <h1>
+        <a href="@routes.HomeController.index()">Appman</a>
+    </h1>
+</header>

@@ -1,0 +1,7 @@
+@()(implicit req: RequestHeader)
+
+@req.flash.get("message").map { msg =>
+    <div id="message">
+    @msg
+    </div>
+}

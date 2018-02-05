@@ -1,11 +1,11 @@
 package controllers
 
 import org.scalatestplus.play.{FirefoxFactory, OneBrowserPerTest, PlaySpec}
-import org.scalatestplus.play.guice.GuiceOneServerPerTest
 import play.api.test.Injecting
+import utils.DbOneServerPerTest
 
 
-  class RegisterFlowSpec extends PlaySpec with GuiceOneServerPerTest with OneBrowserPerTest with FirefoxFactory with Injecting {
+  class RegisterFlowSpec extends PlaySpec with DbOneServerPerTest with OneBrowserPerTest with FirefoxFactory with Injecting {
     "register should work" in {
       pending
       go to (s"http://localhost:$port/")

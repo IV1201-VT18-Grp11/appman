@@ -16,7 +16,7 @@ case class User(id: Id[User],
   * Selecting the columns from the table
    */
 class Users(tag: Tag) extends Table[User](tag, "users") {
-  def id = column[Id[User]]("users_id", O.PrimaryKey, O.AutoInc)
+  def id = column[Id[User]]("id", O.PrimaryKey, O.AutoInc)
   def username = column[String] ("username")
   def password = column[String] ("password")
   def name = column[Option[String]] ("name")

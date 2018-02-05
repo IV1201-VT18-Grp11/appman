@@ -10,7 +10,7 @@ case class Field (id: Id[Field],
 
 
 class Fields(tag: Tag) extends Table[Field](tag, "fields") {
-  def id = column[Id[Field]]("field_id", O.PrimaryKey, O.AutoInc)
+  def id = column[Id[Field]]("id", O.PrimaryKey, O.AutoInc)
   def name = column[String] ("name")
 
 

@@ -1,33 +1,82 @@
 package controllers
 
-import database.User
+import database.{ Id, User, UserSession }
 import models.UserManager
 import play.api.libs.typedmap.TypedKey
-import play.api.mvc.{ Result, _ }
+import play.api.mvc._
 import scala.concurrent.{ ExecutionContext, Future }
 
+trait SecurityHelpers {
+  def getSessionId(request: RequestHeader): Option[Id[UserSession]] =
+    request.session.get(Security.sessionKey).map(id => Id[UserSession](id.toLong))
 
-trait Security { this: AbstractController =>
+  def getUserSession(request: RequestHeader): Option[UserSession] =
+    request.attrs
+      .get(Security.session)
+      .getOrElse(throw new NoSessionLoaderException())
+
+  def getUser(request: RequestHeader): Option[User] =
+    request.attrs
+      .get(Security.user)
+      .getOrElse(throw new NoSessionLoaderException)
+
+  def clearUser(response: Result, request: RequestHeader): Result =
+    response.removingFromSession(Security.sessionKey)(request)
+
+  def setUserSessionId(response: Result, request: RequestHeader, sessionId: Id[UserSession]): Result =
+    response.addingToSession(Security.sessionKey -> sessionId.raw.toString())(request)
+
+  def setUserSession(response: Result, request: RequestHeader, session: UserSession): Result =
+    setUserSessionId(response, request, session.id)
+
+  implicit class UserReqHeader(private val req: RequestHeader) {
+    def user: Option[User] = getUser(req)
+    def userSession: Option[UserSession] = getUserSession(req)
+    def loggedIn: Boolean = user.isDefined
+  }
+}
+
+class NoSessionLoaderException extends Exception(
+  "attempted to access session before it was loaded, use Security.userAction or checkUser instead of Action")
+
+trait Security extends SecurityHelpers {
   protected def userManager: UserManager
+  protected def Action: ActionBuilder[Request, AnyContent]
 
-  protected def checkUser(implicit ec: ExecutionContext) = new ActionRefiner[Request, Request] {
+  def checkUser(implicit ec: ExecutionContext) = new ActionTransformer[Request, Request] {
     override def executionContext = ec
-    override def refine[A](input: Request[A]) = {
-      input.session.get(Security.sessionKey) match {
-        case Some(id) =>
-          userManager.find(id.toLong).map(maybeUser => Right(maybeUser.fold(input)(user => input.addAttr(Security.user, user))))
-        case None =>
-          Future.successful(Right(input))
+    override def transform[A](request: Request[A]) =
+      findUser(request).map(session =>
+        request
+          .addAttr(Security.user, session.map(_._1))
+          .addAttr(Security.session, session.map(_._2)))
+  }
+
+  def requireUser(implicit ec: ExecutionContext) = new ActionFilter[Request] {
+    override def executionContext = ec
+    override def filter[A](request: Request[A]) = Future.successful {
+      getUser(request) match {
+        case Some(_) => None
+        case None => Some(Results.Redirect(routes.LoginController.login(target = Some(request.uri))))
       }
     }
   }
 
-  protected def setUser(response: Result, request: RequestHeader, user: User): Result =
-    response.addingToSession(Security.sessionKey -> user.id.toString())(request)
+  def userAction(implicit ec: ExecutionContext) = checkUser compose Action
+  def userRequiredAction(implicit ec: ExecutionContext) = requireUser compose checkUser compose Action
+
+  def findUser(request: RequestHeader)(implicit ec: ExecutionContext): Future[Option[(User, UserSession)]] =
+    getSessionId(request) match {
+      case Some(id) =>
+        userManager.findSession(id)
+      case None =>
+        Future.successful(None)
+    }
 }
 
-object Security {
-  val user = TypedKey[User]("user")
+object Security extends SecurityHelpers {
+  val user = TypedKey[Option[User]]("user")
+  val session = TypedKey[Option[UserSession]]("session")
 
-  private[Security] val sessionKey = "USER"
+  val sessionKey = "SESSION"
 }
