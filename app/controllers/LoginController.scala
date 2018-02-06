@@ -92,7 +92,7 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
               .flashing("message" -> "You have been registered and logged in")
           }
         case None =>
-          val failedForm = form.withError("username", "The username is already in use")
+          val failedForm = form.withError("username", "The username is already taken")
           Future.successful(BadRequest(views.html.register(failedForm, target))) // if we fail to complete the registration, the page will be reloaded
       }
     }
