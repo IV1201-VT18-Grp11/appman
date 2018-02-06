@@ -8,8 +8,9 @@
                 <h1 class="h3 mb-3 font-weight-normal">Please register</h1>
                 @helper.inputText(form("username"), 'class -> "form-control", 'placeholder -> "Username", '_label -> "Username")
                 @helper.inputText(form("password"), 'class -> "form-control", 'placeholder -> "Password", '_label -> "Password")
-                @helper.inputText(form("confirmPassword"), 'class -> "form-control", 'placeholder -> "Confirm password", '_label -> "Password")
+                @helper.inputText(form("confirmPassword"), 'class -> "form-control", 'placeholder -> "Password", '_label -> "Confirm Password")
                 @helper.inputText(form("firstname"), 'class -> "form-control", 'placeholder -> "First Name", '_label -> "First Name")
+                @helper.inputText(form("surname"), 'class -> "form-control", 'placeholder -> "Last Name", '_label -> "Last Name")
                 @helper.inputText(form("email"), 'class -> "form-control", 'placeholder -> "Email", '_label -> "Email")
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
             </fieldset>
