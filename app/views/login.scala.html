@@ -1,6 +1,6 @@
 @(form: Form[LoginController.LoginForm], target: Option[String])(implicit messages: MessagesProvider, req: RequestHeader)
 
-    @main("Login") {
+    @main("Login", Page.Login) {
         @helper.form(routes.LoginController.doLogin(target), 'class -> "form-signin") {
             @helper.CSRF.formField
             <fieldset>

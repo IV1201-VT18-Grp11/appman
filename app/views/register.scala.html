@@ -1,6 +1,6 @@
 @(form: Form[LoginController.RegisterForm], target: Option[String])(implicit messages: MessagesProvider, req: RequestHeader)
 
-    @main("Register") {
+    @main("Register", Page.Register) {
 
         @helper.form(routes.LoginController.doRegister(target), 'class -> "form-signin") {
             @helper.CSRF.formField

@@ -4,7 +4,7 @@
 * two arguments, a `String` for the title of the page and an `Html`
 * object to insert into the body of the page.
 *@
-@(title: String)(content: Html)(implicit req: RequestHeader)
+@(title: String, currentPage: Page)(content: Html)(implicit req: RequestHeader)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,7 +13,7 @@
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
     </head>
     <body>
-        <div>@components.header()</div>
+        <div>@components.header(currentPage)</div>
         <div class="container">
             @components.messages()
             @content
