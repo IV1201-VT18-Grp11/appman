@@ -18,7 +18,7 @@ class LoginFlowSpec extends PlaySpec with DbOneServerPerTest with OneBrowserPerT
   "login should work" in {
     val userManager = inject[UserManager]
     implicit val executionContext = inject[ExecutionContext]
-    await(userManager.register("scrooge", "money"))
+    await(userManager.register("scrooge", "money", "Beautiful", "Kitten", "kitten3@kittens.org"))
 
     go to (s"http://localhost:$port/")
     click on find(id("nav-login")).value
