@@ -11,6 +11,7 @@ import play.api.Logger
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{ Failure, Success }
 
 @ImplementedBy(classOf[DbUserManager])
 trait UserManager {
@@ -35,7 +36,15 @@ trait UserManager {
     *
     * @return None if a user with the given username already exists, otherwise Some(user)
     */
-  def register(username: String, password: String, firstname: String, surname: String, email: String)(implicit ec: ExecutionContext): Future[Option[User]]
+  def register(username: String, password: String, firstname: String, surname: String, email: String)(implicit ec: ExecutionContext): Future[Either[Seq[UserManager.RegistrationError], User]]
+}
+
+object UserManager {
+  sealed trait RegistrationError
+  object RegistrationError {
+    case object UsernameTaken extends RegistrationError
+    case object EmailTaken extends RegistrationError
+  }
 }
 
 class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProvider,
@@ -84,7 +93,7 @@ class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProv
     task
   }
 
-  override def register(username: String, password: String, firstname: String, surname: String, email: String)(implicit ec: ExecutionContext): Future[Option[User]] = {
+  override def register(username: String, password: String, firstname: String, surname: String, email: String)(implicit ec: ExecutionContext): Future[Either[Seq[UserManager.RegistrationError], User]] = {
     val task = db.run {
       (for {
          userId <- Users.returning(Users.map(_.id)) += User(Id[User](-1),
@@ -94,13 +103,25 @@ class DbUserManager @Inject()(protected val dbConfigProvider: DatabaseConfigProv
                                                             surname = surname,
                                                             email = email)
          user <- Users.filter(_.id === userId).result.head
-       } yield user).transactionally.asTry.map(_.toOption)
+       } yield user).transactionally.asTry.flatMap {
+        case Success(user) =>
+          DBIO.successful(Right(user))
+        case Failure(_) =>
+          DBIO.sequence(
+            Seq(
+              Users.filter(_.username === username).result.headOption.map(_.map(_ => UserManager.RegistrationError.UsernameTaken)),
+              Users.filter(_.email === email).result.headOption.map(_.map(_ => UserManager.RegistrationError.EmailTaken))
+            )
+          )
+            .map(_.flatten)
+            .map(Left.apply)
+      }
     }
     task.foreach {
-      case Some(user) =>
+      case Right(user) =>
         logger.info(s"User $username was successfully created, with id ${user.id.raw}")
-      case None =>
-        logger.info(s"Someone attempted to create the user $username, but the attempt failed")
+      case Left(reason) =>
+        logger.info(s"Failed to create $username: $reason")
     }
     task
   }

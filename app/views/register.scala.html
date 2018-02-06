@@ -6,6 +6,11 @@
             @helper.CSRF.formField
             <fieldset>
                 <h1 class="h3 mb-3 font-weight-normal">Please register</h1>
+                @if(form.hasGlobalErrors) {
+                    @for(error <- form.globalErrors) {
+                        <div class="error">@error.message</div>
+                    }
+                }
                 @helper.inputText(form("username"), 'class -> "form-control", 'placeholder -> "Username", '_label -> "Username")
                 @helper.inputPassword(form("password"), 'class -> "form-control", 'placeholder -> "Password", '_label -> "Password")
                 @helper.inputPassword(form("confirmPassword"), 'class -> "form-control", 'placeholder -> "Password", '_label -> "Confirm Password")
@@ -17,4 +22,3 @@
 
         }
     }
-

@@ -38,7 +38,7 @@ import utils.DbOneServerPerTest
       pwdField(name("confirmPassword")).value = "abc123"
       textField(name("firstname")).value = "Jane"
       textField(name("surname")).value = "Doe"
-      textField(name("email")).value = "john_doe@kth.com"
+      textField(name("email")).value = "john_doe@kth.se"
       click on find(id("register")).value
       find(tagName("body")).value.text must include("The email is already taken")
 
@@ -49,7 +49,7 @@ import utils.DbOneServerPerTest
       textField(name("surname")).value = "Mouse"
       textField(name("email")).value = "mickey_mouse@gmail.com"
       click on find(id("register")).value
-      find(id("message")).value.text must include("The passwords you have entered do not match")
+      find(tagName("body")).value.text must include("The passwords you have entered do not match")
     }
 
 }

@@ -30,15 +30,15 @@ class UserManagerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
   "calling register()" when {
     "the username is not taken" should {
       "return the user" in {
-        await(inject[UserManager].register("to_be_created", "1234", "Laser", "Kitten", "kitten1@kittens.org")).value.username mustBe "to_be_created"
+        await(inject[UserManager].register("to_be_created", "1234", "Laser", "Kitten", "kitten1@kittens.org")).right.get.username mustBe "to_be_created"
       }
     }
 
     "the username is already taken" should {
       "return None" in {
-        await(inject[UserManager].register("to_be_created", "1234", "Laser", "Kitten", "kitten1@kittens.org")) mustBe defined // unique user
-        await(inject[UserManager].register("to_be_created", "1234", "Crazy", "Kitten", "kitten2@kittens.org")) mustBe None // let's not accept another user with the same username
-        await(inject[UserManager].register("to_be_created2", "1234", "Cute", "Kitten", "kitten1@kittens.org")) mustBe None // let's not accept another user with the same email
+        await(inject[UserManager].register("to_be_created", "1234", "Laser", "Kitten", "kitten1@kittens.org")) mustBe 'right // unique user
+        await(inject[UserManager].register("to_be_created", "1234", "Crazy", "Kitten", "kitten2@kittens.org")) mustBe Left(Seq(UserManager.RegistrationError.UsernameTaken))
+        await(inject[UserManager].register("to_be_created2", "1234", "Cute", "Kitten", "kitten1@kittens.org")) mustBe Left(Seq(UserManager.RegistrationError.EmailTaken))
       }
     }
   }

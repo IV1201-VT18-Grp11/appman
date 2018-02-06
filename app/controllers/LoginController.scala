@@ -34,8 +34,9 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
       "confirmPassword" -> nonEmptyText,
       "firstname" -> nonEmptyText,
       "surname" -> nonEmptyText,
-      "email" -> nonEmptyText,
+      "email" -> nonEmptyText
     )(RegisterForm.apply)(RegisterForm.unapply)
+      .verifying("The passwords you have entered do not match", data => data.password == data.confirmPassword)
   )
 
   def login(target: Option[String]) = userAction.apply { implicit request: Request[AnyContent] =>
@@ -82,7 +83,7 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
     } else {
       val creds = form.value.get
       userManager.register(creds.username, creds.password, creds.email, creds.firstname, creds.surname).flatMap {
-        case Some(user) =>
+        case Right(user) =>
           userManager.login(creds.username, creds.password).map { session =>
             val redirectTarget =
               target
@@ -91,8 +92,13 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
             setUserSession(Redirect(redirectTarget), request, session.get) // if we succeed to register/login we will go the desired page
               .flashing("message" -> "You have been registered and logged in")
           }
-        case None =>
-          val failedForm = form.withError("username", "The username is already taken")
+        case Left(reasons) =>
+          val failedForm = reasons.foldRight(form) {
+            case (UserManager.RegistrationError.UsernameTaken, f) =>
+              f.withError("username", "The username is already taken")
+            case (UserManager.RegistrationError.EmailTaken, f) =>
+              f.withError("email", "The email is already taken")
+          }
           Future.successful(BadRequest(views.html.register(failedForm, target))) // if we fail to complete the registration, the page will be reloaded
       }
     }
