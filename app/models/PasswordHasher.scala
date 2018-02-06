@@ -2,11 +2,13 @@ package models
 
 import com.google.inject.ImplementedBy
 import java.security.SecureRandom
+import javax.inject.Inject
 import org.apache.commons.codec.binary.Hex
 import org.bouncycastle.crypto.PasswordConverter
 import org.bouncycastle.crypto.digests.Blake2bDigest
 import org.bouncycastle.crypto.generators.SCrypt
 import org.bouncycastle.crypto.prng.DigestRandomGenerator
+import play.api.Logger
 
 @ImplementedBy(classOf[ScryptPasswordHasher])
 trait PasswordHasher {
@@ -15,14 +17,17 @@ trait PasswordHasher {
 }
 
 class ScryptPasswordHasher extends PasswordHasher {
+  private val logger = Logger(getClass)
   private val pwConverter = PasswordConverter.UTF8
   private val rng = new DigestRandomGenerator(new Blake2bDigest(512))
+  logger.info("Seeding")
   rng.addSeedMaterial {
     val seeder = SecureRandom.getInstanceStrong
     val seed = Array.ofDim[Byte](1024)
     seeder.nextBytes(seed)
     seed
   }
+  logger.info("Done seeding")
 
   private def newSalt: Array[Byte] = {
     val buf = Array.ofDim[Byte](32)
