@@ -1,16 +1,43 @@
 body {
-    display: -ms-flexbox;
-    display: -webkit-box;
-    display: flex;
-    -ms-flex-align: center;
-    -ms-flex-pack: center;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    padding-top: 40px;
+    padding-top: 0px;
     padding-bottom: 40px;
-    background-color: #bcf6ff;
+    background-color: #d7e3e3;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover:not(.active) {
+    background-color: #111;
+    color: #f0ffff;
+    text-decoration: none;
+}
+li a.active {
+    background-color: rgba(0, 0, 0, 0.62);
+    color:  #f0ffff;
+    text-decoration: none;
+}
+
+.header{
+    top: 0;
+    width: 100%;
 }
 
 .form-signin {

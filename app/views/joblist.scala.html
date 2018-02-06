@@ -1,6 +1,6 @@
 @(listings: Seq[(database.Job, database.Field)])(implicit req: RequestHeader)
 
-    @main("List of jobs") {
+    @main("List of jobs", Page.ApplicationList) {
         <h1>Here we will collect all the available jobs</h1>
         <table style="width: 100%" border="1">
             <thead>
