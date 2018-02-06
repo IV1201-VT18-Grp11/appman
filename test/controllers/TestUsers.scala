@@ -8,6 +8,8 @@ object TestUsers {
     Id[User](3),
     "gyro_gearloose",
     "little_helper",
-    None
+    "Mad",
+    "Kitten",
+    "kitten4@kittens.org"
   )
 }

@@ -3,10 +3,10 @@
 CREATE TABLE users (
   id       SERIAL NOT NULL PRIMARY KEY,
   username TEXT NOT NULL UNIQUE,
-  name     TEXT,
+  firstname     TEXT,
   surname  TEXT,
   password TEXT NOT NULL,
-  email    TEXT,
+  email    TEXT UNIQUE,
   employee BOOLEAN
 );
 
