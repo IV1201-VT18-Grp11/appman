@@ -1,21 +1,19 @@
-@(form: Form[LoginController.RegisterForm])(implicit messages: MessagesProvider, req: RequestHeader)
+@(form: Form[LoginController.RegisterForm], target: Option[String])(implicit messages: MessagesProvider, req: RequestHeader)
 
-@main("Register") {
-    <h1>UNDER CONSTRUCTION =)</h1>
+    @main("Register") {
 
-    <div class="registersquare">
-    @helper.form(routes.LoginController.doRegister()) {
-
+        @helper.form(routes.LoginController.doRegister(target), 'class -> "form-signin") {
+            @helper.CSRF.formField
             <fieldset>
-                <p>Hi there new user.</p>
-                @helper.inputText(form("username"), '_label -> "Username")
-                @helper.inputText(form("password"), '_label -> "Password")
-                @helper.inputText(form("confirmPassword"), '_label -> "Confirm password")
-                @helper.inputText(form("firstname"), '_label -> "First Name")
-                @helper.inputText(form("surname"), '_label -> "Surname")
-                @helper.inputText(form("email"), '_label -> "Email address")
-                <input type="submit" id="register" value="Register"> <br>
+                <h1 class="h3 mb-3 font-weight-normal">Please register</h1>
+                @helper.inputText(form("username"), 'class -> "form-control", 'placeholder -> "Username", '_label -> "Username")
+                @helper.inputText(form("password"), 'class -> "form-control", 'placeholder -> "Password", '_label -> "Password")
+                @helper.inputText(form("confirmPassword"), 'class -> "form-control", 'placeholder -> "Confirm password", '_label -> "Password")
+                @helper.inputText(form("firstname"), 'class -> "form-control", 'placeholder -> "First Name", '_label -> "First Name")
+                @helper.inputText(form("email"), 'class -> "form-control", 'placeholder -> "Email", '_label -> "Email")
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
             </fieldset>
-    </div>
-}
-}
+
+        }
+    }
+

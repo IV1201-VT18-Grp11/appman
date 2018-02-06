@@ -4,11 +4,12 @@ import javax.inject._
 
 import controllers.LoginController.{LoginForm, RegisterForm}
 import models.UserManager
-import play.api.data._
 import play.api.data.Forms._
+import play.api.data._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import scala.concurrent.{ ExecutionContext, Future }
+
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * This controller creates an `Action` to handle HTTP requests to the
@@ -41,8 +42,8 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
     Ok(views.html.login(loginForm, target))
   }
 
-  def register() = userAction.apply { implicit request: Request[AnyContent] =>
-    Ok(views.html.register(registerForm))
+  def register(target: Option[String]) = userAction.apply { implicit request: Request[AnyContent] =>
+    Ok(views.html.register(registerForm, target))
   }
 
   def logout() = userRequiredAction.apply { implicit request: Request[AnyContent] =>
@@ -74,28 +75,35 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
     }
   }
 
-  def doRegister() = userAction.async { implicit request: Request[AnyContent] =>
+  def doRegister(target: Option[String]) = userAction.async { implicit request: Request[AnyContent] =>
     val form = registerForm.bindFromRequest()
     if (form.hasErrors) {
-      Future.successful(BadRequest(views.html.register(form)))
-
+      Future.successful(BadRequest(views.html.register(form, target)))
     } else {
       val creds = form.value.get
-      userManager.register(creds.username, creds.password).flatMap {
+      userManager.register(creds.username, creds.password, creds.email, creds.firstname, creds.surname).flatMap {
         case Some(user) =>
           userManager.login(creds.username, creds.password).map { session =>
-              setUserSession(Redirect(routes.HomeController.index()), request, session.get)
+            val redirectTarget =
+              target
+                .filter(validateRedirect)
+                .getOrElse(routes.HomeController.index().url) // the home page will be the standard alternative
+            setUserSession(Redirect(redirectTarget), request, session.get) // if we succeed to register/login we will go the desired page
+              .flashing("message" -> "You have been registered and logged in")
           }
         case None =>
           val failedForm = form.withError("username", "The username is already in use")
-          Future.successful(BadRequest(views.html.register(failedForm)))
+          Future.successful(BadRequest(views.html.register(failedForm, target))) // if we fail to complete the registration, the page will be reloaded
       }
     }
   }
 }
 
 object LoginController {
+
   case class LoginForm(username: String, password: String)
+
   case class RegisterForm(username: String, password: String, confirmPassword: String,
                           firstname: String, surname: String, email: String)
+
 }

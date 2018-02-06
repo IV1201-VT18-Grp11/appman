@@ -6,7 +6,9 @@ import PgProfile.api._
 case class User(id: Id[User],
                 username: String,
                 password: String,
-                name: Option[String]) extends HasId {
+                firstname: String,
+                surname: String,
+                email: String) extends HasId {
   type Self = User
   type IdType = Long
 }
@@ -19,12 +21,14 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
   def id = column[Id[User]]("id", O.PrimaryKey, O.AutoInc)
   def username = column[String] ("username")
   def password = column[String] ("password")
-  def name = column[Option[String]] ("name")
+  def firstname = column[String] ("firstname")
+  def surname = column[String] ("surname")
+  def email = column[String] ("email")
 
   /**
     * These columns make up the User object
     */
-  override def * = (id, username, password, name) <> (User.tupled, User.unapply)
+  override def * = (id, username, password, firstname, surname, email) <> (User.tupled, User.unapply)
 }
 
 /**
