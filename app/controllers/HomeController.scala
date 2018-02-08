@@ -31,7 +31,6 @@ class HomeController @Inject()(implicit jobManager: JobManager,
   def index() = userAction.apply { implicit request: Request[AnyContent] =>
     Ok(views.html.index())
   }
-
   def joblist() = userAction.async { implicit request: Request[AnyContent] =>
     for {
       listings <- jobManager.jobListings()
