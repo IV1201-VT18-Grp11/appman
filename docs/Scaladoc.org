@@ -1,0 +1,53 @@
+* Scaladoc policy
+
+** Classes and traits
+
+   All classes and traits shall have a Scaladoc comments that describes the task that it fulfils.
+
+   Trait Scaladocs should describe the utility that the task fulfils, for example:
+
+   #+BEGIN_SRC scala
+     /**
+       ,* Bars foos
+       ,*
+       ,* Remember to keep the eggs in mind
+       ,*/
+     trait FooBar
+   #+END_SRC
+
+    Class Scaladocs should describe how they fulfil that task, for example:
+
+    #+BEGIN_SRC scala
+      /**
+        ,* Bars foos using bazzes
+        ,*
+        ,* This is done because bazzes have the following tradeoffs:
+        ,*
+        ,* * Spam
+        ,* * Eggs
+        ,*/
+      class BazFooBar extends FooBar
+    #+END_SRC
+
+** Methods
+
+   Methods shall primarily be described by the name and type, where the name describes the action,
+   and the type describes the return values and error conditions. A Scaladoc comment shall be added
+   if there are remarks that cannot otherwise be encoded. For example:
+
+   #+BEGIN_SRC scala
+     /**
+       ,* Segfaults if the username is empty
+       ,*/
+     def login(username: String, password: String): Future[Option[UserSession]]
+   #+END_SRC
+
+   Here we can infer from the naming and types that:
+
+   - This is slow
+   - It tries to create a user session
+   - It returns Some(session) if the username and password were correct, and None otherwise
+
+   The Scaladoc tells us that the surprising reasons that can make this crash. This is vital information,
+   and such a comment should be added where applicable, but it is also a smell that the method should
+   probably be redesigned as time allows.
