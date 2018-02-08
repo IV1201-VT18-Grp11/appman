@@ -10,3 +10,5 @@ target
 .ensime_cache
 node_modules
 application.local.conf
+docs/*.tex
+docs/*.pdf
