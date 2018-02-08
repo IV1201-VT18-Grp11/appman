@@ -40,6 +40,7 @@ DELETE FROM availability;
 DELETE FROM application;
 DELETE FROM jobs;
 DELETE FROM fields;
+DELETE FROM sessions;
 DELETE FROM users;
 
 ALTER SEQUENCE users_id_seq MINVALUE 1 START WITH 1 RESTART WITH 1;
