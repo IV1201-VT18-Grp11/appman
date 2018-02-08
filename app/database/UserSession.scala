@@ -4,10 +4,10 @@ import PgProfile.api._
 import java.time.Instant
 
 case class UserSession(id: Id[UserSession],
-                   user: Id[User],
-                   from: Instant,
-                   refreshed: Instant,
-                   deleted: Boolean) extends HasId {
+                       user: Id[User],
+                       from: Instant,
+                       refreshed: Instant,
+                       deleted: Boolean) extends HasId {
   type Self = UserSession
   type IdType = Long
 }

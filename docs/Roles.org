@@ -1,0 +1,25 @@
+* Roles
+
+We're using a hierarchical role strategy, with the following fixed roles:
+
+- [[Applicant][Applicant]] (the default)
+- [[Employee][Employee]]
+- [[Admin][Admin]]
+
+Each role has access to everything the previous roles can do.
+
+** Applicant
+
+   This is the default role. They are allowed to view all job listings, apply to
+   a listing, and to view their own applications.
+
+** Employee
+
+   Employees have all rights that applicants have. Additionally, they may view
+   any job application (not just their own), as well as create, modify, and
+   delete job listings.
+
+** Admin
+
+   Admins have all rights that employees have. Additionally, they may delete
+   users and job applications, as well as adjust the roles of other users.
