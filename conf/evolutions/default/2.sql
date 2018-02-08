@@ -5,26 +5,42 @@ VALUES (1, 'laserkitten', 'Teo', 'Klestrup', '088d0246167347e47d4ded8fa09fcbc47e
 INSERT INTO users (id, username, firstname, surname, password, email, employee)
 VALUES (2, 'donald_duck', 'Donald', 'Duck', 'fa05f690411d293aa3c8aa59195500a8ecb235b36ad2c3f149f92218caf837ca&0fbb4db850980a123442fc9a042fd5c7eeded847365c689191ca450e24b835c36703a6c5ad96dcd8d2ce519d303194c8a289840fa0a9eb614cedb48d62b0ff25', 'donald@duckburg.com', FALSE); -- Password: 123456
 
-INSERT INTO availability (id, "user", from_date, to_date)
-VALUES (1, 1, '2018-01-01', '2019-01-01');
-
 INSERT INTO fields (id, name)
 VALUES (1, 'Software');
 
 INSERT INTO jobs (id, field, name, from_date, to_date, country)
 VALUES (1, 1, 'Scala Magician', '2018-02-01', '2018-10-01', 'Sweden');
 
+
+INSERT INTO application (id, "user", job, description)
+VALUES (1,1,1,'I am awesome');
+
+INSERT INTO availability (id, application, from_date, to_date)
+VALUES (1, 1, '2018-01-01', '2019-01-01');
+
+INSERT INTO competences (id, name)
+VALUES (1,'IT');
+
+INSERT INTO application_competences (competence, years_of_experience, application)
+VALUES (1, 11, 1);
+
 ALTER SEQUENCE users_id_seq MINVALUE 3 START WITH 3 RESTART WITH 3;
 ALTER SEQUENCE availability_id_seq MINVALUE 2 START WITH 2 RESTART WITH 2;
 ALTER SEQUENCE fields_id_seq MINVALUE 2 START WITH 2 RESTART WITH 2;
 ALTER SEQUENCE jobs_id_seq MINVALUE 2 START WITH 2 RESTART WITH 2;
-ALTER SEQUENCE fields_id_seq MINVALUE 2 START WITH 2 RESTART WITH 2;
+ALTER SEQUENCE application_id_seq MINVALUE 2 START WITH 2 RESTART WITH 2;
+ALTER SEQUENCE availability_id_seq MINVALUE 2 START WITH 2 RESTART WITH 2;
+ALTER SEQUENCE competences_id_seq MINVALUE  2 START WITH 2 RESTART WITH 2;
+
 
 # --- !Downs
+DELETE FROM application_competences;
+DELETE FROM competences;
 DELETE FROM availability;
-DELETE FROM users;
+DELETE FROM application;
 DELETE FROM jobs;
 DELETE FROM fields;
+DELETE FROM users;
 
 ALTER SEQUENCE users_id_seq MINVALUE 1 START WITH 1 RESTART WITH 1;
 ALTER SEQUENCE availability_id_seq MINVALUE 1 START WITH 1 RESTART WITH 1;

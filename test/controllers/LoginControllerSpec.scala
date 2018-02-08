@@ -1,49 +1,20 @@
 package controllers
 
-import database.{ Id, User, UserSession }
-import java.time.Instant
 import models.UserManager
-import org.mockito.ArgumentMatchers.{eq => equ, _} // `eq` is already reserved by Scala
-import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play._
-import org.scalatestplus.play.guice._
-import play.api.inject._
-import play.api.inject.guice._
-import play.api.mvc.AnyContent
 import play.api.test._
 import play.api.test.CSRFTokenHelper._
 import play.api.test.Helpers._
-import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import utils.DbOneAppPerTest
 
-/**
-  * Add your spec here.
-  * You can mock out a whole application including requests, plugins etc.
-  *
-  * For more information, see https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
-  */
-class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting with MockitoSugar {
-  override def fakeApplication() =
-    new GuiceApplicationBuilder()
-      .overrides(Seq(
-                   bind[UserManager].toInstance {
-                     val manager = mock[UserManager]
-                     when(manager.login(anyString, anyString)(any[ExecutionContext]))
-                       .thenReturn(Future.successful(None))
-                     when(manager.login(equ("gyro_gearloose"), equ("little_helper"))(any[ExecutionContext]))
-                       .thenReturn(Future.successful(Some(
-                                                       UserSession(Id[UserSession](5),
-                                                                   Id[User](3),
-                                                                   from = Instant.now(),
-                                                                   refreshed = Instant.now(),
-                                                                   deleted = false))))
-                     manager
-                   }
-                 ))
-      .build
+class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
+  override def fakeApplication() = {
+    val app = super.fakeApplication()
+    val userManager = app.injector.instanceOf[UserManager]
+    await(userManager.register("gyro_gearloose", "little_helper", "Gyro", "Gearloose", "gyro@duck.net")) mustBe 'right
+    app
+  }
 
   "trying to log in" when {
     "the username or password is incorrect" should {
@@ -64,14 +35,14 @@ class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting w
     "the username and password are correct" should {
       "redirect the user to the home page" in {
         val request = FakeRequest(routes.LoginController.doLogin(None))
+          .withFormUrlEncodedBody(
+            "username" -> "gyro_gearloose",
+            "password" -> "little_helper"
+          )
           .withCSRFToken
-          .withBody(Map(
-                      "username" -> Seq("gyro_gearloose"),
-                      "password" -> Seq("little_helper")
-                    ))
         val login = route(app, request).get
 
-        session(login).get(Security.sessionKey).value mustBe "5"
+        session(login).get(Security.sessionKey) mustBe defined
         redirectLocation(login) mustBe defined
       }
     }

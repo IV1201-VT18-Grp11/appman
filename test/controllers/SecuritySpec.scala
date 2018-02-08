@@ -1,13 +1,12 @@
 package controllers
 
-import database.{ Id, User, UserSession }
+import database.{ Id, UserSession }
 import java.time.Instant
 import org.mockito.Mockito._
-import org.mockito.ArgumentMatchers._
 import models.UserManager
 import org.scalatestplus.play._
 import org.scalatest.mockito.MockitoSugar
-import play.api.mvc.{ AbstractController, ActionBuilder, AnyContent, BaseController, ControllerComponents, Request, Results }
+import play.api.mvc.{ ActionBuilder, AnyContent, Request, Results }
 import play.api.test._
 import play.api.test.Helpers._
 import scala.concurrent.Future
