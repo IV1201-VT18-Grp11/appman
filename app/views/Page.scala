@@ -6,4 +6,5 @@ object Page {
   case object Login extends Page
   case object Register extends Page
   case object ApplicationList extends Page
+  case object Other extends Page
 }
