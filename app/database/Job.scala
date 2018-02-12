@@ -9,8 +9,9 @@ case class Job(id: Id[Job],
                name: String,
                fromDate: Timestamp,
                toDate: Option[Timestamp],
-               country: String) extends HasId {
-  type Self = Job
+               country: String)
+    extends HasId {
+  type Self   = Job
   type IdType = Long
 }
 

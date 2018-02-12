@@ -1,18 +1,18 @@
-@(form: Form[ApplyController.ApplyForm])(implicit messages: MessagesProvider, req: RequestHeader)
+@import helper._
+@import views.Page
+
+@(form: Form[ApplyController.ApplyForm], possibleCompetences: Seq[Competence])(implicit messages: MessagesProvider, req: RequestHeader)
 
 @main("Apply", Page.Other) {
 
     @helper.form(routes.ApplyController.doApply(), 'class -> "form-signin") {
         @helper.CSRF.formField
         <fieldset>
-            <h1 class="h3 mb-3 font-weight-normal">Please register</h1>
-            @helper.inputText(form("username"), 'class -> "form-control", 'placeholder -> "Username", '_label -> "Username")
-            @helper.inputPassword(form("password"), 'class -> "form-control", 'placeholder -> "Password", '_label -> "Password")
-            @helper.inputPassword(form("confirmPassword"), 'class -> "form-control", 'placeholder -> "Password", '_label -> "Confirm Password")
-            @helper.inputText(form("firstname"), 'class -> "form-control", 'placeholder -> "First Name", '_label -> "First Name")
-            @helper.inputText(form("surname"), 'class -> "form-control", 'placeholder -> "Last Name", '_label -> "Last Name")
-            @helper.inputText(form("email"), 'class -> "form-control", 'placeholder -> "Email", '_label -> "Email")
-            <button id="apply" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+            <h1 class="h3 mb-3 font-weight-normal">You can apply for the job here</h1>
+            @helper.textarea(form("description"), 'class -> "form-control", 'placeholder -> "Please write the description here...", '_label -> "Please have a short description of yourself")
+            @helper.select(form("Please choose your area of expertise"), possibleCompetences.map(competence => (competence.id.raw.toString, competence.name)), 'multiple -> true)
+           
+            <button id="apply" class="btn btn-lg btn-primary btn-block" type="submit">Apply</button>
         </fieldset>
 
     }

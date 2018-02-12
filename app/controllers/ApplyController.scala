@@ -2,7 +2,8 @@ package controllers
 
 import javax.inject._
 
-import controllers.ApplyController.{ApplyForm}
+import controllers.ApplyController.ApplyForm
+import database.{Competence, Id}
 import models.UserManager
 import play.api.data.Forms._
 import play.api.data._
@@ -33,11 +34,14 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
     )(ApplyForm.apply)(ApplyForm.unapply)
   )
   def jobapply() = userAction.apply { implicit request: Request[AnyContent] =>
-    Ok(views.html.jobapply(applyForm))
+    Ok(
+      views.html.jobapply(applyForm,
+                          Seq(Competence(Id[Competence](0), "competence")))
+    )
   }
   def doApply() = userAction.apply { implicit request: Request[AnyContent] =>
     val form = applyForm.bindFromRequest()
-    BadRequest(views.html.jobapply(form))
+    BadRequest(views.html.jobapply(form, Seq()))
   }
 }
 
