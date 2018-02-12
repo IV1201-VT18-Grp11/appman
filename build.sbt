@@ -50,4 +50,7 @@ TwirlKeys.templateImports ++= Seq(
 )
 
 // Adds additional packages into conf/routes
-// play.sbt.routes.RoutesKeys.routesImport += "com.appman.binders._"
+play.sbt.routes.RoutesKeys.routesImport ++= Seq(
+  "database._",
+  "utils.Binders._"
+)

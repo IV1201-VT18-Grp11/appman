@@ -9,7 +9,9 @@ case class Job(id: Id[Job],
                name: String,
                fromDate: Timestamp,
                toDate: Option[Timestamp],
-               country: String)
+               country: String,
+               description: String,
+               requirement: String)
     extends HasId {
   type Self   = Job
   type IdType = Long
@@ -28,13 +30,17 @@ class Jobs(tag: Tag) extends Table[Job](tag, "jobs") {
 
   def country = column[String]("country")
 
+  def description = column[String]("description")
+
+  def requirement = column[String]("requirement")
+
   def field = foreignKey("field_fk", fieldId, Fields)(_.id)
 
   /**
     *
     */
   override def * =
-    (id, fieldId, name, fromDate, toDate, country) <> (Job.tupled, Job.unapply)
+    (id, fieldId, name, fromDate, toDate, country, description, requirement) <> (Job.tupled, Job.unapply)
 }
 
 /**

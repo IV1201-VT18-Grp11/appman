@@ -3,8 +3,8 @@ package controllers
 import javax.inject._
 
 import controllers.ApplyController.ApplyForm
-import database.{Competence, Id}
-import models.{ApplicationManager, UserManager}
+import database.{Competence, Id, Job}
+import models.{ApplicationManager, JobManager, UserManager}
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.I18nSupport
@@ -20,13 +20,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class ApplyController @Inject()(implicit cc: ControllerComponents,
                                 val userManager: UserManager,
                                 executionContext: ExecutionContext,
-                                applicationManager: ApplicationManager)
+                                applicationManager: ApplicationManager,
+                                jobManager: JobManager)
     extends AbstractController(cc)
     with I18nSupport
     with Security {
 
   private val applyForm = Form(
-    mapping("username"        -> nonEmptyText,
+    mapping("username"     -> nonEmptyText,
             "password"        -> nonEmptyText,
             "confirmPassword" -> nonEmptyText,
             "firstname"       -> nonEmptyText,
@@ -50,6 +51,13 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
       .bindFromRequest()
       .fold(formWithErrors => showApplyForm(formWithErrors).map(BadRequest(_)),
             application => ???)
+  }
+
+  def jobDescription(jobId: Id[Job]) = userAction.async {
+    implicit request: Request[AnyContent] =>
+      for {
+        (job, field) <- jobManager.find(jobId).map(_.get)
+      } yield Ok(views.html.jobdescription(job))
   }
 }
 

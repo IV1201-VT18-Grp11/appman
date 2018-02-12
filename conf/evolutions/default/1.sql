@@ -29,7 +29,9 @@ CREATE TABLE jobs (
   name      TEXT      NOT NULL,
   from_date TIMESTAMP NOT NULL,
   to_date   TIMESTAMP,
-  country   TEXT
+  country   TEXT,
+  description TEXT  NOT NULL,
+  requirement TEXT NOT NULL
 );
 
 CREATE TABLE application (

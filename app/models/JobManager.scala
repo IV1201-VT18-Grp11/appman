@@ -16,6 +16,8 @@ trait JobManager {
     * We want to show 0 or more jobs, as a sequence
     */
   def jobListings()(implicit ec: ExecutionContext): Future[Seq[(Job, Field)]]
+
+  def find(id: Id[Job]): Future[Option[(Job, Field)]]
 }
 
 class DbJobManager @Inject()(
@@ -33,5 +35,13 @@ class DbJobManager @Inject()(
       job   <- Jobs
       field <- job.field
     } yield (job, field)).result
+  }
+
+  override def find(id: Id[Job]): Future[Option[(Job, Field)]] = db.run {
+    (for {
+      job <- Jobs
+      if job.id === id
+      field <- job.field
+    } yield (job, field)).result.headOption
   }
 }
