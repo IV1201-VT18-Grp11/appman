@@ -1,9 +1,8 @@
 package models
 
-import database.{ Id, User }
+import database.{Id, User}
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatestplus.play._
-import org.scalatestplus.play.guice._
 import play.api.test._
 import play.api.test.Helpers._
 import utils.DbOneAppPerTest
@@ -22,7 +21,8 @@ class UserManagerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
     }
     "the username and password are correct" should {
       "return the user" in {
-        await(inject[UserManager].login("donald_duck", "123456")).map(_.user) mustBe Some(Id[User](2))
+        await(inject[UserManager].login("donald_duck", "123456"))
+          .map(_.user) mustBe Some(Id[User](2))
       }
     }
   }
@@ -30,15 +30,39 @@ class UserManagerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
   "calling register()" when {
     "the username is not taken" should {
       "return the user" in {
-        await(inject[UserManager].register("to_be_created", "1234", "Laser", "Kitten", "kitten1@kittens.org")).right.get.username mustBe "to_be_created"
+        await(
+          inject[UserManager].register("to_be_created",
+                                       "1234",
+                                       "Laser",
+                                       "Kitten",
+                                       "kitten1@kittens.org")
+        ).right.get.username mustBe "to_be_created"
       }
     }
 
     "the username is already taken" should {
       "return None" in {
-        await(inject[UserManager].register("to_be_created", "1234", "Laser", "Kitten", "kitten1@kittens.org")) mustBe 'right // unique user
-        await(inject[UserManager].register("to_be_created", "1234", "Crazy", "Kitten", "kitten2@kittens.org")) mustBe Left(Seq(UserManager.RegistrationError.UsernameTaken))
-        await(inject[UserManager].register("to_be_created2", "1234", "Cute", "Kitten", "kitten1@kittens.org")) mustBe Left(Seq(UserManager.RegistrationError.EmailTaken))
+        await(
+          inject[UserManager].register("to_be_created",
+                                       "1234",
+                                       "Laser",
+                                       "Kitten",
+                                       "kitten1@kittens.org")
+        ) mustBe 'right // unique user
+        await(
+          inject[UserManager].register("to_be_created",
+                                       "1234",
+                                       "Crazy",
+                                       "Kitten",
+                                       "kitten2@kittens.org")
+        ) mustBe Left(Seq(UserManager.RegistrationError.UsernameTaken))
+        await(
+          inject[UserManager].register("to_be_created2",
+                                       "1234",
+                                       "Cute",
+                                       "Kitten",
+                                       "kitten1@kittens.org")
+        ) mustBe Left(Seq(UserManager.RegistrationError.EmailTaken))
       }
     }
   }

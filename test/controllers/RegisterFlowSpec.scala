@@ -4,8 +4,12 @@ import org.scalatestplus.play.{FirefoxFactory, OneBrowserPerTest, PlaySpec}
 import play.api.test.Injecting
 import utils.DbOneServerPerTest
 
-
-class RegisterFlowSpec extends PlaySpec with DbOneServerPerTest with OneBrowserPerTest with FirefoxFactory with Injecting {
+class RegisterFlowSpec
+    extends PlaySpec
+    with DbOneServerPerTest
+    with OneBrowserPerTest
+    with FirefoxFactory
+    with Injecting {
   "register should work" in {
     go to (s"http://localhost:$port/")
     click on find(id("nav-register")).value
@@ -17,7 +21,9 @@ class RegisterFlowSpec extends PlaySpec with DbOneServerPerTest with OneBrowserP
     textField(name("surname")).value = "Doe"
     textField(name("email")).value = "john_doe@kth.se"
     click on find(id("register")).value
-    find(id("message")).value.text must include("You have been registered and logged in")
+    find(id("message")).value.text must include(
+      "You have been registered and logged in"
+    )
     find(id("nav-register")) mustBe empty
 
     click on find(id("nav-logout")).value
@@ -30,7 +36,9 @@ class RegisterFlowSpec extends PlaySpec with DbOneServerPerTest with OneBrowserP
     textField(name("surname")).value = "Doe"
     textField(name("email")).value = "john_doe@gmail.com"
     click on find(id("register")).value
-    find(tagName("body")).value.text must include("The username is already taken")
+    find(tagName("body")).value.text must include(
+      "The username is already taken"
+    )
 
     textField(name("username")).value = "jane_doe"
     pwdField(name("password")).value = "abc123"
@@ -48,6 +56,8 @@ class RegisterFlowSpec extends PlaySpec with DbOneServerPerTest with OneBrowserP
     textField(name("surname")).value = "Mouse"
     textField(name("email")).value = "mickey_mouse@gmail.com"
     click on find(id("register")).value
-    find(tagName("body")).value.text must include("The passwords you have entered do not match")
+    find(tagName("body")).value.text must include(
+      "The passwords you have entered do not match"
+    )
   }
 }

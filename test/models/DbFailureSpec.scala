@@ -19,18 +19,16 @@ class DbFailureSpec
     with BaseOneAppPerTest
     with Injecting {
   override def fakeApplication(): Application = {
-    val app = new GuiceApplicationBuilder()
-    // .disable[EvolutionsModule]
+    new GuiceApplicationBuilder()
       .loadConfig(
         env =>
           Configuration
             .load(env,
-                  Map("slick.dbs.default.db.connectionPool" -> "disabled",
+                  Map("slick.dbs.default.db.schema"         -> "does_not_exist",
+                      "slick.dbs.default.db.connectionPool" -> "disabled",
                       "play.evolutions.db.default.enabled"  -> "false"))
       )
       .build
-    // app.injector.instanceOf[DatabaseConfigProvider].get.db.close()
-    app
   }
 
   "calling UserManager.login()" when {
@@ -38,7 +36,7 @@ class DbFailureSpec
       "throw an execption" in {
         val userManager = inject[UserManager]
         an[SQLException] should be thrownBy await(
-          inject[UserManager].login("donald_duck", "123456")
+          userManager.login("donald_duck", "123456")
         )
       }
     }

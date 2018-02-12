@@ -10,9 +10,15 @@ import utils.DbOneAppPerTest
 
 class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
   override def fakeApplication() = {
-    val app = super.fakeApplication()
+    val app         = super.fakeApplication()
     val userManager = app.injector.instanceOf[UserManager]
-    await(userManager.register("gyro_gearloose", "little_helper", "Gyro", "Gearloose", "gyro@duck.net")) mustBe 'right
+    await(
+      userManager.register("gyro_gearloose",
+                           "little_helper",
+                           "Gyro",
+                           "Gearloose",
+                           "gyro@duck.net")
+    ) mustBe 'right
     app
   }
 
@@ -20,10 +26,8 @@ class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
     "the username or password is incorrect" should {
       "ask the user to try again" in {
         val request = FakeRequest(routes.LoginController.doLogin(None))
-         .withFormUrlEncodedBody(
-            "username" -> "scrooge_mc_duck",
-            "password" -> "password"
-          )
+          .withFormUrlEncodedBody("username" -> "scrooge_mc_duck",
+                                  "password" -> "password")
           .withCSRFToken
         val login = route(app, request).get
 
@@ -35,10 +39,8 @@ class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
     "the username and password are correct" should {
       "redirect the user to the home page" in {
         val request = FakeRequest(routes.LoginController.doLogin(None))
-          .withFormUrlEncodedBody(
-            "username" -> "gyro_gearloose",
-            "password" -> "little_helper"
-          )
+          .withFormUrlEncodedBody("username" -> "gyro_gearloose",
+                                  "password" -> "little_helper")
           .withCSRFToken
         val login = route(app, request).get
 

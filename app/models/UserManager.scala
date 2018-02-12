@@ -95,12 +95,19 @@ class DbUserManager @Inject()(
         user <- Users
           .filter(user => user.username === username)
           .result
-          .head
-        if passwordHasher.compare(user.password, password)
-        session <- UserSessions
-          .map(_.userId)
-          .returning(UserSessions) += user.id
-      } yield session).asTry.map(_.toOption)
+          .headOption
+          .map(
+            _.filter(user => passwordHasher.compare(user.password, password))
+          )
+        session <- DBIO.sequenceOption(
+          user.map(
+            user =>
+              UserSessions
+                .map(_.userId)
+                .returning(UserSessions) += user.id
+          )
+        )
+      } yield session)
     }
     task.foreach {
       case Some(session) =>

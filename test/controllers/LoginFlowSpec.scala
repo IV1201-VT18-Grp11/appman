@@ -7,11 +7,22 @@ import play.api.test.Helpers._
 import scala.concurrent.ExecutionContext
 import utils.DbOneServerPerTest
 
-class LoginFlowSpec extends PlaySpec with DbOneServerPerTest with OneBrowserPerTest with FirefoxFactory with Injecting {
+class LoginFlowSpec
+    extends PlaySpec
+    with DbOneServerPerTest
+    with OneBrowserPerTest
+    with FirefoxFactory
+    with Injecting {
   "login should work" in {
-    val userManager = inject[UserManager]
+    val userManager               = inject[UserManager]
     implicit val executionContext = inject[ExecutionContext]
-    await(userManager.register("scrooge", "money", "Beautiful", "Kitten", "kitten3@kittens.org"))
+    await(
+      userManager.register("scrooge",
+                           "money",
+                           "Beautiful",
+                           "Kitten",
+                           "kitten3@kittens.org")
+    )
 
     go to (s"http://localhost:$port/")
     click on find(id("nav-login")).value
@@ -19,8 +30,12 @@ class LoginFlowSpec extends PlaySpec with DbOneServerPerTest with OneBrowserPerT
     textField(name("username")).value = "scrooge"
     pwdField(name("password")).value = "moolah"
     click on find(id("login")).value
-    find(id("message")).fold("")(_.text) mustNot include("You have been logged in")
-    find(tagName("body")).value.text must include("Invalid username or password")
+    find(id("message")).fold("")(_.text) mustNot include(
+      "You have been logged in"
+    )
+    find(tagName("body")).value.text must include(
+      "Invalid username or password"
+    )
 
     textField(name("username")).value = "scrooge"
     pwdField(name("password")).value = "money"

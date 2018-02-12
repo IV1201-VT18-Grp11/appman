@@ -32,5 +32,5 @@ abstract class PasswordHasherSpec(hasher: => PasswordHasher) extends PlaySpec {
   }
 }
 
-class ScryptPasswordHasherSpec extends PasswordHasherSpec(new ScryptPasswordHasher())
-
+class ScryptPasswordHasherSpec
+    extends PasswordHasherSpec(new ScryptPasswordHasher())
