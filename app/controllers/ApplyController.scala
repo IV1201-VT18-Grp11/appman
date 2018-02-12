@@ -4,7 +4,7 @@ import javax.inject._
 
 import controllers.ApplyController.ApplyForm
 import database.{Competence, Id, Job}
-import models.{JobManager, UserManager}
+import models.{ApplicationManager, JobManager, UserManager}
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.I18nSupport
@@ -20,13 +20,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class ApplyController @Inject()(implicit cc: ControllerComponents,
                                 val userManager: UserManager,
                                 executionContext: ExecutionContext,
+                                applicationManager: ApplicationManager,
                                 jobManager: JobManager)
     extends AbstractController(cc)
     with I18nSupport
     with Security {
 
   private val applyForm = Form(
-    mapping("username"        -> nonEmptyText,
+    mapping("username"     -> nonEmptyText,
             "password"        -> nonEmptyText,
             "confirmPassword" -> nonEmptyText,
             "firstname"       -> nonEmptyText,
@@ -34,15 +35,22 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
             "email"           -> nonEmptyText,
     )(ApplyForm.apply)(ApplyForm.unapply)
   )
-  def jobapply() = userAction.apply { implicit request: Request[AnyContent] =>
-    Ok(
-      views.html.jobapply(applyForm,
-                          Seq(Competence(Id[Competence](0), "competence")))
-    )
+
+  private def showApplyForm(
+    form: Form[ApplyForm]
+  )(implicit req: RequestHeader) =
+    for {
+      competences <- applicationManager.allCompetences()
+    } yield views.html.jobapply(form, competences)
+
+  def jobapply() = userAction.async { implicit request: Request[AnyContent] =>
+    showApplyForm(applyForm).map(Ok(_))
   }
-  def doApply() = userAction.apply { implicit request: Request[AnyContent] =>
-    val form = applyForm.bindFromRequest()
-    BadRequest(views.html.jobapply(form, Seq()))
+  def doApply() = userAction.async { implicit request: Request[AnyContent] =>
+    applyForm
+      .bindFromRequest()
+      .fold(formWithErrors => showApplyForm(formWithErrors).map(BadRequest(_)),
+            application => ???)
   }
 
   def jobDescription(jobId: Id[Job]) = userAction.async {
