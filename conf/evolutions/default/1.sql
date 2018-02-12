@@ -1,13 +1,15 @@
 # --- !Ups
 
+CREATE TYPE user_role AS ENUM ('Applicant', 'Employee', 'Admin');
+
 CREATE TABLE users (
   id        SERIAL NOT NULL PRIMARY KEY,
-  username  TEXT   NOT NULL UNIQUE,
+  username  TEXT NOT NULL UNIQUE,
   firstname TEXT,
   surname   TEXT,
-  password  TEXT   NOT NULL,
+  password  TEXT NOT NULL,
   email     TEXT UNIQUE,
-  employee  BOOLEAN
+  "role"    user_role NOT NULL
 );
 
 CREATE TABLE sessions (
@@ -69,3 +71,4 @@ DROP TABLE jobs;
 DROP TABLE fields;
 DROP TABLE sessions;
 DROP TABLE users;
+DROP TYPE user_level;

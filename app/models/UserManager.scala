@@ -139,7 +139,7 @@ class DbUserManager @Inject()(
       } yield user).transactionally.asTry.flatMap {
         case Success(user) =>
           DBIO.successful(Right(user))
-        case Failure(_) =>
+        case Failure(exception) =>
           DBIO
             .sequence(
               Seq(
@@ -156,7 +156,14 @@ class DbUserManager @Inject()(
               )
             )
             .map(_.flatten)
-            .map(Left.apply)
+            .map {
+              case Seq() =>
+                // We can't find a good reason for this to fail,
+                // so it was probably our fault...
+                throw exception
+              case userErrors =>
+                Left(userErrors)
+            }
       }
     }
     task.foreach {

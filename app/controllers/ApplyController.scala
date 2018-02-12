@@ -27,7 +27,7 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
     with Security {
 
   private val applyForm = Form(
-    mapping("username"     -> nonEmptyText,
+    mapping("username"        -> nonEmptyText,
             "password"        -> nonEmptyText,
             "confirmPassword" -> nonEmptyText,
             "firstname"       -> nonEmptyText,

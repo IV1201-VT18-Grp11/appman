@@ -1,6 +1,6 @@
 package controllers
 
-import database.{Id, User, UserSession}
+import database.{Id, Role, User, UserSession}
 import models.UserManager
 import play.api.libs.typedmap.TypedKey
 import play.api.mvc._
@@ -40,6 +40,7 @@ trait SecurityHelpers {
   implicit class UserReqHeader(private val req: RequestHeader) {
     def user: Option[User]               = getUser(req)
     def userSession: Option[UserSession] = getUserSession(req)
+    def userRole: Role                   = user.map(_.role).getOrElse(Role.Anonymous)
     def loggedIn: Boolean                = user.isDefined
   }
 }

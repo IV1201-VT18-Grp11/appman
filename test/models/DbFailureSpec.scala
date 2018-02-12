@@ -41,4 +41,19 @@ class DbFailureSpec
       }
     }
   }
+
+  "calling UserManager.register()" when {
+    "the database is unavailable" should {
+      "throw an exception" in {
+        val userManager = inject[UserManager]
+        an[SQLException] should be thrownBy await(
+          userManager.register("to_be_created",
+                               "1234",
+                               "Laser",
+                               "Kitten",
+                               "kitten1@kittens.org")
+        )
+      }
+    }
+  }
 }

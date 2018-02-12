@@ -8,7 +8,8 @@ case class User(id: Id[User],
                 password: String,
                 firstname: String,
                 surname: String,
-                email: String)
+                email: String,
+                role: UserRole = Role.Applicant)
     extends HasId {
   type Self   = User
   type IdType = Long
@@ -25,12 +26,13 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
   def firstname = column[String]("firstname")
   def surname   = column[String]("surname")
   def email     = column[String]("email")
+  def role      = column[UserRole]("role")
 
   /**
     * These columns make up the User object
     */
   override def * =
-    (id, username, password, firstname, surname, email) <> (User.tupled, User.unapply)
+    (id, username, password, firstname, surname, email, role) <> (User.tupled, User.unapply)
 }
 
 /**
