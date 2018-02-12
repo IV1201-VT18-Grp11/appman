@@ -64,6 +64,11 @@ li {
     }
 }
 
+.footer-tiny {
+    font-size: 2pt;
+    color: rgba(0, 0, 0, 0.1);
+}
+
 @media (max-width: 767.98px) {
     .offcanvas-collapse {
         position: fixed;
