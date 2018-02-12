@@ -46,8 +46,10 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
     showApplyForm(applyForm).map(Ok(_))
   }
   def doApply() = userAction.async { implicit request: Request[AnyContent] =>
-    val form = applyForm.bindFromRequest()
-    showApplyForm(form).map(BadRequest(_))
+    applyForm
+      .bindFromRequest()
+      .fold(formWithErrors => showApplyForm(formWithErrors).map(BadRequest(_)),
+            application => ???)
   }
 }
 

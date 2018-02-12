@@ -38,7 +38,8 @@ class HomeController @Inject()(implicit jobManager: JobManager,
     } yield Ok(views.html.joblist(listings))
   }
 
-  def jobDescription() = userAction.apply { implicit  request: Request[AnyContent] =>
-    Ok(views.html.jobdescription())
+  def jobDescription() = userAction.apply {
+    implicit request: Request[AnyContent] =>
+      Ok(views.html.jobdescription())
   }
 }
