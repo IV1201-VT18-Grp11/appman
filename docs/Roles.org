@@ -2,16 +2,23 @@
 
 We're using a hierarchical role strategy, with the following fixed roles:
 
-- [[Applicant][Applicant]] (the default)
+- [[Anonymous]]
+- [[Applicant][Applicant]] (default for new accounts)
 - [[Employee][Employee]]
 - [[Admin][Admin]]
 
 Each role has access to everything the previous roles can do.
 
+** Anonymous
+
+   This is a "pseudorole" that is applied whenever the user is not logged in.
+   They are allowed to view all job listings.
+
 ** Applicant
 
-   This is the default role. They are allowed to view all job listings, apply to
-   a listing, and to view their own applications.
+   This is the default role when a new user account is created. They have all
+   rights of anonymous users. They are allowed to apply to a listing, and to
+   view their own applications.
 
 ** Employee
 
