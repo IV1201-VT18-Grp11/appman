@@ -19,7 +19,8 @@ class HomeController @Inject()(implicit jobManager: JobManager,
                                val userManager: UserManager,
                                cc: ControllerComponents,
                                executionContext: ExecutionContext)
-    extends AbstractController(cc) with Security {
+    extends AbstractController(cc)
+    with Security {
 
   /**
     * Create an Action to render an HTML page.

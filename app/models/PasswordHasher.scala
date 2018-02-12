@@ -17,13 +17,13 @@ trait PasswordHasher {
 }
 
 class ScryptPasswordHasher extends PasswordHasher {
-  private val logger = Logger(getClass)
+  private val logger      = Logger(getClass)
   private val pwConverter = PasswordConverter.UTF8
-  private val rng = new DigestRandomGenerator(new Blake2bDigest(512))
+  private val rng         = new DigestRandomGenerator(new Blake2bDigest(512))
   logger.info("Seeding")
   rng.addSeedMaterial {
     val seeder = SecureRandom.getInstanceStrong
-    val seed = Array.ofDim[Byte](1024)
+    val seed   = Array.ofDim[Byte](1024)
     seeder.nextBytes(seed)
     seed
   }
@@ -36,20 +36,20 @@ class ScryptPasswordHasher extends PasswordHasher {
   }
 
   private def hashWithSalt(plaintext: String, salt: Array[Byte]): String = {
-    val bytes = pwConverter.convert(plaintext.toCharArray())
+    val bytes      = pwConverter.convert(plaintext.toCharArray())
     val cipherText = SCrypt.generate(bytes, salt, 8, 8, 8, 64)
     Hex.encodeHexString(cipherText)
   }
 
   override def hash(plaintext: String): String = {
-    val salt = newSalt
+    val salt   = newSalt
     val cipher = hashWithSalt(plaintext, salt)
     s"${Hex.encodeHexString(salt)}&$cipher"
   }
 
   override def compare(hashed: String, plaintext: String): Boolean = {
     val Array(saltStr, cipherText) = hashed.split("&")
-    val salt = Hex.decodeHex(saltStr)
+    val salt                       = Hex.decodeHex(saltStr)
     hashWithSalt(plaintext, salt) == cipherText
   }
 }

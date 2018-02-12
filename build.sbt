@@ -9,6 +9,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion in ThisBuild := "2.12.4"
 
+scalafmtOnCompile := true
+
 val webpackGen = taskKey[Seq[File]]("Webpack generator")
 
 webpackGen := {

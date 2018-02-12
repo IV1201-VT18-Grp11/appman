@@ -19,17 +19,17 @@ import scala.concurrent.{ExecutionContext, Future}
 class ApplyController @Inject()(implicit cc: ControllerComponents,
                                 val userManager: UserManager,
                                 executionContext: ExecutionContext)
-  extends AbstractController(cc) with I18nSupport with Security {
-
+    extends AbstractController(cc)
+    with I18nSupport
+    with Security {
 
   private val applyForm = Form(
-    mapping(
-      "username" -> nonEmptyText,
-      "password" -> nonEmptyText,
-      "confirmPassword" -> nonEmptyText,
-      "firstname" -> nonEmptyText,
-      "surname" -> nonEmptyText,
-      "email" -> nonEmptyText,
+    mapping("username"        -> nonEmptyText,
+            "password"        -> nonEmptyText,
+            "confirmPassword" -> nonEmptyText,
+            "firstname"       -> nonEmptyText,
+            "surname"         -> nonEmptyText,
+            "email"           -> nonEmptyText,
     )(ApplyForm.apply)(ApplyForm.unapply)
   )
   def jobapply() = userAction.apply { implicit request: Request[AnyContent] =>
@@ -41,8 +41,11 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
   }
 }
 
-
 object ApplyController {
-  case class ApplyForm(username: String, password: String, confirmPassword: String,
-                          firstname: String, surname: String, email: String)
+  case class ApplyForm(username: String,
+                       password: String,
+                       confirmPassword: String,
+                       firstname: String,
+                       surname: String,
+                       email: String)
 }
