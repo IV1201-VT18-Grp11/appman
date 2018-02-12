@@ -1,6 +1,6 @@
 * Deadlines [1/4]
 
-  - [X] First deadline: 2018-02-09
-  - [ ] Second deadline: 2018-02-23
-  - [ ] Third final oral dealine: 2018-03-05
-  - [ ] Final report submit: 2018-03-16
+  - [X] First deadline: <2018-02-09>
+  - [ ] Second deadline: <2018-02-23>
+  - [ ] Third final oral dealine: <2018-03-05>
+  - [ ] Final report submit: <2018-03-16>
