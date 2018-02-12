@@ -4,7 +4,7 @@ import javax.inject._
 
 import controllers.ApplyController.ApplyForm
 import database.{Competence, Id}
-import models.UserManager
+import models.{ApplicationManager, UserManager}
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.I18nSupport
@@ -19,7 +19,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ApplyController @Inject()(implicit cc: ControllerComponents,
                                 val userManager: UserManager,
-                                executionContext: ExecutionContext)
+                                executionContext: ExecutionContext,
+                                applicationManager: ApplicationManager)
     extends AbstractController(cc)
     with I18nSupport
     with Security {
@@ -33,15 +34,20 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
             "email"           -> nonEmptyText,
     )(ApplyForm.apply)(ApplyForm.unapply)
   )
-  def jobapply() = userAction.apply { implicit request: Request[AnyContent] =>
-    Ok(
-      views.html.jobapply(applyForm,
-                          Seq(Competence(Id[Competence](0), "competence")))
-    )
+
+  private def showApplyForm(
+    form: Form[ApplyForm]
+  )(implicit req: RequestHeader) =
+    for {
+      competences <- applicationManager.allCompetences()
+    } yield views.html.jobapply(form, competences)
+
+  def jobapply() = userAction.async { implicit request: Request[AnyContent] =>
+    showApplyForm(applyForm).map(Ok(_))
   }
-  def doApply() = userAction.apply { implicit request: Request[AnyContent] =>
+  def doApply() = userAction.async { implicit request: Request[AnyContent] =>
     val form = applyForm.bindFromRequest()
-    BadRequest(views.html.jobapply(form, Seq()))
+    showApplyForm(form).map(BadRequest(_))
   }
 }
 
