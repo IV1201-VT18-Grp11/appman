@@ -1,0 +1,11 @@
+@()(implicit req: RequestHeader)
+
+@main("Job description", Page.Other) {
+    <h1>
+        So you are interested in this job
+    </h1>
+    <div>
+        <a href="@routes.ApplyController.jobapply()" id="apply" class="btn btn-lg btn-primary">Apply</a>
+    </div>
+
+}
