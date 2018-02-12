@@ -15,7 +15,7 @@
             <tbody>
                 @for((listing, field) <- listings) {
                     <tr>
-                        <td><a href="@routes.HomeController.jobDescription()">@listing.name</a></td>
+                        <td><a href="@routes.ApplyController.jobDescription(listing.id)">@listing.name</a></td>
                         <td>@field.name</td>
                         <td>@listing.fromDate</td>
                         <td>@listing.toDate</td>
