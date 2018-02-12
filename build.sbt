@@ -17,9 +17,11 @@ webpackGen := {
   webpack.toTask("").value
   val target = WebKeys.webTarget.value / "webpack"
 
-  // The cache is set incorrectly on Windows
+  // The cache is set incorrectly on Windows, so let's delete it
   val webpackCacheDir = (webpack / streams).value.cacheDirectory
-  IO.delete(webpackCacheDir)
+  if (System.getProperty("os.name", "").toLowerCase.contains("windows")) {
+    IO.delete(webpackCacheDir)
+  }
 
   target.allPaths.filter(!_.isDirectory).get
 }
