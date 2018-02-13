@@ -28,11 +28,12 @@ trait ApplicationManager {
     job: Id[Job],
     description: String,
     competences: Map[Id[Competence], Float]
-  )(implicit ec: ExecutionContext): Future[Id[JobApplication]]
+  ): Future[Id[JobApplication]]
 }
 
 class DbApplicationManager @Inject()(
-  protected val dbConfigProvider: DatabaseConfigProvider
+  implicit protected val dbConfigProvider: DatabaseConfigProvider,
+  executionContext: ExecutionContext
 ) extends ApplicationManager
     with HasDatabaseConfigProvider[PgProfile] {
   def allCompetences(): Future[Seq[Competence]] = db.run(Competences.result)
@@ -42,7 +43,7 @@ class DbApplicationManager @Inject()(
     job: Id[Job],
     description: String,
     competences: Map[Id[Competence], Float]
-  )(implicit ec: ExecutionContext): Future[Id[JobApplication]] = db.run {
+  ): Future[Id[JobApplication]] = db.run {
     (for {
       id <- JobApplications
         .returning(JobApplications.map(_.id)) += JobApplication(
