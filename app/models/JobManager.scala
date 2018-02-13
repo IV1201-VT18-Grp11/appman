@@ -18,7 +18,7 @@ trait JobManager {
 
   def find(id: Id[Job]): Future[Option[(Job, Field)]]
 
-  def applicationListings(): Future[Seq[(JobApplication)]]
+  def applicationListings(): Future[Seq[(JobApplication, Job, User)]]
 }
 
 class DbJobManager @Inject()(
@@ -43,11 +43,13 @@ class DbJobManager @Inject()(
       field <- job.field
     } yield (job, field)).result.headOption
   }
-  override def applicationListings(): Future[Seq[(JobApplication)]] =
+  override def applicationListings(): Future[Seq[(JobApplication, Job, User)]] =
     db.run {
       (for {
         jobApplication <- JobApplications
-      } yield (jobApplication)).result
+        job            <- jobApplication.job
+        user           <- jobApplication.user
+      } yield (jobApplication, job, user)).result
     }
 
 }
