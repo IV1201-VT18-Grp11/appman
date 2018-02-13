@@ -43,17 +43,23 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
       competences <- applicationManager.allCompetences()
     } yield views.html.jobapply(form, competences)
 
-  def jobapply() = userAction.async { implicit request: Request[AnyContent] =>
+  def jobapply() = userAction().async { implicit request: Request[AnyContent] =>
     showApplyForm(applyForm).map(Ok(_))
   }
-  def doApply() = userAction.async { implicit request: Request[AnyContent] =>
+  def doApply() = userAction().async { implicit request: Request[AnyContent] =>
     applyForm
       .bindFromRequest()
       .fold(formWithErrors => showApplyForm(formWithErrors).map(BadRequest(_)),
             application => ???)
   }
 
-  def jobDescription(jobId: Id[Job]) = userAction.async {
+  def jobList() = userAction().async { implicit request: Request[AnyContent] =>
+    for {
+      listings <- jobManager.jobListings()
+    } yield Ok(views.html.joblist(listings))
+  }
+
+  def jobDescription(jobId: Id[Job]) = userAction().async {
     implicit request: Request[AnyContent] =>
       for {
         (job, field) <- jobManager.find(jobId).map(_.get)

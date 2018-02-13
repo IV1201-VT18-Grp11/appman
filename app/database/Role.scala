@@ -12,6 +12,11 @@ object Role extends Enum[Role] {
   case object Applicant extends UserRole
   case object Employee  extends UserRole
   case object Admin     extends UserRole
+
+  /**
+    * The minimum role of a registered user
+    */
+  val User            = Applicant
   override def values = Seq(Anonymous) ++ UserRole.values
 }
 object UserRole extends Enum[UserRole] {
