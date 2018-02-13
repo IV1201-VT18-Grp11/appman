@@ -14,8 +14,7 @@ class LoginFlowSpec
     with FirefoxFactory
     with Injecting {
   "login should work" in {
-    val userManager               = inject[UserManager]
-    implicit val executionContext = inject[ExecutionContext]
+    val userManager = inject[UserManager]
     await(
       userManager.register("scrooge",
                            "money",
