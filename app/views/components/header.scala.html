@@ -12,11 +12,14 @@
                 <a class="@if(currentPage == Page.Register) { active }" id="nav-register" href="@routes.LoginController.register()">Register</a>
             </li>
             <li>
-                <a class="@if(currentPage == Page.Login) { active }" id="nav-login" href="@routes.LoginController.login()">Login</a>
+                <a class="@if(currentPage == Page.Login) { active }" id="nav-login" href="@routes.LoginController.login()">Log in</a>
             </li>
         }
         <li>
-            <a class="@if(currentPage == Page.ApplicationList) { active }" href="@routes.JobController.jobList()">List</a>
+            <a class="@if(currentPage == Page.JobList) { active }" href="@routes.JobController.jobList()">Jobs</a>
+        </li>
+        <li>
+            <a class="@if(currentPage == Page.ApplicationList) { active }" href="@routes.JobController.applicationList()">Applications</a>
         </li>
     <li style="float:right">
         <a class="@if(currentPage == Page.Home) { active }" href="@routes.HomeController.index()">Home</a>
