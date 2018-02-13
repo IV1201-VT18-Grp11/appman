@@ -1,5 +1,23 @@
-@(listings: Seq[(database.JobApplication)])(implicit req: RequestHeader)
+@(listings: Seq[(JobApplication, Job, User)])(implicit req: RequestHeader)
 
     @main("List of applications", Page.ApplicationList) {
         <h1>All the applications</h1>
+        <table style="width: 100%" border="1">
+            <thead>
+                <tr>
+                    <th>Application No.</th>
+                    <th>Username</th>
+                    <th>Job Name</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for((listing, job, user) <- listings) {
+                <tr>
+                    <td>@listing.id</td>
+                    <td>@user.username</td>
+                    <td>@job.name</td>
+                </tr>
+            }
+            </tbody>
+        </table>
     }
