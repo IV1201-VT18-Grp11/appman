@@ -1,7 +1,6 @@
 package models
 
 import database.{Id, User}
-import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatestplus.play._
 import play.api.test._
 import play.api.test.Helpers._

@@ -11,7 +11,6 @@ import play.api.Configuration
 import play.api.Application
 import play.api.test.Injecting
 import play.api.test.Helpers._
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class DbFailureSpec
     extends PlaySpec
