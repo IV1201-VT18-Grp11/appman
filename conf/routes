@@ -16,5 +16,6 @@ GET         /jobs/                 controllers.JobController.jobList
 GET         /jobs/:jobId/          controllers.JobController.jobDescription(jobId: Id[Job])
 GET         /jobs/:jobId/apply     controllers.JobController.applyForJob(jobId: Id[Job])
 POST        /jobs/:jobId/apply     controllers.JobController.doApplyForJob(jobId: Id[Job])
+GET         /jobapplications/      controllers.JobController.applicationList
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file          controllers.Assets.versioned(path="/public", file: Asset)

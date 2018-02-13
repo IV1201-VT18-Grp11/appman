@@ -1,7 +1,5 @@
 package controllers
 
-import java.time.Instant
-import java.util.Date
 import javax.inject._
 
 import controllers.ApplyController.ApplyForm
@@ -11,7 +9,6 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import sun.security.jca.GetInstance.Instance
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,11 +28,13 @@ class JobController @Inject()(implicit cc: ControllerComponents,
     with NotFoundHelpers {
 
   private val applyForm = Form(
-    mapping("description"      -> text,
-            "expertise"        -> text,
-            "experience"       -> text,
-            "availabilityFrom" -> date,
-            "availabilityTo"   -> date)(ApplyForm.apply)(ApplyForm.unapply)
+    mapping("username"        -> nonEmptyText,
+            "password"        -> nonEmptyText,
+            "confirmPassword" -> nonEmptyText,
+            "firstname"       -> nonEmptyText,
+            "surname"         -> nonEmptyText,
+            "email"           -> nonEmptyText,
+    )(ApplyForm.apply)(ApplyForm.unapply)
   )
 
   private def showApplyForm(form: Form[ApplyForm],
@@ -49,6 +48,7 @@ class JobController @Inject()(implicit cc: ControllerComponents,
     implicit request: Request[AnyContent] =>
       showApplyForm(applyForm, jobId).map(Ok(_))
   }
+
   def doApplyForJob(jobId: Id[Job]) = userAction().async {
     implicit request: Request[AnyContent] =>
       applyForm
@@ -70,12 +70,20 @@ class JobController @Inject()(implicit cc: ControllerComponents,
         (job, field) <- jobManager.find(jobId).getOr404
       } yield Ok(views.html.jobdescription(job))
   }
+
+  def applicationList() = userAction().async {
+    implicit request: Request[AnyContent] =>
+      for {
+        listings <- jobManager.applicationListings()
+      } yield Ok(views.html.applicationlist(listings))
+  }
 }
 
 object ApplyController {
-  case class ApplyForm(description: String,
-                       expertise: String,
-                       experience: String,
-                       availabilityFrom: Instant,
-                       availabilityTo: Instant)
+  case class ApplyForm(username: String,
+                       password: String,
+                       confirmPassword: String,
+                       firstname: String,
+                       surname: String,
+                       email: String)
 }

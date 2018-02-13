@@ -1,0 +1,5 @@
+@(listings: Seq[(database.JobApplication)])(implicit req: RequestHeader)
+
+    @main("List of applications", Page.ApplicationList) {
+        <h1>All the applications</h1>
+    }

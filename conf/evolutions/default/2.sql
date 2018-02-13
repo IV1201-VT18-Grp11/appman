@@ -19,10 +19,10 @@ VALUES (1, 1, 'Scala Magician', '2018-02-01', '2018-10-01', 'Sweden',
 );
 
 
-INSERT INTO application (id, "user", job, description)
+INSERT INTO applications (id, "user", job, description)
 VALUES (1, 1, 1, 'I am awesome');
 
-INSERT INTO availability (id, application, from_date, to_date)
+INSERT INTO availabilities (id, application, from_date, to_date)
 VALUES (1, 1, '2018-01-01', '2019-01-01');
 
 INSERT INTO competences (id, name)
@@ -34,7 +34,7 @@ VALUES (1, 11, 1);
 ALTER SEQUENCE users_id_seq
 MINVALUE 3
 START WITH 3 RESTART WITH 3;
-ALTER SEQUENCE availability_id_seq
+ALTER SEQUENCE availabilities_id_seq
 MINVALUE 2
 START WITH 2 RESTART WITH 2;
 ALTER SEQUENCE fields_id_seq
@@ -43,10 +43,10 @@ START WITH 2 RESTART WITH 2;
 ALTER SEQUENCE jobs_id_seq
 MINVALUE 2
 START WITH 2 RESTART WITH 2;
-ALTER SEQUENCE application_id_seq
+ALTER SEQUENCE applications_id_seq
 MINVALUE 2
 START WITH 2 RESTART WITH 2;
-ALTER SEQUENCE availability_id_seq
+ALTER SEQUENCE availabilities_id_seq
 MINVALUE 2
 START WITH 2 RESTART WITH 2;
 ALTER SEQUENCE competences_id_seq
@@ -57,8 +57,8 @@ START WITH 2 RESTART WITH 2;
 # --- !Downs
 DELETE FROM application_competences;
 DELETE FROM competences;
-DELETE FROM availability;
-DELETE FROM application;
+DELETE FROM availabilities;
+DELETE FROM applications;
 DELETE FROM jobs;
 DELETE FROM fields;
 DELETE FROM sessions;
@@ -67,7 +67,7 @@ DELETE FROM users;
 ALTER SEQUENCE users_id_seq
 MINVALUE 1
 START WITH 1 RESTART WITH 1;
-ALTER SEQUENCE availability_id_seq
+ALTER SEQUENCE availabilities_id_seq
 MINVALUE 1
 START WITH 1 RESTART WITH 1;
 ALTER SEQUENCE fields_id_seq
