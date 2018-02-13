@@ -12,7 +12,7 @@ case class JobApplication(id: Id[JobApplication],
 }
 
 class JobApplications(tag: Tag)
-    extends Table[JobApplication](tag, "availabilties") {
+    extends Table[JobApplication](tag, "applications") {
   def id          = column[Id[JobApplication]]("id", O.PrimaryKey, O.AutoInc)
   def userId      = column[Id[User]]("user")
   def jobId       = column[Id[Job]]("job")

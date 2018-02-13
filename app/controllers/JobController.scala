@@ -55,6 +55,7 @@ class JobController @Inject()(implicit cc: ControllerComponents,
     implicit request: Request[AnyContent] =>
       showApplyForm(applyForm, jobId).map(Ok(_))
   }
+
   def doApplyForJob(jobId: Id[Job]) = userAction().async {
     implicit request: Request[AnyContent] =>
       println(applyForm.bindFromRequest())
@@ -76,6 +77,13 @@ class JobController @Inject()(implicit cc: ControllerComponents,
       for {
         (job, field) <- jobManager.find(jobId).getOr404
       } yield Ok(views.html.jobdescription(job))
+  }
+
+  def applicationList() = userAction().async {
+    implicit request: Request[AnyContent] =>
+      for {
+        listings <- jobManager.applicationListings()
+      } yield Ok(views.html.applicationlist(listings))
   }
 }
 

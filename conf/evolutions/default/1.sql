@@ -36,16 +36,16 @@ CREATE TABLE jobs (
   requirement TEXT NOT NULL
 );
 
-CREATE TABLE application (
+CREATE TABLE applications (
   id          SERIAL  NOT NULL PRIMARY KEY,
   "user"      INTEGER NOT NULL REFERENCES users,
   job         INTEGER NOT NULL REFERENCES jobs,
   description TEXT
 );
 
-CREATE TABLE availability (
+CREATE TABLE availabilities (
   id          SERIAL NOT NULL PRIMARY KEY,
-  application INTEGER REFERENCES application,
+  application INTEGER REFERENCES applications,
   from_date   DATE,
   to_date     DATE
 );
@@ -58,17 +58,17 @@ CREATE TABLE competences (
 CREATE TABLE application_competences (
   competence          INTEGER REFERENCES competences,
   years_of_experience FLOAT,
-  application         INTEGER REFERENCES application
+  application         INTEGER REFERENCES applications
 );
 
 
 # --- !Downs
 DROP TABLE application_competences;
 DROP TABLE competences;
-DROP TABLE availability;
-DROP TABLE application;
+DROP TABLE availabilities;
+DROP TABLE applications;
 DROP TABLE jobs;
 DROP TABLE fields;
 DROP TABLE sessions;
 DROP TABLE users;
-DROP TYPE user_level;
+DROP TYPE user_role;
