@@ -132,4 +132,5 @@ object LoginController {
                           firstname: String,
                           surname: String,
                           email: String)
+
 }
