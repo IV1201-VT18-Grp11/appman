@@ -23,30 +23,26 @@ trait UserManager {
     */
   def find(id: Id[User]): Future[Option[User]]
 
-  def findSession(id: Id[UserSession])(
-    implicit ec: ExecutionContext
-  ): Future[Option[(User, UserSession)]]
+  def findSession(id: Id[UserSession]): Future[Option[(User, UserSession)]]
 
   /**
     * Finds the user with a given username and password and creates a session
     *
     * @return Some(session) if the user exists and the password is correct, otherwise None
     */
-  def login(username: String, password: String)(
-    implicit ec: ExecutionContext
-  ): Future[Option[UserSession]]
+  def login(username: String, password: String): Future[Option[UserSession]]
 
   /**
     * Tries to create a user with the given fields
     *
     * @return None if a user with the given username already exists, otherwise Some(user)
     */
-  def register(username: String,
-               password: String,
-               firstname: String,
-               surname: String,
-               email: String)(
-    implicit ec: ExecutionContext
+  def register(
+    username: String,
+    password: String,
+    firstname: String,
+    surname: String,
+    email: String
   ): Future[Either[Seq[UserManager.RegistrationError], User]]
 }
 
@@ -59,8 +55,9 @@ object UserManager {
 }
 
 class DbUserManager @Inject()(
-  protected val dbConfigProvider: DatabaseConfigProvider,
-  passwordHasher: PasswordHasher
+  implicit protected val dbConfigProvider: DatabaseConfigProvider,
+  passwordHasher: PasswordHasher,
+  executionContext: ExecutionContext
 ) extends UserManager
     with HasDatabaseConfigProvider[PgProfile] {
   private val logger = Logger(getClass)
@@ -69,8 +66,8 @@ class DbUserManager @Inject()(
     Users.filter(_.id === id).result.headOption
   }
 
-  override def findSession(id: Id[UserSession])(
-    implicit ec: ExecutionContext
+  override def findSession(
+    id: Id[UserSession]
   ): Future[Option[(User, UserSession)]] = db.run {
     for {
       session <- (for {
@@ -87,9 +84,8 @@ class DbUserManager @Inject()(
     } yield session
   }
 
-  override def login(username: String, password: String)(
-    implicit ec: ExecutionContext
-  ): Future[Option[UserSession]] = {
+  override def login(username: String,
+                     password: String): Future[Option[UserSession]] = {
     val task = db.run {
       (for {
         user <- Users
@@ -118,12 +114,12 @@ class DbUserManager @Inject()(
     task
   }
 
-  override def register(username: String,
-                        password: String,
-                        firstname: String,
-                        surname: String,
-                        email: String)(
-    implicit ec: ExecutionContext
+  override def register(
+    username: String,
+    password: String,
+    firstname: String,
+    surname: String,
+    email: String
   ): Future[Either[Seq[UserManager.RegistrationError], User]] = {
     val task = db.run {
       (for {
