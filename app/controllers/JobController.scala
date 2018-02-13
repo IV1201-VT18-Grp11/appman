@@ -1,5 +1,6 @@
 package controllers
 
+import database.JobApplication
 import java.time.LocalDate
 import javax.inject._
 
@@ -58,12 +59,32 @@ class JobController @Inject()(implicit cc: ControllerComponents,
 
   def doApplyForJob(jobId: Id[Job]) = userAction().async {
     implicit request: Request[AnyContent] =>
-      println(applyForm.bindFromRequest())
       applyForm
         .bindFromRequest()
-        .fold(formWithErrors =>
-                showApplyForm(formWithErrors, jobId).map(BadRequest(_)),
-              application => ???)
+        .fold(
+          formWithErrors =>
+            showApplyForm(formWithErrors, jobId).map(BadRequest(_)),
+          application =>
+            applicationManager
+              .create(request.user.get.id,
+                      jobId,
+                      application.description,
+                      application.competences
+                        .map(
+                          competence =>
+                            (competence.id, competence.experienceYears.toFloat)
+                        )
+                        .toMap,
+                      application.availabilities.map(
+                        availability => (availability.from, availability.to)
+                      ))
+              .map(
+                appId =>
+                  Redirect(
+                    routes.JobController.applicationDescription(jobId, appId)
+                )
+            )
+        )
   }
 
   def jobList() = userAction().async { implicit request: Request[AnyContent] =>
@@ -78,6 +99,8 @@ class JobController @Inject()(implicit cc: ControllerComponents,
         (job, field) <- jobManager.find(jobId).getOr404
       } yield Ok(views.html.jobdescription(job))
   }
+
+  def applicationDescription(jobId: Id[Job], appId: Id[JobApplication]) = TODO
 
   def applicationList() = userAction().async {
     implicit request: Request[AnyContent] =>

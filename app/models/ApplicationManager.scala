@@ -4,6 +4,8 @@ import com.google.inject.ImplementedBy
 import database.{
   ApplicationCompetence,
   ApplicationCompetences,
+  Availabilities,
+  Availability,
   Competence,
   Competences,
   Id,
@@ -13,6 +15,8 @@ import database.{
   PgProfile,
   User
 }
+import java.time.LocalDate
+import java.time.Period
 import scala.concurrent.ExecutionContext
 import database.PgProfile.api._
 import javax.inject.Inject
@@ -27,7 +31,8 @@ trait ApplicationManager {
     user: Id[User],
     job: Id[Job],
     description: String,
-    competences: Map[Id[Competence], Float]
+    competences: Map[Id[Competence], Float],
+    availabilities: Seq[(LocalDate, LocalDate)]
   ): Future[Id[JobApplication]]
 }
 
@@ -42,7 +47,8 @@ class DbApplicationManager @Inject()(
     user: Id[User],
     job: Id[Job],
     description: String,
-    competences: Map[Id[Competence], Float]
+    competences: Map[Id[Competence], Float],
+    availabilities: Seq[(LocalDate, LocalDate)]
   ): Future[Id[JobApplication]] = db.run {
     (for {
       id <- JobApplications
@@ -55,6 +61,10 @@ class DbApplicationManager @Inject()(
       _ <- ApplicationCompetences ++= competences.map {
         case ((competence, years)) =>
           ApplicationCompetence(competence, years, id)
+      }
+      _ <- Availabilities ++= availabilities.map {
+        case (from, to) =>
+          Availability(Id[Availability](-1), id, from, to)
       }
     } yield id).transactionally
   }

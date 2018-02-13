@@ -1,32 +1,30 @@
 package database
 
-import java.time.Instant
+import java.time.{Instant, LocalDate}
 
 import database.PgProfile.api._
 
 case class Availability(id: Id[Availability],
-                        user: Id[User],
                         applicationId: Id[JobApplication],
-                        fromDate: Instant,
-                        toDate: Instant)
+                        from: LocalDate,
+                        to: LocalDate)
     extends HasId {
   type Self   = Availability
   type IdType = Long
 }
 
 class Availabilities(tag: Tag)
-    extends Table[Availability](tag, "availabilties") {
+    extends Table[Availability](tag, "availabilities") {
   def id            = column[Id[Availability]]("id", O.PrimaryKey, O.AutoInc)
-  def userId        = column[Id[User]]("user0")
   def applicationId = column[Id[JobApplication]]("application")
-  def fromDate      = column[Instant]("from")
-  def toDate        = column[Instant]("from")
+  def from          = column[LocalDate]("from")
+  def to            = column[LocalDate]("to")
 
   def application =
     foreignKey("application_fk", applicationId, JobApplications)(_.id)
 
   override def * =
-    (id, userId, applicationId, fromDate, toDate) <> (Availability.tupled, Availability.unapply)
+    (id, applicationId, from, to) <> (Availability.tupled, Availability.unapply)
 }
 
 object Availabilities extends TableQuery[Availabilities](new Availabilities(_))
