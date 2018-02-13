@@ -1,8 +1,10 @@
 package controllers
 
+import java.time.LocalDate
 import javax.inject._
 
-import controllers.ApplyController.ApplyForm
+import controllers.JobController.{ApplyForm, AvailabilityField, CompetenceField}
+import controllers.MoreForms._
 import database.{Competence, Id, Job}
 import models.{ApplicationManager, JobManager, UserManager}
 import play.api.data.Forms._
@@ -28,13 +30,18 @@ class JobController @Inject()(implicit cc: ControllerComponents,
     with NotFoundHelpers {
 
   private val applyForm = Form(
-    mapping("username"        -> nonEmptyText,
-            "password"        -> nonEmptyText,
-            "confirmPassword" -> nonEmptyText,
-            "firstname"       -> nonEmptyText,
-            "surname"         -> nonEmptyText,
-            "email"           -> nonEmptyText,
-    )(ApplyForm.apply)(ApplyForm.unapply)
+    mapping("description" -> nonEmptyText,
+            "competences" -> seq(
+              mapping(
+                "id"              -> id[Competence](longNumber),
+                "experienceYears" -> bigDecimal
+              )(CompetenceField.apply)(CompetenceField.unapply)
+            ),
+            "availabilities" -> seq(
+              mapping("from" -> localDate, "to" -> localDate)(
+                AvailabilityField.apply
+              )(AvailabilityField.unapply)
+            ))(ApplyForm.apply)(ApplyForm.unapply)
   )
 
   private def showApplyForm(form: Form[ApplyForm],
@@ -50,6 +57,7 @@ class JobController @Inject()(implicit cc: ControllerComponents,
   }
   def doApplyForJob(jobId: Id[Job]) = userAction().async {
     implicit request: Request[AnyContent] =>
+      println(applyForm.bindFromRequest())
       applyForm
         .bindFromRequest()
         .fold(formWithErrors =>
@@ -71,11 +79,10 @@ class JobController @Inject()(implicit cc: ControllerComponents,
   }
 }
 
-object ApplyController {
-  case class ApplyForm(username: String,
-                       password: String,
-                       confirmPassword: String,
-                       firstname: String,
-                       surname: String,
-                       email: String)
+object JobController {
+  case class ApplyForm(description: String,
+                       competences: Seq[CompetenceField],
+                       availabilities: Seq[AvailabilityField])
+  case class CompetenceField(id: Id[Competence], experienceYears: BigDecimal)
+  case class AvailabilityField(from: LocalDate, to: LocalDate)
 }
