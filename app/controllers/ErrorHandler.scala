@@ -15,7 +15,7 @@ class ErrorHandler @Inject()(env: Environment,
   override def onServerError(request: RequestHeader,
                              exception: Throwable): Future[Result] =
     exception match {
-      case notFound: NotFoundHelpers.NotFoundException =>
+      case notFound: NotFoundException =>
         onNotFound(request, notFound.getMessage)
       case _ =>
         super.onServerError(request, exception)

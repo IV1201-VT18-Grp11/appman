@@ -1,0 +1,59 @@
+* Error Handling
+
+** Error types
+
+   The errors that can occur can be divided into three different categories:
+
+   - [[Internal errors]]
+   - [[Validation errors]]
+   - [[Navigation errors]]
+
+*** Internal errors
+
+    Internal errors are caused by server bugs or operational errors. These should
+    be logged on the server, and display a generic error page to the user.
+
+*** Validation errors
+
+    These are caused by the user entering invalid information (such as trying to
+    register with a taken username). They should show a detailed error message
+    and allow the user to retry.
+
+*** Navigation errors
+
+    These are caused by the user going to an invalid URL. This could be either
+    an attempt to visit a URL with no associated route (such as ~/nope~), or
+    an accessing a valid route with an invalid parameter (such as ~/jobs/5/~ if
+    there is no job 5). Regardless of the reason, these errors should present the
+    user with a generic "page not found" page.
+
+** Error representation
+
+*** Internal errors
+
+    The application should throw an exception when such an error is encountered.
+    ~controllers.ErrorHandler~ is then responsible for logging the error, as well
+    as displaying the error page to the user.
+
+*** Validation errors
+
+    These should be represented monadically in a way that makes the causes obvious.
+    For example, ~UserManager.login~ can either succeed or fail with no additional
+    error information, so its return value is wrapped as an ~Option[A]~. On the other
+    hand, ~UserManager.register~ can fail for multiple non-obvious reasons that should
+    be communicated to the user, so it returns an ~Either[Error, Success]~, where
+    ~Error~ is a custom ADT containing the reasons that it can fail.
+
+*** Navigation errors
+
+    Navigation errors are represented by throwing the special exception
+    ~NotFoundException~.
+
+    However, it's important to note that navigation errors *only* belong in
+    the Controller layer and above, trying to fetch a missing job is a
+    validation error that the navigation error /reinterprets/ as a
+    navigation error in specific circumstances.
+
+    This can be done by mixing in ~controllers.NotFoundHelpers~, which adds
+    ~getOr404: A~ to ~Option[A]~, as well as ~getOr404: Future[A]~ to
+    ~Future[Option[A]]~.
