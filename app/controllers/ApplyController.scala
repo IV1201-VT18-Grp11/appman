@@ -1,5 +1,7 @@
 package controllers
 
+import java.time.Instant
+import java.util.Date
 import javax.inject._
 
 import controllers.ApplyController.ApplyForm
@@ -9,6 +11,7 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import sun.security.jca.GetInstance.Instance
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -27,13 +30,11 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
     with Security {
 
   private val applyForm = Form(
-    mapping("username"        -> nonEmptyText,
-            "password"        -> nonEmptyText,
-            "confirmPassword" -> nonEmptyText,
-            "firstname"       -> nonEmptyText,
-            "surname"         -> nonEmptyText,
-            "email"           -> nonEmptyText,
-    )(ApplyForm.apply)(ApplyForm.unapply)
+    mapping("description"      -> text,
+            "expertise"        -> text,
+            "experience"       -> text,
+            "availabilityFrom" -> date,
+            "availabilityTo"   -> date)(ApplyForm.apply)(ApplyForm.unapply)
   )
 
   private def showApplyForm(
@@ -62,10 +63,9 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
 }
 
 object ApplyController {
-  case class ApplyForm(username: String,
-                       password: String,
-                       confirmPassword: String,
-                       firstname: String,
-                       surname: String,
-                       email: String)
+  case class ApplyForm(description: String,
+                       expertise: String,
+                       experience: String,
+                       availabilityFrom: Instant,
+                       availabilityTo: Instant)
 }

@@ -10,7 +10,7 @@
         <fieldset>
             <h1 class="h3 mb-3 font-weight-normal">Apply for the job</h1>
             @helper.textarea(form("description"), 'class -> "form-control", 'placeholder -> "Please write the description here...", '_label -> "A short description of yourself")
-            @helper.select(form("AreaOfExpertise"), possibleCompetences.map(competence => (competence.id.raw.toString, competence.name)), 'multiple -> true, '_label -> "Your area of expertise")
+            @helper.select(form("expertise"), possibleCompetences.map(competence => (competence.id.raw.toString, competence.name)), 'multiple -> true, '_label -> "Your area of expertise")
             @helper.inputText(form("experience"), '_label -> "Your years of experience")
             @helper.inputDate(form("availabilityFrom"),'_label -> "Your available periods")
             @helper.inputDate(form("availabilityTo"))
