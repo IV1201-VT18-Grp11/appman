@@ -17,14 +17,15 @@ import scala.concurrent.{ExecutionContext, Future}
   * application's home page.
   */
 @Singleton
-class ApplyController @Inject()(implicit cc: ControllerComponents,
-                                val userManager: UserManager,
-                                executionContext: ExecutionContext,
-                                applicationManager: ApplicationManager,
-                                jobManager: JobManager)
+class JobController @Inject()(implicit cc: ControllerComponents,
+                              val userManager: UserManager,
+                              executionContext: ExecutionContext,
+                              applicationManager: ApplicationManager,
+                              jobManager: JobManager)
     extends AbstractController(cc)
     with I18nSupport
-    with Security {
+    with Security
+    with NotFoundHelpers {
 
   private val applyForm = Form(
     mapping("username"        -> nonEmptyText,
@@ -36,21 +37,24 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
     )(ApplyForm.apply)(ApplyForm.unapply)
   )
 
-  private def showApplyForm(
-    form: Form[ApplyForm]
-  )(implicit req: RequestHeader) =
+  private def showApplyForm(form: Form[ApplyForm],
+                            jobId: Id[Job])(implicit req: RequestHeader) =
     for {
       competences <- applicationManager.allCompetences()
-    } yield views.html.jobapply(form, competences)
+      (job, _)    <- jobManager.find(jobId).getOr404
+    } yield views.html.jobapply(form, job, competences)
 
-  def jobapply() = userAction().async { implicit request: Request[AnyContent] =>
-    showApplyForm(applyForm).map(Ok(_))
+  def applyForJob(jobId: Id[Job]) = userAction().async {
+    implicit request: Request[AnyContent] =>
+      showApplyForm(applyForm, jobId).map(Ok(_))
   }
-  def doApply() = userAction().async { implicit request: Request[AnyContent] =>
-    applyForm
-      .bindFromRequest()
-      .fold(formWithErrors => showApplyForm(formWithErrors).map(BadRequest(_)),
-            application => ???)
+  def doApplyForJob(jobId: Id[Job]) = userAction().async {
+    implicit request: Request[AnyContent] =>
+      applyForm
+        .bindFromRequest()
+        .fold(formWithErrors =>
+                showApplyForm(formWithErrors, jobId).map(BadRequest(_)),
+              application => ???)
   }
 
   def jobList() = userAction().async { implicit request: Request[AnyContent] =>
@@ -62,7 +66,7 @@ class ApplyController @Inject()(implicit cc: ControllerComponents,
   def jobDescription(jobId: Id[Job]) = userAction().async {
     implicit request: Request[AnyContent] =>
       for {
-        (job, field) <- jobManager.find(jobId).map(_.get)
+        (job, field) <- jobManager.find(jobId).getOr404
       } yield Ok(views.html.jobdescription(job))
   }
 }
