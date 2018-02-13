@@ -43,7 +43,7 @@ trait UserManager {
     firstname: String,
     surname: String,
     email: String
-  ): Future[Either[Seq[UserManager.RegistrationError], User]]
+  ): Future[Either[Seq[UserManager.RegistrationError], UserSession]]
 }
 
 object UserManager {
@@ -103,7 +103,7 @@ class DbUserManager @Inject()(
                 .returning(UserSessions) += user.id
           )
         )
-      } yield session)
+      } yield session).transactionally
     }
     task.foreach {
       case Some(session) =>
@@ -120,7 +120,7 @@ class DbUserManager @Inject()(
     firstname: String,
     surname: String,
     email: String
-  ): Future[Either[Seq[UserManager.RegistrationError], User]] = {
+  ): Future[Either[Seq[UserManager.RegistrationError], UserSession]] = {
     val task = db.run {
       (for {
         userId <- Users.returning(Users.map(_.id)) += User(
@@ -131,8 +131,8 @@ class DbUserManager @Inject()(
           surname = surname,
           email = email
         )
-        user <- Users.filter(_.id === userId).result.head
-      } yield user).transactionally.asTry.flatMap {
+        session <- UserSessions.map(_.userId).returning(UserSessions) += userId
+      } yield session).transactionally.asTry.flatMap {
         case Success(user) =>
           DBIO.successful(Right(user))
         case Failure(exception) =>

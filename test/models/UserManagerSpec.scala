@@ -29,13 +29,15 @@ class UserManagerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
   "calling register()" when {
     "the username is not taken" should {
       "return the user" in {
-        await(
-          inject[UserManager].register("to_be_created",
-                                       "1234",
-                                       "Laser",
-                                       "Kitten",
-                                       "kitten1@kittens.org")
-        ).right.get.username mustBe "to_be_created"
+        val userManager = inject[UserManager]
+        val session = await(
+          userManager.register("to_be_created",
+                               "1234",
+                               "Laser",
+                               "Kitten",
+                               "kitten1@kittens.org")
+        ).right.get
+        await(userManager.find(session.user)).value.username mustBe "to_be_created"
       }
     }
 
