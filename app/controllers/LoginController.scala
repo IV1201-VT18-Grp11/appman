@@ -95,18 +95,14 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
                     creds.email,
                     creds.firstname,
                     creds.surname)
-          .flatMap {
-            case Right(user) =>
-              userManager.login(creds.username, creds.password).map { session =>
-                val redirectTarget =
-                  target
-                    .filter(validateRedirect)
-                    .getOrElse(routes.HomeController.index().url) // the home page will be the standard alternative
-                setUserSession(Redirect(redirectTarget), request, session.get) // if we succeed to register/login we will go the desired page
-                  .flashing(
-                    "message" -> "You have been registered and logged in"
-                  )
-              }
+          .map {
+            case Right(session) =>
+              val redirectTarget =
+                target
+                  .filter(validateRedirect)
+                  .getOrElse(routes.HomeController.index().url) // the home page will be the standard alternative
+              setUserSession(Redirect(redirectTarget), request, session) // if we succeed to register/login we will go the desired page
+                .flashing("message" -> "You have been registered and logged in")
             case Left(reasons) =>
               val failedForm = reasons.foldRight(form) {
                 case (UserManager.RegistrationError.UsernameTaken, f) =>
@@ -114,9 +110,7 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
                 case (UserManager.RegistrationError.EmailTaken, f) =>
                   f.withError("email", "The email is already taken")
               }
-              Future.successful(
-                BadRequest(views.html.register(failedForm, target))
-              ) // if we fail to complete the registration, the page will be reloaded
+              BadRequest(views.html.register(failedForm, target))
           }
       }
   }
