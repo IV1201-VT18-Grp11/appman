@@ -5,7 +5,7 @@ import scala.concurrent.{ExecutionContext, Future}
 trait NotFoundHelpers {
   implicit class NotFoundOption[A](value: Option[A]) {
     def getOr404: A =
-      value.getOrElse(throw new NotFoundHelpers.NotFoundException())
+      value.getOrElse(throw new NotFoundException())
   }
 
   implicit class NotFoundFutureOption[A](value: Future[Option[A]]) {
@@ -14,6 +14,4 @@ trait NotFoundHelpers {
   }
 }
 
-object NotFoundHelpers {
-  class NotFoundException extends Exception("The value was not found")
-}
+class NotFoundException extends Exception("The value was not found")
