@@ -1,5 +1,6 @@
 package controllers
 
+import database.Role
 import javax.inject._
 
 import controllers.LoginController.{LoginForm, RegisterForm}
@@ -39,17 +40,17 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
                  data => data.password == data.confirmPassword)
   )
 
-  def login(target: Option[String]) = userAction.apply {
+  def login(target: Option[String]) = userAction().apply {
     implicit request: Request[AnyContent] =>
       Ok(views.html.login(loginForm, target))
   }
 
-  def register(target: Option[String]) = userAction.apply {
+  def register(target: Option[String]) = userAction().apply {
     implicit request: Request[AnyContent] =>
       Ok(views.html.register(registerForm, target))
   }
 
-  def logout() = userRequiredAction.apply {
+  def logout() = userAction(Role.User).apply {
     implicit request: Request[AnyContent] =>
       clearUser(Redirect(routes.HomeController.index()), request)
         .flashing("message" -> "You have been logged out")
@@ -58,7 +59,7 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
   private def validateRedirect(target: String) =
     target.startsWith("/") && !target.startsWith("//")
 
-  def doLogin(target: Option[String]) = userAction.async {
+  def doLogin(target: Option[String]) = userAction().async {
     implicit request: Request[AnyContent] =>
       val form = loginForm.bindFromRequest()
       if (form.hasErrors) {
@@ -81,7 +82,7 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
       }
   }
 
-  def doRegister(target: Option[String]) = userAction.async {
+  def doRegister(target: Option[String]) = userAction().async {
     implicit request: Request[AnyContent] =>
       val form = registerForm.bindFromRequest()
       if (form.hasErrors) {

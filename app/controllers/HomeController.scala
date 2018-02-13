@@ -29,12 +29,7 @@ class HomeController @Inject()(implicit jobManager: JobManager,
     * will be called when the application receives a `GET` request with
     * a path of `/`.
     */
-  def index() = userAction.apply { implicit request: Request[AnyContent] =>
+  def index() = userAction().apply { implicit request: Request[AnyContent] =>
     Ok(views.html.index())
-  }
-  def joblist() = userAction.async { implicit request: Request[AnyContent] =>
-    for {
-      listings <- jobManager.jobListings()
-    } yield Ok(views.html.joblist(listings))
   }
 }

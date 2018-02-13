@@ -12,8 +12,8 @@ GET         /register              controllers.LoginController.register(target: 
 POST        /register              controllers.LoginController.doRegister(target: Option[String])
 GET         /logout                controllers.LoginController.logout
 
-GET         /jobs/                 controllers.HomeController.joblist
-GET         /jobs/:jobId/             controllers.ApplyController.jobDescription(jobId: Id[Job])
+GET         /jobs/                 controllers.ApplyController.jobList
+GET         /jobs/:jobId/          controllers.ApplyController.jobDescription(jobId: Id[Job])
 GET         /jobs/_id/apply        controllers.ApplyController.jobapply
 POST        /jobs/_id/apply        controllers.ApplyController.doApply
 # Map static resources from the /public folder to the /assets URL path

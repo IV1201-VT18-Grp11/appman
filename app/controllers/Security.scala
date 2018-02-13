@@ -66,24 +66,26 @@ trait Security extends SecurityHelpers {
         )
     }
 
-  def requireUser(implicit ec: ExecutionContext) = new ActionFilter[Request] {
-    override def executionContext = ec
-    override def filter[A](request: Request[A]) = Future.successful {
-      getUser(request) match {
-        case Some(_) => None
-        case None =>
+  def requireRole(role: Role)(implicit ec: ExecutionContext) =
+    new ActionFilter[Request] {
+      override def executionContext = ec
+      override def filter[A](request: Request[A]) = Future.successful {
+        if (request.userRole >= role) {
+          None
+        } else {
           Some(
             Results.Redirect(
               routes.LoginController.login(target = Some(request.uri))
             )
           )
+        }
       }
     }
-  }
 
-  def userAction(implicit ec: ExecutionContext) = checkUser compose Action
-  def userRequiredAction(implicit ec: ExecutionContext) =
-    requireUser compose checkUser compose Action
+  def userAction(
+    requiredRole: Role = Role.Anonymous
+  )(implicit ec: ExecutionContext) =
+    requireRole(requiredRole) compose checkUser compose Action
 
   def findUser(
     request: RequestHeader
