@@ -1,4 +1,4 @@
-@(listings: Seq[(JobApplication, Job, User)])(implicit req: RequestHeader)
+@(applications: Seq[(JobApplication, Job, User)])(implicit req: RequestHeader)
 
     @main("List of applications", Page.ApplicationList) {
     <br/>
@@ -10,14 +10,16 @@
                     <th>Application No.</th>
                     <th>Username</th>
                     <th>Job Name</th>
+                    <th>Apply Date</th>
                 </tr>
             </thead>
             <tbody>
-            @for((listing, job, user) <- listings) {
+            @for((application, job, user) <- applications) {
                 <tr>
-                    <td>@listing.id.raw</td>
+                    <td>@application.id.raw</td>
                     <td>@user.username</td>
                     <td><a href="@routes.JobController.jobDescription(job.id)">@job.name</a></td>
+                    <td>@DateFormat.formatInstant(application.date)</td>
                 </tr>
             }
             </tbody>
