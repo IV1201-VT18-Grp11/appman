@@ -1,20 +1,22 @@
 @(job: Job)(implicit req: RequestHeader)
-
 @main("Job description", Page.Other) {
+    <br/>
     <h1>@job.name</h1>
-    <h5> From</h5>
-    <p>@job.fromDate</p>
-    <h5> To </h5>
-    <p>@job.toDate</p>
-    <h5>Location</h5>
-    <p>@job.country</p>
-    <h5>About</h5>
-    <p>@job.description</p>
-    <h5>Requirements</h5>
-    <p>@job.requirement</p>
-
+    <dl>
+        <dt>From</dt>
+        <dd>@job.fromDate</dd>
+        <dt>To</dt>
+        <dd>@job.toDate</dd>
+        <dt>Location</dt>
+        <dd>@job.country</dd>
+        <dt>About</dt>
+        <dd>@job.description</dd>
+        <dt>Requirement</dt>
+        <dd>@job.requirement</dd>
+    </dl>
     <div>
         <a href="@routes.JobController.applyForJob(job.id)" id="apply" class="btn btn-lg btn-primary">Apply</a>
     </div>
+    <br/>
 
 }

@@ -9,15 +9,55 @@
         @helper.CSRF.formField
         <fieldset>
             <h1 class="h3 mb-3 font-weight-normal">Apply to be a @job.name!</h1>
-            @helper.textarea(form("description"), 'class -> "form-control", '_label -> "Why are you a good fit for this job?")
-            @helper.repeat(form("competences")) { competence =>
-                @helper.select(competence("id"), possibleCompetences.map(competence => (competence.id.raw.toString, competence.name)), '_label -> "Competence")
-                @helper.inputText(competence("experienceYears"), '_label -> "Years of experience")
+
+           @helper.textarea(form("description"),'class -> "form-control", '_label -> "Why are you a good fit for this job?")
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Competences</th>
+                    <th>Years of Experience</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for((competence, i) <- possibleCompetences.zipWithIndex) {
+                <tr>
+                    <td>@competence.name</td>
+                    <td>@helper.inputText(form(s"competences[$i]")("experienceYears"),'class -> "form-control") </td>
+                </tr>
             }
-            @helper.repeat(form("availabilities")) { availability =>
+            </tbody>
+            </table>
+
+
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @helper.repeat(form("availabilities")) { availability =>
+                    <tr>
+                        <td>@helper.inputDate(availability("from"), '_label -> "Availability begins at")</td>
+                        <td>@helper.inputDate(availability("to"), '_label -> "until") </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+
+            @* @helper.repeat(form("competences")) { competence =>
+            @helper.select(competence("id"), possibleCompetences.map(competence => (competence.id.raw.toString, competence.name)), '_label -> "Competence")
+            @helper.inputText(competence("experienceYears"), '_label -> "Years of experience")
+            } *@
+            @* @helper.repeat(form("availabilities")) { availability =>
                 @helper.inputDate(availability("from"),'_label -> "Availability begins at")
                 @helper.inputDate(availability("to"), '_label -> "until")
-            }
+            } *@
+
+
+
+
             <button id="apply" class="btn btn-lg btn-primary btn-block" type="submit">Apply</button>
         </fieldset>
     }

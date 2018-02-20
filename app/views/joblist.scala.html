@@ -1,27 +1,29 @@
 @(listings: Seq[(database.Job, database.Field)])(implicit req: RequestHeader)
 
-    @main("List of jobs", Page.JobList) {
-        <h1>Here we will collect all the available jobs</h1>
-        <table style="width: 100%" border="1">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Field</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Country</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for((listing, field) <- listings) {
-                    <tr>
-                        <td><a href="@routes.JobController.jobDescription(listing.id)">@listing.name</a></td>
-                        <td>@field.name</td>
-                        <td>@listing.fromDate</td>
-                        <td>@listing.toDate</td>
-                        <td>@listing.country</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+@main("List of jobs", Page.JobList) {
+    <br/>
+    <h1>Here we will collect all the available jobs</h1>
+    <br/>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Field</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Country</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for((listing, field) <- listings) {
+            <tr>
+                <td><a href="@routes.JobController.jobDescription(listing.id)">@listing.name</a></td>
+                <td>@field.name</td>
+                <td>@listing.fromDate</td>
+                <td>@listing.toDate</td>
+                <td>@listing.country</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
