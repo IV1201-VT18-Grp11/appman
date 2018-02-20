@@ -72,12 +72,14 @@ trait Security extends SecurityHelpers {
       override def filter[A](request: Request[A]) = Future.successful {
         if (request.userRole >= role) {
           None
-        } else {
+        } else if (request.user.isEmpty) {
           Some(
             Results.Redirect(
               routes.LoginController.login(target = Some(request.uri))
             )
           )
+        } else {
+          Some(Results.Forbidden(views.html.error.forbidden()(request)))
         }
       }
     }

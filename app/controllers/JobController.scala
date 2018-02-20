@@ -1,6 +1,6 @@
 package controllers
 
-import database.JobApplication
+import database.{JobApplication, Role}
 import java.time.LocalDate
 import javax.inject._
 
@@ -52,12 +52,12 @@ class JobController @Inject()(implicit cc: ControllerComponents,
       (job, _)    <- jobManager.find(jobId).getOr404
     } yield views.html.jobapply(form, job, competences)
 
-  def applyForJob(jobId: Id[Job]) = userAction().async {
+  def applyForJob(jobId: Id[Job]) = userAction(Role.Applicant).async {
     implicit request: Request[AnyContent] =>
       showApplyForm(applyForm, jobId).map(Ok(_))
   }
 
-  def doApplyForJob(jobId: Id[Job]) = userAction().async {
+  def doApplyForJob(jobId: Id[Job]) = userAction(Role.Applicant).async {
     implicit request: Request[AnyContent] =>
       applyForm
         .bindFromRequest()
@@ -102,10 +102,10 @@ class JobController @Inject()(implicit cc: ControllerComponents,
 
   def applicationDescription(jobId: Id[Job], appId: Id[JobApplication]) = TODO
 
-  def applicationList() = userAction().async {
+  def applicationList() = userAction(Role.Applicant).async {
     implicit request: Request[AnyContent] =>
       for {
-        listings <- jobManager.applicationListings()
+        listings <- applicationManager.all(request.user.get)
       } yield Ok(views.html.applicationlist(listings))
   }
 }

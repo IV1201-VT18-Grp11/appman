@@ -26,7 +26,7 @@ pipeline {
 
         stage('Running tests') {
             steps {
-                sh "xvfb-run sbt test || true"
+                sh "xvfb-run sbt coverage test coverageReport || true"
             }
         }
     }
@@ -34,6 +34,7 @@ pipeline {
     post {
         always {
             junit "target/test-report/**/*.xml"
+            step([$class: 'ScoveragePublisher', reportDir: 'target/scala-2.12/scoverage-report', reportFile: 'scoverage.xml'])
         }
     }
 }

@@ -25,8 +25,8 @@ VALUES (2, 2, 'Sous Chef', '2018-03-01', '2018-10-01', 'Denmark',
         'Yummy', 'Cooking skills');
 
 
-INSERT INTO applications (id, "user", job, description)
-VALUES (1, 1, 1, 'I am awesome');
+INSERT INTO applications (id, "user", job, description, date)
+VALUES (1, 1, 1, 'I am awesome', now());
 
 INSERT INTO applications (id, "user", job, description)
 VALUES (2, 1, 2, 'I am great');

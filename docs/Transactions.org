@@ -1,0 +1,16 @@
+* Transaction Strategy
+
+All mutating SQL DML queries (UPDATE/INSERT/DELETE) shall be contained inside a
+transaction, which is done at the model layer. A single HTTP request shall not
+cause more than one transaction to be executed. This also means that each HTTP
+request shall not cause more than one model layer action.
+
+** Transaction Length
+
+Transactions should be as short as possible, but also include all prerequisite
+fetches.
+
+For example, the UserManager.login action's transaction includes fetching the
+User row, verifying the password hash, and creating the UserSession row.
+However, any "shape" validation (such as requiring a minimum password length
+or complexity) shall be done before the transaction is initiated.

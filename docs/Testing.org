@@ -1,0 +1,25 @@
+* Testing Strategy
+
+  All implemented use cases from the application description (as well as any
+  others) shall have acceptance tests covering the entire flow. These shall also
+  cover reasonable failure conditions, such as trying to register with a taken
+  username, or logging in with an incorrect password. These tests shall follow
+  the naming convention ~controllers.${name}FlowSpec~.
+
+  All exposed HTTP endpoints that do not only show static information shall have
+  integration tests covering all success and failure cases. These tests follow
+  the naming convention ~controllers.${controller}Spec~.
+
+  All non-trivial public methods shall have accompanying tests documenting the
+  success and failure cases. These are located in classes following the naming
+  convention ~${className}Spec~.
+
+** Continuous Integration
+
+   Jenkins automatically runs all tests every time a new commit is pushed.
+
+** Coverage Tracking
+
+   The test coverage is tracked by Jenkins for each build.
+
+   [[https://ci.nullable.se/job/IV1201/job/appman/job/master/scoverage/trendGraph/png]]
