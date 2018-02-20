@@ -55,4 +55,4 @@ play.sbt.routes.RoutesKeys.routesImport ++= Seq(
   "utils.Binders._"
 )
 
-coverageExcludedPackages := "controllers\\.javascript\\..+;controllers\\.Reverse.+"
+coverageExcludedPackages := "controllers\\.javascript\\..+;controllers\\.Reverse.+;router\\..router+"
