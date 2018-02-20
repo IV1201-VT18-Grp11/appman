@@ -28,6 +28,10 @@ import scala.concurrent.Future
 trait ApplicationManager {
   def allCompetences(): Future[Seq[Competence]]
 
+  def find(id: Id[JobApplication],
+           jobId: Id[Job],
+           visitingUser: User): Future[Option[JobApplication]]
+
   def create(
     user: Id[User],
     job: Id[Job],
@@ -49,6 +53,15 @@ class DbApplicationManager @Inject()(
       .filter(_.userId === user.id || user.role >= Role.Employee)
 
   def allCompetences(): Future[Seq[Competence]] = db.run(Competences.result)
+
+  def find(id: Id[JobApplication],
+           jobId: Id[Job],
+           visitingUser: User): Future[Option[JobApplication]] = db.run {
+    visibleToUser(visitingUser)
+      .filter(app => app.id === id && app.jobId === jobId)
+      .result
+      .headOption
+  }
 
   def create(
     user: Id[User],

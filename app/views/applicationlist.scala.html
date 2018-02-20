@@ -17,7 +17,7 @@
                 <tr>
                     <td>@listing.id.raw</td>
                     <td>@user.username</td>
-                    <td>@job.name</td>
+                    <td><a href="@routes.JobController.jobDescription(job.id)">@job.name</a></td>
                 </tr>
             }
             </tbody>
