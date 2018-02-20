@@ -39,7 +39,7 @@ libraryDependencies ++= Seq(
 TwirlKeys.templateImports ++= Seq(
   "controllers.Security.UserReqHeader",
   "database._",
-  "views.Page"
+  "views._"
 )
 
 // Adds additional packages into conf/routes
