@@ -13,6 +13,7 @@ import database.{
   JobApplication,
   JobApplications,
   PgProfile,
+  Role,
   User
 }
 import java.time.LocalDate
@@ -34,6 +35,8 @@ trait ApplicationManager {
     competences: Map[Id[Competence], Float],
     availabilities: Seq[(LocalDate, LocalDate)]
   ): Future[Id[JobApplication]]
+
+  def all(visitingUser: User): Future[Seq[(JobApplication, Job, User)]]
 }
 
 class DbApplicationManager @Inject()(
@@ -41,6 +44,10 @@ class DbApplicationManager @Inject()(
   executionContext: ExecutionContext
 ) extends ApplicationManager
     with HasDatabaseConfigProvider[PgProfile] {
+  private def visibleToUser(user: User) =
+    JobApplications
+      .filter(_.userId === user.id || user.role >= Role.Employee)
+
   def allCompetences(): Future[Seq[Competence]] = db.run(Competences.result)
 
   def create(
@@ -68,4 +75,15 @@ class DbApplicationManager @Inject()(
       }
     } yield id).transactionally
   }
+
+  override def all(
+    visitingUser: User
+  ): Future[Seq[(JobApplication, Job, User)]] =
+    db.run {
+      (for {
+        jobApplication <- visibleToUser(visitingUser)
+        job            <- jobApplication.job
+        user           <- jobApplication.user
+      } yield (jobApplication, job, user)).result
+    }
 }

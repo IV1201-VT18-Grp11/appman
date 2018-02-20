@@ -105,7 +105,7 @@ class JobController @Inject()(implicit cc: ControllerComponents,
   def applicationList() = userAction().async {
     implicit request: Request[AnyContent] =>
       for {
-        listings <- jobManager.applicationListings()
+        listings <- applicationManager.all(request.user.get)
       } yield Ok(views.html.applicationlist(listings))
   }
 }
