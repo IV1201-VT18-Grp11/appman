@@ -26,7 +26,7 @@ pipeline {
 
         stage('Running tests') {
             steps {
-                sh "xvfb-run sbt coverage test || true"
+                sh "xvfb-run sbt coverage test coverageReport || true"
             }
         }
     }
