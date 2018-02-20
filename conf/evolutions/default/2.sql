@@ -28,8 +28,8 @@ VALUES (2, 2, 'Sous Chef', '2018-03-01', '2018-10-01', 'Denmark',
 INSERT INTO applications (id, "user", job, description, date)
 VALUES (1, 1, 1, 'I am awesome', now());
 
-INSERT INTO applications (id, "user", job, description)
-VALUES (2, 1, 2, 'I am great');
+INSERT INTO applications (id, "user", job, description, date)
+VALUES (2, 1, 2, 'I am great', now());
 
 
 INSERT INTO availabilities (id, application, from_date, to_date)
