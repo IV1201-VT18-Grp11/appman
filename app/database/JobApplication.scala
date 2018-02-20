@@ -20,7 +20,7 @@ class JobApplications(tag: Tag)
   def userId      = column[Id[User]]("user")
   def jobId       = column[Id[Job]]("job")
   def description = column[String]("description")
-  def date = column[Instant]("date")
+  def date        = column[Instant]("date")
 
   def user = foreignKey("user_fk", userId, Users)(_.id)
   def job  = foreignKey("job_fk", jobId, Jobs)(_.id)
