@@ -12,24 +12,44 @@ VALUES (2, 'donald_duck', 'Donald', 'Duck',
 INSERT INTO fields (id, name)
 VALUES (1, 'Software');
 
+INSERT INTO fields (id, name)
+VALUES (2, 'Food and Wine');
+
 INSERT INTO jobs (id, field, name, from_date, to_date, country, description, requirement)
 VALUES (1, 1, 'Scala Magician', '2018-02-01', '2018-10-01', 'Sweden',
         'Wonderful experience that will make you grow as a developer.',
-        'Inner beauty.'
-);
+        'Inner beauty.');
+
+INSERT INTO jobs (id, field, name, from_date, to_date, country, description, requirement)
+VALUES (2, 2, 'Sous Chef', '2018-03-01', '2018-10-01', 'Denmark',
+        'Yummy', 'Cooking skills');
 
 
 INSERT INTO applications (id, "user", job, description)
 VALUES (1, 1, 1, 'I am awesome');
 
+INSERT INTO applications (id, "user", job, description)
+VALUES (2, 1, 2, 'I am great');
+
+
 INSERT INTO availabilities (id, application, from_date, to_date)
 VALUES (1, 1, '2018-01-01', '2019-01-01');
+
+
+INSERT INTO availabilities (id, application, from_date, to_date)
+VALUES (2, 2, '2018-01-01', '2019-01-01');
 
 INSERT INTO competences (id, name)
 VALUES (1, 'IT');
 
+INSERT INTO competences (id, name)
+VALUES (2, 'Cooking');
+
 INSERT INTO application_competences (competence, years_of_experience, application)
 VALUES (1, 11, 1);
+
+INSERT INTO application_competences (competence, years_of_experience, application)
+VALUES (2, 3, 2);
 
 ALTER SEQUENCE users_id_seq
 MINVALUE 3
