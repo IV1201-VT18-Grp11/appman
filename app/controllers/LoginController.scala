@@ -90,11 +90,11 @@ class LoginController @Inject()(implicit cc: ControllerComponents,
       } else {
         val creds = form.value.get
         userManager
-          .register(creds.username,
-                    creds.password,
-                    creds.email,
-                    creds.firstname,
-                    creds.surname)
+          .register(username = creds.username,
+                    password = creds.password,
+                    firstname = creds.firstname,
+                    surname = creds.surname,
+                    email = creds.email)
           .map {
             case Right(session) =>
               val redirectTarget =

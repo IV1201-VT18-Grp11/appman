@@ -23,7 +23,7 @@ class ScryptPasswordHasher extends PasswordHasher {
   logger.info("Seeding")
   rng.addSeedMaterial {
     val seeder = SecureRandom.getInstanceStrong
-    val seed   = Array.ofDim[Byte](1024)
+    val seed   = Array.ofDim[Byte](64)
     seeder.nextBytes(seed)
     seed
   }

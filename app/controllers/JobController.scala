@@ -100,7 +100,15 @@ class JobController @Inject()(implicit cc: ControllerComponents,
       } yield Ok(views.html.jobdescription(job))
   }
 
-  def applicationDescription(jobId: Id[Job], appId: Id[JobApplication]) = TODO
+  def applicationDescription(jobId: Id[Job], appId: Id[JobApplication]) =
+    userAction(Role.Applicant).async { implicit request: Request[AnyContent] =>
+      for {
+        application <- applicationManager
+          .find(appId, jobId, request.user.get)
+          .getOr404
+      } yield Ok(views.html.applicationdescription(application))
+
+    }
 
   def applicationList() = userAction(Role.Applicant).async {
     implicit request: Request[AnyContent] =>

@@ -163,9 +163,9 @@ class DbUserManager @Inject()(
       }
     }
     task.foreach {
-      case Right(user) =>
+      case Right(session) =>
         logger.info(
-          s"User $username was successfully created, with id ${user.id.raw}"
+          s"User $username was successfully created, with id ${session.user.raw}"
         )
       case Left(reason) =>
         logger.info(s"Failed to create $username: $reason")
