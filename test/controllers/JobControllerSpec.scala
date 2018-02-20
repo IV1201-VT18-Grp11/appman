@@ -10,6 +10,19 @@ import utils.DbOneAppPerTest
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class JobControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
+  "trying to view the available job list" should {
+    "show all available jobs" in {
+      val request = FakeRequest(routes.JobController.jobList())
+      val page    = route(app, request).get
+
+      status(page) mustBe OK
+      contentAsString(page) must (
+        include("Scala Magician")
+          and include(routes.JobController.jobDescription(Id[Job](1)).url)
+      )
+    }
+  }
+
   "trying to view a job listing" when {
     "the job exists" should {
       "show the job details" in {
