@@ -47,8 +47,8 @@ CREATE TABLE applications (
 CREATE TABLE availabilities (
   id          SERIAL NOT NULL PRIMARY KEY,
   application INTEGER REFERENCES applications,
-  from_date   DATE,
-  to_date     DATE
+  "from"      DATE,
+  "to"        DATE
 );
 
 CREATE TABLE competences (

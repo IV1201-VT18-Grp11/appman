@@ -32,11 +32,11 @@ INSERT INTO applications (id, "user", job, description, date)
 VALUES (2, 1, 2, 'I am great', now());
 
 
-INSERT INTO availabilities (id, application, from_date, to_date)
+INSERT INTO availabilities (id, application, "from", "to")
 VALUES (1, 1, '2018-01-01', '2019-01-01');
 
 
-INSERT INTO availabilities (id, application, from_date, to_date)
+INSERT INTO availabilities (id, application, "from", "to")
 VALUES (2, 2, '2018-01-01', '2019-01-01');
 
 INSERT INTO competences (id, name)
@@ -55,23 +55,20 @@ ALTER SEQUENCE users_id_seq
 MINVALUE 3
 START WITH 3 RESTART WITH 3;
 ALTER SEQUENCE availabilities_id_seq
-MINVALUE 2
-START WITH 2 RESTART WITH 2;
+MINVALUE 3
+START WITH 3 RESTART WITH 3;
 ALTER SEQUENCE fields_id_seq
-MINVALUE 2
-START WITH 2 RESTART WITH 2;
+MINVALUE 3
+START WITH 3 RESTART WITH 3;
 ALTER SEQUENCE jobs_id_seq
-MINVALUE 2
-START WITH 2 RESTART WITH 2;
+MINVALUE 3
+START WITH 3 RESTART WITH 3;
 ALTER SEQUENCE applications_id_seq
-MINVALUE 2
-START WITH 2 RESTART WITH 2;
-ALTER SEQUENCE availabilities_id_seq
-MINVALUE 2
-START WITH 2 RESTART WITH 2;
+MINVALUE 3
+START WITH 3 RESTART WITH 3;
 ALTER SEQUENCE competences_id_seq
-MINVALUE 2
-START WITH 2 RESTART WITH 2;
+MINVALUE 3
+START WITH 3 RESTART WITH 3;
 
 
 # --- !Downs
