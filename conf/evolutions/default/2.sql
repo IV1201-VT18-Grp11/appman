@@ -19,8 +19,8 @@ VALUES (1, 1, 'Scala Magician', '2018-02-01', '2018-10-01', 'Sweden',
 );
 
 
-INSERT INTO applications (id, "user", job, description)
-VALUES (1, 1, 1, 'I am awesome');
+INSERT INTO applications (id, "user", job, description, date)
+VALUES (1, 1, 1, 'I am awesome', now());
 
 INSERT INTO availabilities (id, application, from_date, to_date)
 VALUES (1, 1, '2018-01-01', '2019-01-01');

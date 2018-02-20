@@ -40,6 +40,7 @@ CREATE TABLE applications (
   id          SERIAL  NOT NULL PRIMARY KEY,
   "user"      INTEGER NOT NULL REFERENCES users,
   job         INTEGER NOT NULL REFERENCES jobs,
+  date        TIMESTAMP NOT NULL,
   description TEXT
 );
 

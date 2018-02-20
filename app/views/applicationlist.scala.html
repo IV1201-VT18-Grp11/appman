@@ -13,7 +13,7 @@
             <tbody>
             @for((listing, job, user) <- listings) {
                 <tr>
-                    <td>@listing.id</td>
+                    <td>@listing.id.raw</td>
                     <td>@user.username</td>
                     <td>@job.name</td>
                 </tr>
