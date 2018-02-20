@@ -35,7 +35,7 @@ class JobController @Inject()(implicit cc: ControllerComponents,
             "competences" -> seq(
               mapping(
                 "id"              -> id[Competence](longNumber),
-                "experienceYears" -> bigDecimal
+                "experienceYears" -> optional(bigDecimal)
               )(CompetenceField.apply)(CompetenceField.unapply)
             ),
             "availabilities" -> seq(
@@ -45,16 +45,29 @@ class JobController @Inject()(implicit cc: ControllerComponents,
             ))(ApplyForm.apply)(ApplyForm.unapply)
   )
 
+  private def applyFormWithCompetences(competences: Seq[Competence]) =
+    applyForm.copy(data = competences.zipWithIndex.map {
+      case ((competence, i)) =>
+        s"competences[${i}].id" -> competence.id.raw.toString
+    }.toMap)
+
   private def showApplyForm(form: Form[ApplyForm],
                             jobId: Id[Job])(implicit req: RequestHeader) =
     for {
       competences <- applicationManager.allCompetences()
-      (job, _)    <- jobManager.find(jobId).getOr404
-    } yield views.html.jobapply(form, job, competences)
+      competencesMap = competences
+        .map(competence => competence.id.raw.toString -> competence)
+        .toMap
+      (job, _) <- jobManager.find(jobId).getOr404
+    } yield views.html.jobapply(form, job, competencesMap)
 
   def applyForJob(jobId: Id[Job]) = userAction(Role.Applicant).async {
     implicit request: Request[AnyContent] =>
-      showApplyForm(applyForm, jobId).map(Ok(_))
+      for {
+        competences <- applicationManager.allCompetences()
+        form = applyFormWithCompetences(competences)
+        view <- showApplyForm(form, jobId)
+      } yield Ok(view)
   }
 
   def doApplyForJob(jobId: Id[Job]) = userAction(Role.Applicant).async {
@@ -70,9 +83,12 @@ class JobController @Inject()(implicit cc: ControllerComponents,
                       jobId,
                       application.description,
                       application.competences
-                        .map(
+                        .flatMap(
                           competence =>
-                            (competence.id, competence.experienceYears.toFloat)
+                            competence.experienceYears
+                              .map(_.toFloat)
+                              .filter(_ > 0)
+                              .map(years => (competence.id, years))
                         )
                         .toMap,
                       application.availabilities.map(
@@ -122,6 +138,7 @@ object JobController {
   case class ApplyForm(description: String,
                        competences: Seq[CompetenceField],
                        availabilities: Seq[AvailabilityField])
-  case class CompetenceField(id: Id[Competence], experienceYears: BigDecimal)
+  case class CompetenceField(id: Id[Competence],
+                             experienceYears: Option[BigDecimal])
   case class AvailabilityField(from: LocalDate, to: LocalDate)
 }

@@ -1,7 +1,7 @@
 @import helper._
 @import views.Page
 
-@(form: Form[JobController.ApplyForm], job: Job, possibleCompetences: Seq[Competence])(implicit messages: MessagesProvider, req: RequestHeader)
+@(form: Form[JobController.ApplyForm], job: Job, possibleCompetences: Map[String, Competence])(implicit messages: MessagesProvider, req: RequestHeader)
 
 @main("Apply", Page.Other) {
 
@@ -19,11 +19,16 @@
                 </tr>
             </thead>
             <tbody>
-            @for((competence, i) <- possibleCompetences.zipWithIndex) {
-                <tr>
-                    <td>@competence.name</td>
-                    <td>@helper.inputText(form(s"competences[$i]")("experienceYears"),'class -> "form-control") </td>
-                </tr>
+            @helper.repeat(form("competences"), min = 0) { competence =>
+                @defining(possibleCompetences(competence("id").value.get)) { competenceInfo =>
+                    <tr>
+                        <td>
+                            @competenceInfo.name
+                            <input type="hidden" name="@competence("id").name" value="@competenceInfo.id.raw"/>
+                        </td>
+                        <td>@helper.inputText(competence("experienceYears"),'class -> "form-control")</td>
+                    </tr>
+                }
             }
             </tbody>
             </table>
