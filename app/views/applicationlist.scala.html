@@ -1,9 +1,11 @@
 @(listings: Seq[(JobApplication, Job, User)])(implicit req: RequestHeader)
 
     @main("List of applications", Page.ApplicationList) {
+    <br/>
         <h1>All the applications</h1>
-        <table style="width: 100%" border="1">
-            <thead>
+    <br/>
+    <table class="table">
+        <thead class="thead-dark">
                 <tr>
                     <th>Application No.</th>
                     <th>Username</th>
