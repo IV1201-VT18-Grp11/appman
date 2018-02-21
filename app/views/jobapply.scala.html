@@ -45,7 +45,12 @@
                 @helper.repeat(form("availabilities")) { availability =>
                     <tr>
                         <td>@helper.inputDate(availability("from"), '_label -> "Availability begins at")</td>
-                        <td>@helper.inputDate(availability("to"), '_label -> "until") </td>
+                        <td>
+                            @helper.inputDate(availability("to"), '_label -> "until")
+                            @for(error <- availability.errors) {
+                                <dd class="error">@error.message</dd>
+                            }
+                        </td>
                     </tr>
                 }
                 </tbody>

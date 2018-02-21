@@ -42,6 +42,10 @@ class JobController @Inject()(implicit cc: ControllerComponents,
               mapping("from" -> localDate, "to" -> localDate)(
                 AvailabilityField.apply
               )(AvailabilityField.unapply)
+                .verifying(
+                  "The availability period must not end before it begins",
+                  availability => !availability.to.isBefore(availability.from)
+                )
             ))(ApplyForm.apply)(ApplyForm.unapply)
   )
 
