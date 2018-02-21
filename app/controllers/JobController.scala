@@ -141,6 +141,12 @@ class JobController @Inject()(implicit cc: ControllerComponents,
         applications <- applicationManager.all(request.user.get)
       } yield Ok(views.html.applicationlist(applications))
   }
+
+  def setApplicationStatus(jobId: Id[Job], appId: Id[JobApplication]) =
+    userAction().apply { implicit request: Request[AnyContent] =>
+      Ok(request.body.asFormUrlEncoded.get("status").head)
+      Redirect(routes.JobController.applicationDescription(jobId, appId))
+    }
 }
 
 object JobController {

@@ -7,7 +7,7 @@
     @main("Application Description ", Page.Other) {
 
         <br/>
-        <h1>Application number: @application.id </h1>
+        <h1>Application number: @application.id</h1>
         <br/>
         <dl>
             <dt>Full Name</dt>
@@ -45,6 +45,12 @@
                 }
                 </ul>
             </dd>
-
         </dl>
+        <div>
+            @helper.form(routes.JobController.setApplicationStatus(application.job, application.id)) {
+                @helper.CSRF.formField
+                <button type="submit" name="status" value="accept" class="btn btn-success">Accept</button>
+                <button type="submit" name="status" value="deny" class="btn btn-danger">Deny</button>
+            }
+        </div>
     }
