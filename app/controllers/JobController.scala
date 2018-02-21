@@ -147,9 +147,15 @@ class JobController @Inject()(implicit cc: ControllerComponents,
   }
 
   def setApplicationStatus(jobId: Id[Job], appId: Id[JobApplication]) =
-    userAction().apply { implicit request: Request[AnyContent] =>
-      Ok(request.body.asFormUrlEncoded.get("status").head)
-      Redirect(routes.JobController.applicationDescription(jobId, appId))
+    userAction(Role.Employee).async { implicit request: Request[AnyContent] =>
+      val accepted = request.body.asFormUrlEncoded.get("status").head match {
+        case "accept" => true
+        case "deny"   => false
+      }
+      for {
+        () <- applicationManager.setStatus(appId, accepted)
+      } yield
+        Redirect(routes.JobController.applicationDescription(jobId, appId))
     }
 }
 
