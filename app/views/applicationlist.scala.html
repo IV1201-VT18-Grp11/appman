@@ -11,6 +11,7 @@
                     <th>Username</th>
                     <th>Job Name</th>
                     <th>Apply Date</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,6 +21,11 @@
                     <td>@user.username</td>
                     <td><a href="@routes.JobController.jobDescription(job.id)">@job.name</a></td>
                     <td>@DateFormat.formatInstant(application.date)</td>
+                    <td>@application.accepted match {
+                        case None => { Pending }
+                        case Some(true) => { Accepted }
+                        case Some(false) => { Denied }
+                    }</td>
                 </tr>
             }
             </tbody>

@@ -42,6 +42,10 @@ class JobController @Inject()(implicit cc: ControllerComponents,
               mapping("from" -> localDate, "to" -> localDate)(
                 AvailabilityField.apply
               )(AvailabilityField.unapply)
+                .verifying(
+                  "The availability period must not end before it begins",
+                  availability => !availability.to.isBefore(availability.from)
+                )
             ))(ApplyForm.apply)(ApplyForm.unapply)
   )
 
@@ -141,6 +145,18 @@ class JobController @Inject()(implicit cc: ControllerComponents,
         applications <- applicationManager.all(request.user.get)
       } yield Ok(views.html.applicationlist(applications))
   }
+
+  def setApplicationStatus(jobId: Id[Job], appId: Id[JobApplication]) =
+    userAction(Role.Employee).async { implicit request: Request[AnyContent] =>
+      val accepted = request.body.asFormUrlEncoded.get("status").head match {
+        case "accept" => true
+        case "deny"   => false
+      }
+      for {
+        () <- applicationManager.setStatus(appId, accepted)
+      } yield
+        Redirect(routes.JobController.applicationDescription(jobId, appId))
+    }
 }
 
 object JobController {

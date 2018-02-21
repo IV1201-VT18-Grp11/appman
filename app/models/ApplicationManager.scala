@@ -40,6 +40,8 @@ trait ApplicationManager {
            jobId: Id[Job],
            visitingUser: User): Future[Option[(JobApplication, User, Job)]]
 
+  def setStatus(id: Id[JobApplication], accepted: Boolean): Future[Unit]
+
   def create(
     user: Id[User],
     job: Id[Job],
@@ -90,6 +92,16 @@ class DbApplicationManager @Inject()(
       } yield (application, user, job)).result.headOption
     }
 
+  def setStatus(id: Id[JobApplication], accepted: Boolean): Future[Unit] =
+    db.run {
+      JobApplications
+        .filter(_.id === id)
+        .map(_.accepted)
+        .update(Some(accepted))
+        .transactionally
+        .map(_ => ())
+    }
+
   def create(
     user: Id[User],
     job: Id[Job],
@@ -121,9 +133,11 @@ class DbApplicationManager @Inject()(
   ): Future[Seq[(JobApplication, Job, User)]] =
     db.run {
       (for {
-        jobApplication <- visibleToUser(visitingUser)
-        job            <- jobApplication.job
-        user           <- jobApplication.user
+        jobApplication <- visibleToUser(visitingUser).sortBy(
+          app => (app.accepted.isEmpty.desc, app.id.desc)
+        )
+        job  <- jobApplication.job
+        user <- jobApplication.user
       } yield (jobApplication, job, user)).result
     }
 }
