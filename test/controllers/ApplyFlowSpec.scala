@@ -36,7 +36,7 @@ class ApplyFlowSpec
       click on find(id("apply")).value
 
       find(tagName("body")).value.text must include(
-        "The availability period must not have a negative duration"
+        "The availability period must not end before it begins"
       )
       click on dateField(name("availabilities[0].to"))
       pressKeys("2015-02-05")
