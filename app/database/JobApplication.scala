@@ -9,7 +9,7 @@ case class JobApplication(id: Id[JobApplication],
                           job: Id[Job],
                           description: String,
                           date: Instant = Instant.now(),
-                          accepted: Option[Boolean])
+                          accepted: Option[Boolean] = None)
     extends HasId {
   type Self   = JobApplication
   type IdType = Long
