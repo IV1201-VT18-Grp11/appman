@@ -15,3 +15,9 @@ the password hasher can take a very long time if there is insufficient entropy
 in the system pool.
 
 Finally, errors should be logged so that the developers can fix them.
+
+** Location
+
+During development logs shall go to standard output, so that it's accessible
+to the developers. In production logs shall be located in the systemd unit
+journal.
