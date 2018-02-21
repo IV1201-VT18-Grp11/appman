@@ -28,9 +28,17 @@ import scala.concurrent.Future
 trait ApplicationManager {
   def allCompetences(): Future[Seq[Competence]]
 
+  def applicationCompetences(
+    id: Id[JobApplication]
+  ): Future[Seq[(Competence, ApplicationCompetence)]]
+
+  def applicationAvailabilities(
+    id: Id[JobApplication]
+  ): Future[Seq[Availability]]
+
   def find(id: Id[JobApplication],
            jobId: Id[Job],
-           visitingUser: User): Future[Option[JobApplication]]
+           visitingUser: User): Future[Option[(JobApplication, User, Job)]]
 
   def create(
     user: Id[User],
@@ -54,14 +62,33 @@ class DbApplicationManager @Inject()(
 
   def allCompetences(): Future[Seq[Competence]] = db.run(Competences.result)
 
+  def applicationCompetences(
+    id: Id[JobApplication]
+  ): Future[Seq[(Competence, ApplicationCompetence)]] = db.run {
+    (for {
+      appCompetence <- ApplicationCompetences
+      if appCompetence.applicationId === id
+      competence <- appCompetence.competence
+    } yield (competence, appCompetence)).result
+  }
+
+  def applicationAvailabilities(
+    id: Id[JobApplication]
+  ): Future[Seq[Availability]] = db.run {
+    Availabilities.filter(_.applicationId === id).result
+  }
+
   def find(id: Id[JobApplication],
            jobId: Id[Job],
-           visitingUser: User): Future[Option[JobApplication]] = db.run {
-    visibleToUser(visitingUser)
-      .filter(app => app.id === id && app.jobId === jobId)
-      .result
-      .headOption
-  }
+           visitingUser: User): Future[Option[(JobApplication, User, Job)]] =
+    db.run {
+      (for {
+        application <- visibleToUser(visitingUser)
+        if application.id === id && application.jobId === jobId
+        user <- application.user
+        job  <- application.job
+      } yield (application, user, job)).result.headOption
+    }
 
   def create(
     user: Id[User],

@@ -1,19 +1,49 @@
-@(application: JobApplication)(implicit req: RequestHeader)
-@main("Application Description ", Page.Other) {
-}
-<br/>
-<h1>@application. </h1>
-<dl>
-    <dt>Id</dt>
-    <dd>@application.id</dd>
-    <dt>Username</dt>
-    <dd>@application.userId</dd>
-    <dt>Job</dt>
-    <dd>@application.job</dd>
-    <dt>Date</dt>
-    <dd>@application.date </dd>
-    <dt>Description</dt>
-    <dd>@application.description </dd>
+@(application: JobApplication,
+        user: User,
+        job: Job,
+        competences: Seq[(Competence, ApplicationCompetence)],
+        availabilities: Seq[Availability])(implicit req: RequestHeader)
 
+    @main("Application Description ", Page.Other) {
 
-</dl>
+        <br/>
+        <h1>@application.id </h1>
+        <dl>
+            <dt>Username</dt>
+            <dd>@user.username</dd>
+            <dt>Full Name</dt>
+            <dd>@user.firstname @user.surname</dd>
+            <dt>E-mail</dt>
+            <dd>@user.email</dd>
+
+            <dt>Job</dt>
+            <dd>@job.name</dd>
+
+            <dt>Availabilities</dt>
+            <dd>
+                <ul>
+                @for((availability) <- availabilities) {
+                    <li> <div>From:</div>
+                        @availability.from</li>
+                    <li> <div>To:</div>
+                        @availability.to </li>
+                }
+                </ul>
+            </dd>
+
+            <dt>Date</dt>
+            <dd>@application.date </dd>
+            <dt>Applicant Description</dt>
+            <dd>@application.description </dd>
+
+            <dt>Applicant Competence</dt>
+            <dd>
+                <ul>
+                @for((competence, appCompetence) <- competences) {
+                    <li>@competence.name (@appCompetence.yearsOfExperience years)</li>
+                }
+                </ul>
+            </dd>
+
+        </dl>
+    }
