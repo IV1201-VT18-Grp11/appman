@@ -41,7 +41,8 @@ CREATE TABLE applications (
   "user"      INTEGER NOT NULL REFERENCES users,
   job         INTEGER NOT NULL REFERENCES jobs,
   date        TIMESTAMP NOT NULL,
-  description TEXT
+  description TEXT,
+  accepted    BOOLEAN
 );
 
 CREATE TABLE availabilities (
