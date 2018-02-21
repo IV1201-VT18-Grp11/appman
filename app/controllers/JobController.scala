@@ -119,18 +119,27 @@ class JobController @Inject()(implicit cc: ControllerComponents,
   def applicationDescription(jobId: Id[Job], appId: Id[JobApplication]) =
     userAction(Role.Applicant).async { implicit request: Request[AnyContent] =>
       for {
-        application <- applicationManager
+        (application, user, job) <- applicationManager
           .find(appId, jobId, request.user.get)
           .getOr404
-      } yield Ok(views.html.applicationdescription(application))
+        competences    <- applicationManager.applicationCompetences(appId)
+        availabilities <- applicationManager.applicationAvailabilities(appId)
+      } yield
+        Ok(
+          views.html.applicationdescription(application,
+                                            user,
+                                            job,
+                                            competences,
+                                            availabilities)
+        )
 
     }
 
   def applicationList() = userAction(Role.Applicant).async {
     implicit request: Request[AnyContent] =>
       for {
-        listings <- applicationManager.all(request.user.get)
-      } yield Ok(views.html.applicationlist(listings))
+        applications <- applicationManager.all(request.user.get)
+      } yield Ok(views.html.applicationlist(applications))
   }
 }
 
