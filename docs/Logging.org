@@ -1,0 +1,17 @@
+* Logging Strategy
+
+There are three different kinds of items that shall be logged:
+
+- Authentication actions
+- Diagnostics
+- Errors
+
+Authentication actions shall be logged so that users who repeatedly try (and)
+fail can be found out and rate-limited.
+
+Major tasks that can cause problems shall be logged so that it's easy diagnose
+what's going wrong if the system crashes or hangs. For example, the initializing
+the password hasher can take a very long time if there is insufficient entropy
+in the system pool.
+
+Finally, errors should be logged so that the developers can fix them.
