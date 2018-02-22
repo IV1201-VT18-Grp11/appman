@@ -36,5 +36,11 @@ pipeline {
             junit "target/test-report/**/*.xml"
             step([$class: 'ScoveragePublisher', reportDir: 'target/scala-2.12/scoverage-report', reportFile: 'scoverage.xml'])
         }
+        failure {
+            emailextrecipients([[$class: 'FirstFailingBuildSuspectsRecipientProvider']])
+        }
+        unstable {
+            emailextrecipients([[$class: 'FailingTestSuspectsRecipientProvider']])
+        }
     }
 }
