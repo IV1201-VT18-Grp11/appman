@@ -48,8 +48,6 @@ class ApplyFlowSpec
           and include("2015-02-05")
           and include("Cooking (3.2 years)")
       )
-
-      Thread.sleep(5000)
     }
   }
 }
