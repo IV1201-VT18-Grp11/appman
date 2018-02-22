@@ -1,11 +1,12 @@
 package controllers
 
 import database.{Id, Job, JobApplication}
-import models.ApplicationManager
+import models.{ApplicationManager, UserManager}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.HttpErrorHandler
 import play.api.test.{FakeRequest, Injecting}
 import play.api.test.Helpers._
+import play.api.test.CSRFTokenHelper._
 import utils.DbOneAppPerTest
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -85,13 +86,18 @@ class JobControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
     }
   }
 
-  "trying to send a application" should {
+  "trying to send an application" should {
     "show the application details" in {
+      val userManager = inject[UserManager]
+      val session = await(
+        userManager.register("foobar", "empty", "Foo", "Far", "foo@bar.com")
+      ).right.get
+
       val request =
-        FakeRequest(
-          routes.JobController.applicationDescription(Id[Job](1),
-                                                      Id[JobApplication](1))
-        )
+        FakeRequest(routes.JobController.doApplyForJob(Id[Job](1)))
+          .withSession(Security.sessionKey -> session.id.raw.toString)
+          .withFormUrlEncodedBody("a" -> "b")
+          .withCSRFToken
       val page = route(app, request).get
 
       status(page) mustBe SEE_OTHER
