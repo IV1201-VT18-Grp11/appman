@@ -18,7 +18,7 @@ class ApplyFlowSpec
       find(tagName("h1")).value.text must include("Please sign in")
       textField(name("username")).value = "donald_duck"
       pwdField(name("password")).value = "123456"
-      click on find(id("login")).v;alue
+      click on find(id("login")).value
 
       find(tagName("h1")).value.text must include("Apply to be a")
       click on find(id("apply")).value
