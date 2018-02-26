@@ -29,6 +29,11 @@
       class BazFooBar extends FooBar
     #+END_SRC
 
+*** Boilerplate
+
+    Boilerplate classes, such as Slick table definitions, do not require separate
+    Scaladoc comments.
+
 ** Methods
 
    Methods shall primarily be described by the name and type, where the name describes the action,
