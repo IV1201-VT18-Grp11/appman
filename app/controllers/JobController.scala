@@ -123,7 +123,7 @@ class JobController @Inject()(implicit cc: ControllerComponents,
   def applicationDescription(jobId: Id[Job], appId: Id[JobApplication]) =
     userAction(Role.Applicant).async { implicit request: Request[AnyContent] =>
       for {
-        (application, user, job) <- applicationManager
+        (application, job, user) <- applicationManager
           .find(appId, jobId, request.user.get)
           .getOr404
         competences    <- applicationManager.applicationCompetences(appId)
