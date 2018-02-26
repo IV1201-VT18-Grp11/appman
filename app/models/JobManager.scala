@@ -8,6 +8,9 @@ import database._
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import scala.concurrent.Future
 
+/**
+  * Stores job listings.
+  */
 @ImplementedBy(classOf[DbJobManager])
 trait JobManager {
 
@@ -19,6 +22,9 @@ trait JobManager {
   def find(id: Id[Job]): Future[Option[(Job, Field)]]
 }
 
+/**
+  * Stores job listings in the database.
+  */
 class DbJobManager @Inject()(
   protected val dbConfigProvider: DatabaseConfigProvider
 ) extends JobManager

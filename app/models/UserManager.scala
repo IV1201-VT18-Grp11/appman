@@ -14,7 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 /**
-  * A store for users and their sessions.
+  * Stores users and their sessions.
   */
 @ImplementedBy(classOf[DbUserManager])
 trait UserManager {

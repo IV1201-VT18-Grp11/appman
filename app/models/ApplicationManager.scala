@@ -17,13 +17,15 @@ import database.{
   User
 }
 import java.time.LocalDate
-import java.time.Period
 import scala.concurrent.ExecutionContext
 import database.PgProfile.api._
 import javax.inject.Inject
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import scala.concurrent.Future
 
+/**
+  * Stores job applications and their associated data.
+  */
 @ImplementedBy(classOf[DbApplicationManager])
 trait ApplicationManager {
   def allCompetences(): Future[Seq[Competence]]
@@ -53,6 +55,9 @@ trait ApplicationManager {
   def all(visitingUser: User): Future[Seq[(JobApplication, Job, User)]]
 }
 
+/**
+  * Stores job applications in the database.
+  */
 class DbApplicationManager @Inject()(
   implicit protected val dbConfigProvider: DatabaseConfigProvider,
   executionContext: ExecutionContext
