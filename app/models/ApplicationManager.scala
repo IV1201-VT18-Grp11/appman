@@ -52,6 +52,14 @@ trait ApplicationManager {
     availabilities: Seq[(LocalDate, LocalDate)]
   ): Future[Id[JobApplication]]
 
+  /**
+    * Fetches all job applications that a given user is permitted to view, as
+    * well as the corresponding job listings and applicant users.
+
+    * The job listings and applicants are not the ApplicationManager's
+    * responsibility, but it is merged here for performance * reasons, to avoid
+    * the "N+1" queries problem.
+    */
   def all(visitingUser: User): Future[Seq[(JobApplication, Job, User)]]
 }
 

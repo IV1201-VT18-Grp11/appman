@@ -13,11 +13,10 @@ import play.api.data._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 /**
-  * This controller creates an `Action` to handle HTTP requests to the
-  * application's home page.
+  * Contains [[Action]]s related to job listings and applications.
   */
 @Singleton
 class JobController @Inject()(implicit cc: ControllerComponents,

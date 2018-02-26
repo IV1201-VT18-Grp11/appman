@@ -2,6 +2,10 @@ package controllers
 
 import scala.concurrent.{ExecutionContext, Future}
 
+/**
+  * Extension methods for Option[A] and Future[Option[A]] that show a
+  *  404 Not Found error page if the Option is not defined (None).
+  */
 trait NotFoundHelpers {
   implicit class NotFoundOption[A](value: Option[A]) {
     def getOr404: A =
@@ -14,4 +18,7 @@ trait NotFoundHelpers {
   }
 }
 
+/**
+  * A special exception that shows a 404 Not Found error page.
+  */
 class NotFoundException extends Exception("The value was not found")

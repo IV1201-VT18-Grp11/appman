@@ -10,10 +10,13 @@ import play.api.{
   OptionalSourceMapper,
   UsefulException
 }
-import play.api.http.{DefaultHttpErrorHandler, HttpErrorHandler}
+import play.api.http.DefaultHttpErrorHandler
 
 import scala.concurrent.Future
 
+/**
+  * Handles errors and shows corresponding messages to the user.
+  */
 class ErrorHandler @Inject()(env: Environment,
                              config: Configuration,
                              sourceMapper: OptionalSourceMapper,

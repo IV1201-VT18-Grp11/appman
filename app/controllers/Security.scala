@@ -6,6 +6,9 @@ import play.api.libs.typedmap.TypedKey
 import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}
 
+/**
+  * Maps database sessions to request sessions/cookies.
+  */
 trait SecurityHelpers {
   def getSessionId(request: RequestHeader): Option[Id[UserSession]] =
     request.session
@@ -37,6 +40,13 @@ trait SecurityHelpers {
                      session: UserSession): Result =
     setUserSessionId(response, request, session.id)
 
+  /**
+    * Add a dummy (lack of) session to the request, without requiring any
+    * database access.
+    *
+    * This is used by the error templates to avoid causing a loop of
+    * `failed to connect to database => failed to render error page => (start over)`.
+    */
   def addNoUserToRequest(request: RequestHeader): RequestHeader =
     request
       .addAttr(Security.user, None)
@@ -50,11 +60,22 @@ trait SecurityHelpers {
   }
 }
 
+/**
+  * Internal error that is thrown when showing user session information without
+  * having loaded it first.
+  *
+  * Seeing this exception means that you need to use [[Security.userAction]]
+  * instead of Play's [[play.api.mvc.Action]].
+  */
 class NoSessionLoaderException
     extends Exception(
       "attempted to access session before it was loaded, use Security.userAction or checkUser instead of Action"
     )
 
+/**
+  * Mixin that extends [[SecurityHelpers]] with Controller-specific utilities,
+  * such as action transformers.
+  */
 trait Security extends SecurityHelpers {
   protected def userManager: UserManager
   protected def Action: ActionBuilder[Request, AnyContent]
@@ -109,5 +130,8 @@ object Security extends SecurityHelpers {
   val user    = TypedKey[Option[User]]("user")
   val session = TypedKey[Option[UserSession]]("session")
 
+  /**
+    * The key used to store the session ID in the Play session
+    */
   val sessionKey = "SESSION"
 }

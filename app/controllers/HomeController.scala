@@ -11,8 +11,7 @@ import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.mvc._
 
 /**
-  * This controller creates an `Action` to handle HTTP requests to the
-  * application's home page.
+  * Static "landing"-style actions.
   */
 @Singleton
 class HomeController @Inject()(implicit jobManager: JobManager,
@@ -22,13 +21,6 @@ class HomeController @Inject()(implicit jobManager: JobManager,
     extends AbstractController(cc)
     with Security {
 
-  /**
-    * Create an Action to render an HTML page.
-    *
-    * The configuration in the `routes` file means that this method
-    * will be called when the application receives a `GET` request with
-    * a path of `/`.
-    */
   def index() = userAction().apply { implicit request: Request[AnyContent] =>
     Ok(views.html.index())
   }

@@ -13,8 +13,7 @@ import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
-  * This controller creates an `Action` to handle HTTP requests to the
-  * application's home page.
+  * Contains actions related to logging in, logging out, and registration.
   */
 @Singleton
 class LoginController @Inject()(implicit cc: ControllerComponents,
