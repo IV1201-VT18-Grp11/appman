@@ -13,29 +13,31 @@ import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
+/**
+  * A store for users and their sessions.
+  */
 @ImplementedBy(classOf[DbUserManager])
 trait UserManager {
-
-  /**
-    * Finds the user with a given ID
-    *
-    * @return Some(user) if the user exists, otherwise None
-    */
   def find(id: Id[User]): Future[Option[User]]
 
+  /**
+    * Finds the session by a given ID, as well as the associated user.
+    */
   def findSession(id: Id[UserSession]): Future[Option[(User, UserSession)]]
 
   /**
-    * Finds the user with a given username and password and creates a session
-    *
-    * @return Some(session) if the user exists and the password is correct, otherwise None
+    * Finds the user by a given username, verifies the password, and then creates
+    * a session if the user was found.
     */
   def login(username: String, password: String): Future[Option[UserSession]]
 
   /**
-    * Tries to create a user with the given fields
+    * Tries to create a user with the given fields.
     *
-    * @return None if a user with the given username already exists, otherwise Some(user)
+    * Registration MAY return more than one error at once, but this behaviour
+    * MUST NOT be relied upon.
+    *
+    * @return Left(reasons) if the user creation failed, otherwise Right(user)
     */
   def register(
     username: String,
@@ -47,13 +49,30 @@ trait UserManager {
 }
 
 object UserManager {
+
+  /**
+    * A reason that the registration failed.
+    */
   sealed trait RegistrationError
   object RegistrationError {
+
+    /**
+      * Registration failed because the chosen username conflicts with an
+      * existing user's.
+      */
     case object UsernameTaken extends RegistrationError
-    case object EmailTaken    extends RegistrationError
+
+    /**
+      * Registration failed because the email address conflicts with an existing
+      * user's.
+      */
+    case object EmailTaken extends RegistrationError
   }
 }
 
+/**
+  * Stores users and their sessions in the database.
+  */
 class DbUserManager @Inject()(
   implicit protected val dbConfigProvider: DatabaseConfigProvider,
   passwordHasher: PasswordHasher,
@@ -114,6 +133,26 @@ class DbUserManager @Inject()(
     task
   }
 
+  private def guessRegistrationFailureReasons(username: String,
+                                              email: String) = {
+    DBIO
+      .sequence(
+        Seq(
+          Users
+            .filter(_.username === username)
+            .result
+            .headOption
+            .map(_.map(_ => UserManager.RegistrationError.UsernameTaken)),
+          Users
+            .filter(_.email === email)
+            .result
+            .headOption
+            .map(_.map(_ => UserManager.RegistrationError.EmailTaken))
+        )
+      )
+      .map(_.flatten)
+  }
+
   override def register(
     username: String,
     password: String,
@@ -136,22 +175,7 @@ class DbUserManager @Inject()(
         case Success(user) =>
           DBIO.successful(Right(user))
         case Failure(exception) =>
-          DBIO
-            .sequence(
-              Seq(
-                Users
-                  .filter(_.username === username)
-                  .result
-                  .headOption
-                  .map(_.map(_ => UserManager.RegistrationError.UsernameTaken)),
-                Users
-                  .filter(_.email === email)
-                  .result
-                  .headOption
-                  .map(_.map(_ => UserManager.RegistrationError.EmailTaken))
-              )
-            )
-            .map(_.flatten)
+          guessRegistrationFailureReasons(username, email)
             .map {
               case Seq() =>
                 // We can't find a good reason for this to fail,
