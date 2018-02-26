@@ -61,15 +61,16 @@ class JobControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
 
   "trying to apply for a job" should {
     "show the application form" in {
+      val userManager = inject[UserManager]
+      val session = await(
+        userManager.register("foobar", "empty", "Foo", "Bar", "foo@bar.com")
+      ).right.get
+
       val request =
         FakeRequest(routes.JobController.applyForJob(Id[Job](1)))
+          .withSession(Security.sessionKey -> session.id.raw.toString)
       val page = route(app, request).get
-
-      status(page) mustBe SEE_OTHER
-      val infoPage =
-        route(app, FakeRequest("GET", redirectLocation(page).get)).get
-
-      status(infoPage) mustBe OK
+      status(page) mustBe OK
       contentAsString(page) must (
         include("Apply to be a Scala Magician")
           and include("Why are you a good fit for this job")
@@ -79,7 +80,7 @@ class JobControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
           and include("Cooking")
           and include("From")
           and include("To")
-          and include("Avialability begins at")
+          and include("Availability begins at")
           and include("until")
           and include("Apply")
       )
@@ -90,39 +91,41 @@ class JobControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
     "show the application details" in {
       val userManager = inject[UserManager]
       val session = await(
-        userManager.register("foobar", "empty", "Foo", "Far", "foo@bar.com")
+        userManager.register("foobar", "empty", "Foo", "Bar", "foo@bar.com")
       ).right.get
 
       val request =
         FakeRequest(routes.JobController.doApplyForJob(Id[Job](1)))
           .withSession(Security.sessionKey -> session.id.raw.toString)
-          .withFormUrlEncodedBody("a" -> "b")
+          .withFormUrlEncodedBody("description"                    -> "I am good at...",
+                                  "competences[0].id"              -> "1",
+                                  "competences[0].experienceYears" -> "5",
+                                  "competences[1].id"              -> "2",
+                                  "competences[1].experienceYears" -> "0",
+                                  "availabilities[0].from"         -> "2018-02-01",
+                                  "availabilities[0].to"           -> "2018-06-05")
           .withCSRFToken
       val page = route(app, request).get
 
       status(page) mustBe SEE_OTHER
       val infoPage =
-        route(app, FakeRequest("GET", redirectLocation(page).get)).get
+        route(
+          app,
+          FakeRequest("GET", redirectLocation(page).get)
+            .withSession(Security.sessionKey -> session.id.raw.toString)
+        ).get
 
       status(infoPage) mustBe OK
       contentAsString(infoPage) must (
         include("Application number")
-          and include("Full Name")
-          and include("Teo Klestrup")
-          and include("Username")
-          and include("laserkitten")
-          and include("E-mail")
-          and include("teo@nullable.se")
-          and include("Job")
+          and include("Foo Bar")
+          and include("foobar")
+          and include("foo@bar.com")
           and include("Scala Magician")
-          and include("Availabilities")
-          and include("2018-01-01")
-          and include("Date of Application")
-          and include("Web, 21 Feb 2018")
-          and include("Applicant Description")
-          and include("I am awesome")
-          and include("Applicant Competence")
-          and include("IT (11.0 years")
+          and include("2018-02-01")
+          and include("2018-06-05")
+          and include("I am good at")
+          and include("IT (5.0 years)")
       )
     }
   }
