@@ -2,6 +2,9 @@ package database
 
 import PgProfile.api._
 
+/**
+  * An industry/department that a job application is related to.
+  */
 case class Field(id: Id[Field], name: String) extends HasId {
   type Self   = Field
   type IdType = Long

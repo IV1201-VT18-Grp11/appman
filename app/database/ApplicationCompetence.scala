@@ -2,6 +2,9 @@ package database
 
 import PgProfile.api._
 
+/**
+  * A skill that an applicant has.
+  */
 case class ApplicationCompetence(competence: Id[Competence],
                                  yearsOfExperience: Float,
                                  application: Id[JobApplication])

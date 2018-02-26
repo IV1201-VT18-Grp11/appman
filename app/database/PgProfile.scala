@@ -6,6 +6,10 @@ import com.github.tminglei.slickpg.{
   PgEnumSupport
 }
 
+/**
+  * Slick Profile that adds support for a few newer Postgres profiles that
+  * aren't normally supported.
+  */
 trait PgProfile
     extends ExPostgresProfile
     with PgDate2Support

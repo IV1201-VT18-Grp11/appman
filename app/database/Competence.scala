@@ -2,6 +2,9 @@ package database
 
 import database.PgProfile.api._
 
+/**
+  * A skill that an applicant may or may not have.
+  */
 case class Competence(id: Id[Competence], name: String) extends HasId {
   type Self   = Competence
   type IdType = Long

@@ -4,6 +4,9 @@ import java.time.Instant
 
 import database.PgProfile.api._
 
+/**
+  * An application made to a [[Job]] listing made by a [[User]].
+  */
 case class JobApplication(id: Id[JobApplication],
                           userId: Id[User],
                           job: Id[Job],

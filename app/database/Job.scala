@@ -4,6 +4,9 @@ import java.sql.Timestamp
 
 import database.PgProfile.api._
 
+/**
+  * A single job listing.
+  */
 case class Job(id: Id[Job],
                fieldId: Id[Field],
                name: String,

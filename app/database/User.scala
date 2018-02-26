@@ -3,6 +3,9 @@ package database
 import PgProfile.api._
 
 // case class works as a DTO, taking the required columns from the database
+/**
+  * A user account.
+  */
 case class User(id: Id[User],
                 username: String,
                 password: String,

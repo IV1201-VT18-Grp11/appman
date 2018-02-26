@@ -1,9 +1,12 @@
 package database
 
-import java.time.{Instant, LocalDate}
+import java.time.LocalDate
 
 import database.PgProfile.api._
 
+/**
+  * A single continuous stretch of time where the applicant is available.
+  */
 case class Availability(id: Id[Availability],
                         applicationId: Id[JobApplication],
                         from: LocalDate,

@@ -3,6 +3,9 @@ package database
 import PgProfile.api._
 import java.time.Instant
 
+/**
+  * A single session of a logged-in user.
+  */
 case class UserSession(id: Id[UserSession],
                        user: Id[User],
                        from: Instant,
