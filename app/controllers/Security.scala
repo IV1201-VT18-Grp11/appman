@@ -37,6 +37,11 @@ trait SecurityHelpers {
                      session: UserSession): Result =
     setUserSessionId(response, request, session.id)
 
+  def addNoUserToRequest(request: RequestHeader): RequestHeader =
+    request
+      .addAttr(Security.user, None)
+      .addAttr(Security.session, None)
+
   implicit class UserReqHeader(private val req: RequestHeader) {
     def user: Option[User]               = getUser(req)
     def userSession: Option[UserSession] = getUserSession(req)
