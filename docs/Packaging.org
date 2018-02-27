@@ -39,10 +39,7 @@
     Then change the PostgreSQL password:
 
     #+BEGIN_SRC bash
-    $ sudo -u appman psql
-    appman=> \password
-    (enter and confirm password)
-    appman=> \quit
+    $ sudo -u appman psql -c '\password'
     #+END_SRC
 
     Then you need to tell appman about the new passwords by modifying
@@ -59,3 +56,13 @@
     Appman SHOULD only be accessible using HTTPS. Setting this up is out of
     scope for this document, but can be done using a reverse proxy, such as
     NGINX or Apache HTTPD.
+
+** Creating an Administrator account
+
+   There is no administrator account created when Appman is installed. To
+   promote a user, first create an account at [[http://localhost:9000/register]].
+   Then run the following to set its role:
+
+   #+BEGIN_SRC bash
+   sudo -u appman psql -c "UPDATE users SET role='Admin' WHERE username='<YOUR_USERNAME>'"
+   #+END_SRC
