@@ -1,0 +1,61 @@
+* Packaging
+
+  Appman shall be distributed as a Debian package for Ubuntu 17.10. The .deb
+  package shall automatically set up the package and all dependencies.
+
+** Installing
+
+   To build the package, run:
+
+   #+BEGIN_SRC bash
+   $ sbt Debian/packageBin
+   #+END_SRC
+
+   It can then be installed by running:
+
+   #+BEGIN_SRC bash
+   $ sudo dpkg -i target/appman_*_all.deb
+   #+END_SRC
+
+   This package does not depend on the build system, and can be freely moved to
+   a separate target computer.
+
+** Access
+
+   The system should now be accessible at [[http://localhost:9000/]]!
+
+** Hardening
+
+*** Passwords
+
+    After installation the application secret and PostgreSQL password MUST
+    be changed. To do this, first generate both passwords (perhaps using
+    ~pwgen~):
+
+    #+BEGIN_SRC bash
+    $ pwgen 20 2
+    #+END_SRC
+
+    Then change the PostgreSQL password:
+
+    #+BEGIN_SRC bash
+    $ sudo -u appman psql
+    appman=> \password
+    (enter and confirm password)
+    appman=> \quit
+    #+END_SRC
+
+    Then you need to tell appman about the new passwords by modifying
+    ~PGPASSWORD~ and ~APPLICATION_SECRET~ in ~/etc/default/appman~.
+
+    Finally, restart Appman to apply the new settings:
+
+    #+BEGIN_SRC bash
+    $ sudo systemctl restart appman.service
+    #+END_SRC
+
+*** TLS/HTTPS
+
+    Appman SHOULD only be accessible using HTTPS. Setting this up is out of
+    scope for this document, but can be done using a reverse proxy, such as
+    NGINX or Apache HTTPD.
