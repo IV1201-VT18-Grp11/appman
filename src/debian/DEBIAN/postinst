@@ -1,0 +1,16 @@
+# -*- mode: shell-script -*-
+
+# Make sure others can't access the secrets...
+chown root:appman /etc/default/appman
+chmod 640 /etc/default/appman
+
+# Create Postgres user and db
+if [ "$(sudo --user=postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='appman'")" != 1 ]; then
+    sudo --user=postgres psql <<EOF
+        CREATE USER appman WITH PASSWORD 'changeme';
+        CREATE DATABASE appman WITH OWNER appman;
+EOF
+fi
+
+systemctl daemon-reload
+systemctl restart appman.service

@@ -1,0 +1,24 @@
+[Unit]
+Description=${{descr}}
+Requires=${{start_facilities}}
+Wants=postgresql.service
+After=postgresql.service
+
+[Service]
+Type=simple
+WorkingDirectory=${{chdir}}
+EnvironmentFile=${{env_config}}
+ExecStart=${{chdir}}/bin/${{exec}}
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=${{retryTimeout}}
+SuccessExitStatus=${{SuccessExitStatus}}
+User=${{daemon_user}}
+ExecStartPre=/bin/mkdir -p /run/${{app_name}}
+ExecStartPre=/bin/chown ${{daemon_user}}:${{daemon_group}} /run/${{app_name}}
+ExecStartPre=/bin/chmod 755 /run/${{app_name}}
+PermissionsStartOnly=true
+LimitNOFILE=${{file_descriptor_limit}}
+
+[Install]
+WantedBy=multi-user.target

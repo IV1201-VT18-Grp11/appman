@@ -5,7 +5,7 @@ organization := "com.appman"
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, JDebPackaging, SystemdPlugin)
 
 scalaVersion in ThisBuild := "2.12.4"
 
@@ -49,3 +49,7 @@ play.sbt.routes.RoutesKeys.routesImport ++= Seq(
 )
 
 coverageExcludedPackages := "controllers\\.javascript\\..+;controllers\\.Reverse.+;router\\..router+"
+
+debianPackageDependencies += "postgresql-9.6"
+// We start it ourselves after creating the database
+serviceAutostart := false
