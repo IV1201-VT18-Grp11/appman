@@ -4,10 +4,10 @@ CREATE TYPE user_role AS ENUM ('Applicant', 'Employee', 'Admin');
 
 CREATE TABLE users (
   id        SERIAL NOT NULL PRIMARY KEY,
-  username  TEXT NOT NULL UNIQUE,
+  username  TEXT UNIQUE,
   firstname TEXT,
   surname   TEXT,
-  password  TEXT NOT NULL,
+  password  TEXT,
   email     TEXT UNIQUE,
   "role"    user_role NOT NULL
 );
@@ -22,7 +22,7 @@ CREATE TABLE sessions (
 
 CREATE TABLE fields (
   id   SERIAL NOT NULL PRIMARY KEY,
-  NAME TEXT
+  NAME TEXT   NOT NULL
 );
 
 CREATE TABLE jobs (
@@ -32,22 +32,22 @@ CREATE TABLE jobs (
   from_date TIMESTAMP NOT NULL,
   to_date   TIMESTAMP,
   country   TEXT,
-  description TEXT  NOT NULL,
-  requirement TEXT NOT NULL
+  description TEXT    NOT NULL,
+  requirement TEXT    NOT NULL
 );
 
 CREATE TABLE applications (
   id          SERIAL  NOT NULL PRIMARY KEY,
   "user"      INTEGER NOT NULL REFERENCES users,
-  job         INTEGER NOT NULL REFERENCES jobs,
-  date        TIMESTAMP NOT NULL,
+  job         INTEGER REFERENCES jobs,
+  date        TIMESTAMP,
   description TEXT,
   accepted    BOOLEAN
 );
 
 CREATE TABLE availabilities (
-  id          SERIAL NOT NULL PRIMARY KEY,
-  application INTEGER REFERENCES applications,
+  id          SERIAL  NOT NULL PRIMARY KEY,
+  application INTEGER NOT NULL REFERENCES applications,
   "from"      DATE,
   "to"        DATE
 );
@@ -58,9 +58,10 @@ CREATE TABLE competences (
 );
 
 CREATE TABLE application_competences (
-  competence          INTEGER REFERENCES competences,
+  competence          INTEGER NOT NULL REFERENCES competences,
   years_of_experience FLOAT,
-  application         INTEGER REFERENCES applications
+  application         INTEGER NOT NULL REFERENCES applications,
+  PRIMARY KEY (competence, application)
 );
 
 

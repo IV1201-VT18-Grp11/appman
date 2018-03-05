@@ -7,11 +7,11 @@ import PgProfile.api._
   * A user account.
   */
 case class User(id: Id[User],
-                username: String,
-                password: String,
-                firstname: String,
-                surname: String,
-                email: String,
+                username: Option[String],
+                password: Option[String],
+                firstname: Option[String],
+                surname: Option[String],
+                email: Option[String],
                 role: UserRole = Role.Applicant)
     extends HasId {
   type Self   = User
@@ -24,11 +24,11 @@ case class User(id: Id[User],
   */
 class Users(tag: Tag) extends Table[User](tag, "users") {
   def id        = column[Id[User]]("id", O.PrimaryKey, O.AutoInc)
-  def username  = column[String]("username")
-  def password  = column[String]("password")
-  def firstname = column[String]("firstname")
-  def surname   = column[String]("surname")
-  def email     = column[String]("email")
+  def username  = column[Option[String]]("username")
+  def password  = column[Option[String]]("password")
+  def firstname = column[Option[String]]("firstname")
+  def surname   = column[Option[String]]("surname")
+  def email     = column[Option[String]]("email")
   def role      = column[UserRole]("role")
 
   /**

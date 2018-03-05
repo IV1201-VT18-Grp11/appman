@@ -12,7 +12,7 @@ case class Job(id: Id[Job],
                name: String,
                fromDate: Timestamp,
                toDate: Option[Timestamp],
-               country: String,
+               country: Option[String],
                description: String,
                requirement: String)
     extends HasId {
@@ -31,7 +31,7 @@ class Jobs(tag: Tag) extends Table[Job](tag, "jobs") {
 
   def toDate = column[Option[Timestamp]]("to_date")
 
-  def country = column[String]("country")
+  def country = column[Option[String]]("country")
 
   def description = column[String]("description")
 

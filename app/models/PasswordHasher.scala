@@ -45,7 +45,9 @@ class ScryptPasswordHasher extends PasswordHasher {
   }
 
   private def hashWithSalt(plaintext: String, salt: Array[Byte]): String = {
-    val bytes      = pwConverter.convert(plaintext.toCharArray())
+    val bytes = pwConverter.convert(plaintext.toCharArray())
+    // These factors MUST match hash_password in datatruck.py,
+    // or Datatruck migration WILL be broken
     val cipherText = SCrypt.generate(bytes, salt, 1 << 15, 8, 1, 64)
     Hex.encodeHexString(cipherText)
   }

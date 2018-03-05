@@ -127,16 +127,16 @@ class DbApplicationManager @Inject()(
         .returning(JobApplications.map(_.id)) += JobApplication(
         Id[JobApplication](-1),
         user,
-        job,
+        Some(job),
         description
       )
       _ <- ApplicationCompetences ++= competences.map {
         case ((competence, years)) =>
-          ApplicationCompetence(competence, years, id)
+          ApplicationCompetence(competence, Some(years), id)
       }
       _ <- Availabilities ++= availabilities.map {
         case (from, to) =>
-          Availability(Id[Availability](-1), id, from, to)
+          Availability(Id[Availability](-1), id, Some(from), Some(to))
       }
     } yield id).transactionally
   }

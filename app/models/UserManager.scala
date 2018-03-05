@@ -112,7 +112,12 @@ class DbUserManager @Inject()(
           .result
           .headOption
           .map(
-            _.filter(user => passwordHasher.compare(user.password, password))
+            _.filter(
+              user =>
+                user.password
+                  .map(passwordHasher.compare(_, password))
+                  .getOrElse(false)
+            )
           )
         session <- DBIO.sequenceOption(
           user.map(
@@ -164,11 +169,11 @@ class DbUserManager @Inject()(
       (for {
         userId <- Users.returning(Users.map(_.id)) += User(
           Id[User](-1),
-          username = username,
-          password = passwordHasher.hash(password),
-          firstname = firstname,
-          surname = surname,
-          email = email
+          username = Some(username),
+          password = Some(passwordHasher.hash(password)),
+          firstname = Some(firstname),
+          surname = Some(surname),
+          email = Some(email)
         )
         session <- UserSessions.map(_.userId).returning(UserSessions) += userId
       } yield session).transactionally.asTry.flatMap {
