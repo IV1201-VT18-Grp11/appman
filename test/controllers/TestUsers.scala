@@ -4,9 +4,9 @@ import database.{Id, User}
 
 object TestUsers {
   val gyroGearloose = User(Id[User](3),
-                           "gyro_gearloose",
-                           "little_helper",
-                           "Mad",
-                           "Kitten",
-                           "kitten4@kittens.org")
+                           Some("gyro_gearloose"),
+                           Some("little_helper"),
+                           Some("Mad"),
+                           Some("Kitten"),
+                           Some("kitten4@kittens.org"))
 }

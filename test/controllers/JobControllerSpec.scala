@@ -125,7 +125,8 @@ class JobControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
           and include("2018-02-01")
           and include("2018-06-05")
           and include("I am good at")
-          and include("IT (5.0 years)")
+          and include("IT")
+          and include("5.0 years")
       )
     }
   }

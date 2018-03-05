@@ -37,7 +37,7 @@ class UserManagerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
                                "Kitten",
                                "kitten1@kittens.org")
         ).right.get
-        await(userManager.find(session.user)).value.username mustBe "to_be_created"
+        await(userManager.find(session.user)).value.username.value mustBe "to_be_created"
       }
     }
 

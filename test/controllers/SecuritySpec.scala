@@ -52,7 +52,7 @@ class SecuritySpec extends PlaySpec with MockitoSugar {
         val request =
           FakeRequest().withSession(loginResponse.newSession.get.data.toSeq: _*)
         security.getSessionId(request).value mustBe Id[UserSession](4)
-        await(security.findUser(request)).value._1.username mustBe "gyro_gearloose"
+        await(security.findUser(request)).value._1.username.value mustBe "gyro_gearloose"
       }
     }
   }
