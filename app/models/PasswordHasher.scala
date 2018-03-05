@@ -46,7 +46,7 @@ class ScryptPasswordHasher extends PasswordHasher {
 
   private def hashWithSalt(plaintext: String, salt: Array[Byte]): String = {
     val bytes      = pwConverter.convert(plaintext.toCharArray())
-    val cipherText = SCrypt.generate(bytes, salt, 8, 8, 8, 64)
+    val cipherText = SCrypt.generate(bytes, salt, 1 << 15, 8, 1, 64)
     Hex.encodeHexString(cipherText)
   }
 

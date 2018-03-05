@@ -1,12 +1,12 @@
 # --- !Ups
 INSERT INTO users (id, username, firstname, surname, password, email, "role")
 VALUES (1, 'laserkitten', 'Teo', 'Klestrup',
-        '088d0246167347e47d4ded8fa09fcbc47e23465288a065d106d2660591d6ece4&ee9cb2f143cbbca063350e10fc8fde07b48de6a91561bf4d144fd789c960fce4670ace78d694d2132824b9795516f2a6bb8b6144074c48b63e4135e93cd804d0',
+        'fd3121de4272596a2c85ee9660786bd5ed33d320222ec9ac8975d3b03b6696b7&bb641aaec3761c463271b8d6314f07c1168d6c23acf6f8be4c4a368187d79b4c29cf73198619430c7e9ddbe3f477ecab473a38a7b488e8aa75733ed9b5879c73',
         'teo@nullable.se', 'Applicant'); -- Password: 1234
 
 INSERT INTO users (id, username, firstname, surname, password, email, "role")
 VALUES (2, 'donald_duck', 'Donald', 'Duck',
-        'fa05f690411d293aa3c8aa59195500a8ecb235b36ad2c3f149f92218caf837ca&0fbb4db850980a123442fc9a042fd5c7eeded847365c689191ca450e24b835c36703a6c5ad96dcd8d2ce519d303194c8a289840fa0a9eb614cedb48d62b0ff25',
+        '72b04713ed10d730253c8a048fbf897668d54f81da8c898e72372c4d4298384a&532799e05825ecb5ae63898501e60380e8678401e382c90ab1416a54861365b2e2da2606ec17555b2e8fe8c6e2c97eec1d42190864f2e58bb24380c43cb12a34',
         'donald@duckburg.com', 'Applicant'); -- Password: 123456
 
 INSERT INTO fields (id, name)
