@@ -1,6 +1,6 @@
 package utils
 
-import database.PgProfile
+import database.{Competences, PgProfile, Users}
 import database.PgProfile.api._
 import org.scalatest._
 import org.scalatestplus.play._
@@ -11,6 +11,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import scala.util.Random
 import play.api.test.Helpers._
 import slick.basic.DatabaseConfig
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait DbFakeApplicationFactory extends FakeApplicationFactory {
   this: TestSuite =>
@@ -30,13 +32,17 @@ trait DbFakeApplicationFactory extends FakeApplicationFactory {
                                Map("slick.dbs.default.db.schema" -> schema))
         )
         .build()
+    val appDb = app.injector
+      .instanceOf[DatabaseConfigProvider]
+      .get[PgProfile]
+      .db
     app.injector.instanceOf[ApplicationLifecycle].addStopHook { () =>
-      app.injector
-        .instanceOf[DatabaseConfigProvider]
-        .get[PgProfile]
-        .db
-        .run(sql"DROP SCHEMA #$schema CASCADE".asUpdate)
+      appDb.run(sql"DROP SCHEMA #$schema CASCADE".asUpdate)
     }
+    await(appDb.run(for {
+      _ <- Users.forceInsertAll(TestData.Users.all)
+      _ <- Competences.forceInsertAll(TestData.Competences.all)
+    } yield ()))
     app
   }
 }

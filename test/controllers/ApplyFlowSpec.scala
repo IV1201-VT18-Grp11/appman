@@ -1,8 +1,13 @@
 package controllers
 
+import database.{Competences, PgProfile, Users}
 import org.scalatestplus.play.{FirefoxFactory, OneBrowserPerTest, PlaySpec}
+import play.api.db.slick.DatabaseConfigProvider
 import play.api.test.Injecting
+import play.api.test.Helpers._
 import utils.DbOneServerPerTest
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ApplyFlowSpec
     extends PlaySpec

@@ -2,13 +2,12 @@ import com.typesafe.sbt.web.pipeline.Pipeline
 
 name := """appman"""
 organization := "com.appman"
-
 version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, JDebPackaging, SystemdPlugin)
 
 scalaVersion in ThisBuild := "2.12.4"
-
+scalacOptions ++= Seq("-feature", "-deprecation")
 scalafmtOnCompile := true
 
 val webpackGen = taskKey[Seq[File]]("Webpack generator")

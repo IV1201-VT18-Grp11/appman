@@ -1,8 +1,9 @@
 package controllers
 
-import database.{Id, Job, JobApplication}
-import models.{ApplicationManager, UserManager}
+import database.{Competences, Id, Job, PgProfile}
+import models.UserManager
 import org.scalatestplus.play.PlaySpec
+import play.api.db.slick.DatabaseConfigProvider
 import play.api.http.HttpErrorHandler
 import play.api.test.{FakeRequest, Injecting}
 import play.api.test.Helpers._

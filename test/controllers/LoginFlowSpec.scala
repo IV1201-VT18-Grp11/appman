@@ -4,7 +4,6 @@ import models.UserManager
 import org.scalatestplus.play._
 import play.api.test._
 import play.api.test.Helpers._
-import scala.concurrent.ExecutionContext
 import utils.DbOneServerPerTest
 
 class LoginFlowSpec
@@ -18,9 +17,9 @@ class LoginFlowSpec
     await(
       userManager.register("scrooge",
                            "money",
-                           "Beautiful",
-                           "Kitten",
-                           "kitten3@kittens.org")
+                           "Scrooge",
+                           "McDuck",
+                           "scrooge@kittens.org")
     )
 
     go to (s"http://localhost:$port/")

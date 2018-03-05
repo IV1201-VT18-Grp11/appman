@@ -8,19 +8,6 @@ import play.api.test.Helpers._
 import utils.DbOneAppPerTest
 
 class LoginControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
-  override def fakeApplication() = {
-    val app         = super.fakeApplication()
-    val userManager = app.injector.instanceOf[UserManager]
-    await(
-      userManager.register("gyro_gearloose",
-                           "little_helper",
-                           "Gyro",
-                           "Gearloose",
-                           "gyro@duck.net")
-    ) mustBe 'right
-    app
-  }
-
   "trying to log in" when {
     "the username or password is incorrect" should {
       "ask the user to try again" in {

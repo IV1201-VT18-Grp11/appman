@@ -1,10 +1,9 @@
 package models
 
-import database.{Id, User}
 import org.scalatestplus.play._
 import play.api.test._
 import play.api.test.Helpers._
-import utils.DbOneAppPerTest
+import utils.{DbOneAppPerTest, TestData}
 
 class UserManagerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
   "calling login()" when {
@@ -21,7 +20,7 @@ class UserManagerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
     "the username and password are correct" should {
       "return the user" in {
         await(inject[UserManager].login("donald_duck", "123456"))
-          .map(_.user) mustBe Some(Id[User](2))
+          .map(_.user) mustBe Some(TestData.Users.donaldDuck.id)
       }
     }
   }

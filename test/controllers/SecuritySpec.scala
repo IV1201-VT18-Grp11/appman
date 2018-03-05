@@ -4,6 +4,7 @@ import database.{Id, UserSession}
 import java.time.Instant
 import org.mockito.Mockito._
 import models.UserManager
+import utils.TestData
 import org.scalatestplus.play._
 import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.{ActionBuilder, AnyContent, Request, Results}
@@ -35,9 +36,9 @@ class SecuritySpec extends PlaySpec with MockitoSugar {
           .thenReturn(
             Future.successful(
               Some(
-                (TestUsers.gyroGearloose,
+                (TestData.Users.gyroGearloose,
                  UserSession(Id[UserSession](4),
-                             TestUsers.gyroGearloose.id,
+                             TestData.Users.gyroGearloose.id,
                              from = Instant.now(),
                              refreshed = Instant.now(),
                              deleted = false,
