@@ -1,4 +1,4 @@
-* Packaging
+* Packaging and Deployment
 
   Appman shall be distributed as a Debian package for Ubuntu 17.10. The .deb
   package shall automatically set up the package and all dependencies.
@@ -64,5 +64,42 @@
    Then run the following to set its role:
 
    #+BEGIN_SRC bash
-   sudo -u appman psql -c "UPDATE users SET role='Admin' WHERE username='<YOUR_USERNAME>'"
+   $ sudo -u appman psql -c "UPDATE users SET role='Admin' WHERE username='<YOUR_USERNAME>'"
    #+END_SRC
+
+** Data migration
+
+   Appman ships with a data migration tool called Datatruck, located in the
+   ~datatruck~ directory. It is /not/ packaged with Appman, since it's only
+   intended to be used at most once in a given installation.
+
+   Since this was never clarified in the original document, it is assumed that
+   the source data is stored in MySQL, the patron saint of shoddy legacy databases
+   everywhere. Apologies if it was actually stored in SQLite, the patron saint of
+   overgrown CGI scripts, or MSSQL or Oracle, the patron saints of pointy-haired
+   bosses who should look into switching careers.
+
+   To use it, you need [[https://www.python.org/][Python]] 3.6 (or newer) and [[https://docs.pipenv.org/][Pipenv]].
+
+   Then, assuming you are running both the source and target
+   databases on the same machine, run:
+
+   #+BEGIN_SRC bash
+   $ pipenv sync                                    # Install dependencies
+   $ pipenv run datatruck --source-db=iv1201_sample # Import data iv1201_sample
+   $ pipenv --rm                                    # Clean up dependencies
+   #+END_SRC
+
+   If you're running this from a different machine, or get authentication errors,
+   run ~pipenv run datatruck --help~ for more options.
+
+*** Notes
+
+    - Datatruck assumes that the target database already exists and conforms to
+      the Appman schema. The Debian package automatically sets this up.
+      Otherwise, create the database, run ~sbt run~, and go to
+      [[http://localhost:9000]].
+    - Do *not* run Datatruck again if it has already succeeded, since it will
+      try (and fail) to recreate the data that has already been migrated.
+      However, nothing is written if the migration fails, so it is safe to retry
+      if Datatruck has failed for some reason.

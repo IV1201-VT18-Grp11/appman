@@ -1,16 +1,17 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[requires]
+python_version = "3.6"
 
 [packages]
-
 mysqlclient = "*"
 "psycopg2-binary" = "*"
 scrypt = "*"
 
-
 [dev-packages]
 
+[scripts]
+datatruck = "python datatruck.py"
