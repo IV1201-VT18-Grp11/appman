@@ -1,6 +1,7 @@
 package utils
 
-import database.{Competence, Id, User}
+import database.{Competence, Field, Id, Job, User}
+import java.time.Instant
 
 object TestData {
   object Users {
@@ -28,5 +29,34 @@ object TestData {
     val cooking = Competence(Id[Competence](2), Some("Cooking"))
 
     val all = Seq(it, cooking)
+  }
+
+  object Fields {
+    val hospitality = Field(Id[Field](500), "Hospitality")
+    val music       = Field(Id[Field](1011001), "Music")
+
+    val all = Seq(hospitality, music)
+  }
+
+  object JobListings {
+    val shoeCleaning = Job(Id[Job](100),
+                           Fields.hospitality.id,
+                           name = "Shoe cleaning",
+                           fromDate = Instant.now(),
+                           toDate = None,
+                           country = None,
+                           description =
+                             "Do you love cleaning shoes? Apply here!",
+                           requirement = "Competence")
+    val musician = Job(Id[Job](101),
+                       Fields.music.id,
+                       name = "Musician",
+                       fromDate = Instant.now(),
+                       toDate = None,
+                       country = None,
+                       description = "If you need to ask then you're not it",
+                       requirement = "Scales")
+
+    val all = Seq(shoeCleaning, musician)
   }
 }

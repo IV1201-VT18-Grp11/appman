@@ -4,9 +4,9 @@
     <h1>@job.name</h1>
     <dl>
         <dt>From</dt>
-        <dd>@job.fromDate</dd>
+        <dd>@DateFormat.formatInstant(job.fromDate)</dd>
         <dt>To</dt>
-        <dd>@job.toDate</dd>
+        <dd>@job.toDate.map(DateFormat.formatInstant)</dd>
         <dt>Location</dt>
         <dd>@job.country</dd>
         <dt>About</dt>

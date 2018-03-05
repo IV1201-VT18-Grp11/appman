@@ -14,6 +14,12 @@
   success and failure cases. These are located in classes following the naming
   convention ~${className}Spec~.
 
+  However, database failure does not need to be tested for unless the method
+  handles database failures specifically. The primary example of this is
+  ~UserManager.register~ which needs to figure out why the insert failed. In
+  these cases failures should be tested in ~models.DbFailureSpec~, which is set
+  up to generate these errors specifically.
+
 ** Continuous Integration
 
    Jenkins automatically runs all tests every time a new commit is pushed.

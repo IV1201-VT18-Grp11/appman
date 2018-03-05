@@ -180,13 +180,13 @@ class DbUserManager @Inject()(
         case Success(user) =>
           DBIO.successful(Right(user))
         case Failure(exception) =>
-          guessRegistrationFailureReasons(username, email)
+          guessRegistrationFailureReasons(username, email).asTry
             .map {
-              case Seq() =>
+              case Success(Seq()) | Failure(_) =>
                 // We can't find a good reason for this to fail,
-                // so it was probably our fault...
+                // so it was probably our faulet...
                 throw exception
-              case userErrors =>
+              case Success(userErrors) =>
                 Left(userErrors)
             }
       }

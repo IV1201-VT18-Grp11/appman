@@ -18,9 +18,11 @@ class UserManagerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
       }
     }
     "the username and password are correct" should {
-      "return the user" in {
-        await(inject[UserManager].login("donald_duck", "123456"))
-          .map(_.user) mustBe Some(TestData.Users.donaldDuck.id)
+      "create a session" in {
+        val userManager = inject[UserManager]
+        val session     = await(userManager.login("donald_duck", "123456")).value
+        session.user mustBe TestData.Users.donaldDuck.id
+        await(userManager.findSession(session.id)).value._2 mustBe session
       }
     }
   }

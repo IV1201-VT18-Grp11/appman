@@ -1,6 +1,6 @@
 package utils
 
-import database.{Competences, PgProfile, Users}
+import database.{Competences, Fields, Jobs, PgProfile, Users}
 import database.PgProfile.api._
 import org.scalatest._
 import org.scalatestplus.play._
@@ -42,6 +42,8 @@ trait DbFakeApplicationFactory extends FakeApplicationFactory {
     await(appDb.run(for {
       _ <- Users.forceInsertAll(TestData.Users.all)
       _ <- Competences.forceInsertAll(TestData.Competences.all)
+      _ <- Fields.forceInsertAll(TestData.Fields.all)
+      _ <- Jobs.forceInsertAll(TestData.JobListings.all)
     } yield ()))
     app
   }
