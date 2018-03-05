@@ -10,7 +10,7 @@ import database.PgProfile.api._
 case class JobApplication(id: Id[JobApplication],
                           userId: Id[User],
                           job: Option[Id[Job]],
-                          description: String,
+                          description: Option[String],
                           date: Option[Instant] = Some(Instant.now()),
                           accepted: Option[Boolean] = None)
     extends HasId {
@@ -26,7 +26,7 @@ class JobApplications(tag: Tag)
 
   def jobId = column[Option[Id[Job]]]("job")
 
-  def description = column[String]("description")
+  def description = column[Option[String]]("description")
 
   def date = column[Option[Instant]]("date")
 

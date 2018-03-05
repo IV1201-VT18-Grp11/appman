@@ -12,6 +12,7 @@ import database.{
   Job,
   JobApplication,
   JobApplications,
+  Jobs,
   PgProfile,
   Role,
   User
@@ -38,8 +39,10 @@ trait ApplicationManager {
     id: Id[JobApplication]
   ): Future[Seq[Availability]]
 
-  def find(id: Id[JobApplication],
-           visitingUser: User): Future[Option[(JobApplication, Job, User)]]
+  def find(
+    id: Id[JobApplication],
+    visitingUser: User
+  ): Future[Option[(JobApplication, Option[Job], User)]]
 
   def setStatus(id: Id[JobApplication], accepted: Boolean): Future[Unit]
 
@@ -59,7 +62,7 @@ trait ApplicationManager {
     * responsibility, but it is merged here for performance * reasons, to avoid
     * the "N+1" queries problem.
     */
-  def all(visitingUser: User): Future[Seq[(JobApplication, Job, User)]]
+  def all(visitingUser: User): Future[Seq[(JobApplication, Option[Job], User)]]
 }
 
 /**
@@ -92,14 +95,17 @@ class DbApplicationManager @Inject()(
     Availabilities.filter(_.applicationId === id).result
   }
 
-  def find(id: Id[JobApplication],
-           visitingUser: User): Future[Option[(JobApplication, Job, User)]] =
+  def find(
+    id: Id[JobApplication],
+    visitingUser: User
+  ): Future[Option[(JobApplication, Option[Job], User)]] =
     db.run {
       (for {
-        application <- visibleToUser(visitingUser)
+        (application, job) <- visibleToUser(visitingUser)
+          .joinLeft(Jobs)
+          .on(_.jobId === _.id)
         if application.id === id
         user <- application.user
-        job  <- application.job
       } yield (application, job, user)).result.headOption
     }
 
@@ -126,7 +132,7 @@ class DbApplicationManager @Inject()(
         Id[JobApplication](-1),
         user,
         Some(job),
-        description
+        Some(description)
       )
       _ <- ApplicationCompetences ++= competences.map {
         case ((competence, years)) =>
@@ -141,14 +147,14 @@ class DbApplicationManager @Inject()(
 
   override def all(
     visitingUser: User
-  ): Future[Seq[(JobApplication, Job, User)]] =
+  ): Future[Seq[(JobApplication, Option[Job], User)]] =
     db.run {
       (for {
-        jobApplication <- visibleToUser(visitingUser).sortBy(
-          app => (app.accepted.isEmpty.desc, app.id.desc)
-        )
-        job  <- jobApplication.job
-        user <- jobApplication.user
-      } yield (jobApplication, job, user)).result
+        (application, job) <- visibleToUser(visitingUser)
+          .sortBy(app => (app.accepted.isEmpty.desc, app.id.desc))
+          .joinLeft(Jobs)
+          .on(_.jobId === _.id)
+        user <- application.user
+      } yield (application, job, user)).result
     }
 }

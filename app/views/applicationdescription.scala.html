@@ -1,6 +1,6 @@
 @(application: JobApplication,
         user: User,
-        job: Job,
+        job: Option[Job],
         competences: Seq[(Competence, ApplicationCompetence)],
         availabilities: Seq[Availability])(implicit req: RequestHeader)
 
@@ -18,7 +18,7 @@
         <dd>@user.email</dd>
 
         <dt>Job</dt>
-        <dd>@job.name</dd>
+        <dd>@job.map(_.name)</dd>
 
         <dt>Availabilities</dt>
         <dd>
