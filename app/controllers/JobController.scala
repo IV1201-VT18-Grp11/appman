@@ -151,7 +151,9 @@ class JobController @Inject()(implicit cc: ControllerComponents,
       }
       for {
         () <- applicationManager.setStatus(appId, accepted)
-      } yield Redirect(routes.JobController.applicationDescription(appId))
+      } yield
+        Redirect(routes.JobController.applicationDescription(appId))
+          .flashing("message" -> "The status has been updated")
     }
 }
 
