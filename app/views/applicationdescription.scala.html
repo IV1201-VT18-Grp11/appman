@@ -13,35 +13,42 @@
         <dt>Full Name</dt>
         <dd>@user.firstname @user.surname</dd>
         <dt>Username</dt>
-        <dd>@user.username</dd>
+        <dd>@user.username.getOrElse("(NONE)")</dd>
         <dt>E-mail</dt>
-        <dd>@user.email</dd>
+        <dd>@user.email.getOrElse("Unknown")</dd>
 
         <dt>Job</dt>
-        <dd>@job.map(_.name)</dd>
+        <dd>@job.map(_.name).getOrElse("None")</dd>
 
         <dt>Availabilities</dt>
         <dd>
             <ul>
             @for((availability) <- availabilities) {
-                <li> <div>From:</div>
-                    @availability.from</li>
-                <li> <div>To:</div>
-                    @availability.to </li>
+                <li>
+                    From
+                    @availability.from.fold("-∞")(_.toString)
+                    until
+                    @availability.to.fold("∞")(_.toString)
+                </li>
             }
             </ul>
         </dd>
 
         <dt>Date of Application</dt>
-        <dd>@application.date.map(DateFormat.formatInstant)</dd>
+        <dd>@application.date.fold("Unknown")(DateFormat.formatInstant)</dd>
         <dt>Applicant Description</dt>
-        <dd>@application.description </dd>
+        <dd>@application.description</dd>
 
         <dt>Applicant Competence</dt>
         <dd>
             <ul>
             @for((competence, appCompetence) <- competences) {
-                <li>@competence.name (@appCompetence.yearsOfExperience years)</li>
+                <li>
+                    @competence.name.getOrElse("Unknown")
+                    @appCompetence.yearsOfExperience.map { expYears =>
+                        (@expYears years)
+                    }
+                </li>
             }
             </ul>
         </dd>

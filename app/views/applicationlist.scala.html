@@ -18,13 +18,15 @@
             @for((application, jobM, user) <- applications) {
                 <tr>
                     <td><a href="@routes.JobController.applicationDescription(application.id)">@application.id.raw</a></td>
-                    <td>@user.username</td>
+                    <td>@user.username.getOrElse("(NONE)")</td>
                     <td>
                         @jobM.map { job =>
                             <a href="@routes.JobController.jobDescription(job.id)">@job.name</a>
+                        }.getOrElse {
+                            None
                         }
                     </td>
-                    <td>@application.date.map(DateFormat.formatInstant)</td>
+                    <td>@application.date.map(DateFormat.formatInstant).getOrElse("Unknown")</td>
                     <td>@application.accepted match {
                         case None => { Pending }
                         case Some(true) => { Accepted }
