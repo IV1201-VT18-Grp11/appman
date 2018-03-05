@@ -39,7 +39,6 @@ trait ApplicationManager {
   ): Future[Seq[Availability]]
 
   def find(id: Id[JobApplication],
-           jobId: Id[Job],
            visitingUser: User): Future[Option[(JobApplication, Job, User)]]
 
   def setStatus(id: Id[JobApplication], accepted: Boolean): Future[Unit]
@@ -94,12 +93,11 @@ class DbApplicationManager @Inject()(
   }
 
   def find(id: Id[JobApplication],
-           jobId: Id[Job],
            visitingUser: User): Future[Option[(JobApplication, Job, User)]] =
     db.run {
       (for {
         application <- visibleToUser(visitingUser)
-        if application.id === id && application.jobId === jobId
+        if application.id === id
         user <- application.user
         job  <- application.job
       } yield (application, job, user)).result.headOption

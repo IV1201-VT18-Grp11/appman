@@ -15,10 +15,11 @@ GET         /jobs/                                         controllers.JobContro
 GET         /jobs/:jobId/                                  controllers.JobController.jobDescription(jobId: Id[Job])
 GET         /jobs/:jobId/apply                             controllers.JobController.applyForJob(jobId: Id[Job])
 POST        /jobs/:jobId/apply                             controllers.JobController.doApplyForJob(jobId: Id[Job])
-GET         /jobs/:jobId/applications/:appId/              controllers.JobController.applicationDescription(jobId: Id[Job], appId: Id[JobApplication])
-POST        /jobs/:jobId/applications/:appId/status        controllers.JobController.setApplicationStatus(jobId: Id[Job], appId: Id[JobApplication])
 
 GET         /jobs/all/applications/                        controllers.JobController.applicationList
+
+GET         /applications/:appId/                          controllers.JobController.applicationDescription(appId: Id[JobApplication])
+POST        /applications/:appId/status                    controllers.JobController.setApplicationStatus(appId: Id[JobApplication])
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                  controllers.Assets.versioned(path="/public", file: Asset)

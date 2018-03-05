@@ -99,9 +99,7 @@ class JobController @Inject()(implicit cc: ControllerComponents,
                       ))
               .map(
                 appId =>
-                  Redirect(
-                    routes.JobController.applicationDescription(jobId, appId)
-                )
+                  Redirect(routes.JobController.applicationDescription(appId))
             )
         )
   }
@@ -119,11 +117,11 @@ class JobController @Inject()(implicit cc: ControllerComponents,
       } yield Ok(views.html.jobdescription(job))
   }
 
-  def applicationDescription(jobId: Id[Job], appId: Id[JobApplication]) =
+  def applicationDescription(appId: Id[JobApplication]) =
     userAction(Role.Applicant).async { implicit request: Request[AnyContent] =>
       for {
         (application, job, user) <- applicationManager
-          .find(appId, jobId, request.user.get)
+          .find(appId, request.user.get)
           .getOr404
         competences    <- applicationManager.applicationCompetences(appId)
         availabilities <- applicationManager.applicationAvailabilities(appId)
@@ -145,7 +143,7 @@ class JobController @Inject()(implicit cc: ControllerComponents,
       } yield Ok(views.html.applicationlist(applications))
   }
 
-  def setApplicationStatus(jobId: Id[Job], appId: Id[JobApplication]) =
+  def setApplicationStatus(appId: Id[JobApplication]) =
     userAction(Role.Employee).async { implicit request: Request[AnyContent] =>
       val accepted = request.body.asFormUrlEncoded.get("status").head match {
         case "accept" => true
@@ -153,8 +151,7 @@ class JobController @Inject()(implicit cc: ControllerComponents,
       }
       for {
         () <- applicationManager.setStatus(appId, accepted)
-      } yield
-        Redirect(routes.JobController.applicationDescription(jobId, appId))
+      } yield Redirect(routes.JobController.applicationDescription(appId))
     }
 }
 
