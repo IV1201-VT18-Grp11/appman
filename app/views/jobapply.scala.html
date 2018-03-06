@@ -26,7 +26,7 @@
                             @competenceInfo.name
                             <input type="hidden" name="@competence("id").name" value="@competenceInfo.id.raw"/>
                         </td>
-                        <td>@helper.inputText(competence("experienceYears"),'class -> "form-control")</td>
+                        <td>@helper.inputText(competence("experienceYears"),'class -> "form-control", Symbol("data-competence-id") -> competenceInfo.id.raw)</td>
                     </tr>
                 }
             }

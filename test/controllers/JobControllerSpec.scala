@@ -8,7 +8,7 @@ import play.api.http.HttpErrorHandler
 import play.api.test.{FakeRequest, Injecting}
 import play.api.test.Helpers._
 import play.api.test.CSRFTokenHelper._
-import utils.DbOneAppPerTest
+import utils.{DbOneAppPerTest, TestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -98,10 +98,12 @@ class JobControllerSpec extends PlaySpec with DbOneAppPerTest with Injecting {
       val request =
         FakeRequest(routes.JobController.doApplyForJob(Id[Job](1)))
           .withSession(Security.sessionKey -> session.id.raw.toString)
-          .withFormUrlEncodedBody("description"                    -> "I am good at...",
-                                  "competences[0].id"              -> "1",
+          .withFormUrlEncodedBody("description" -> "I am good at...",
+                                  "competences[0].id" -> TestData.Competences.it.id.raw
+                                    .toString(),
                                   "competences[0].experienceYears" -> "5",
-                                  "competences[1].id"              -> "2",
+                                  "competences[1].id" -> TestData.Competences.cooking.id.raw
+                                    .toString(),
                                   "competences[1].experienceYears" -> "0",
                                   "availabilities[0].from"         -> "2018-02-01",
                                   "availabilities[0].to"           -> "2018-06-05")

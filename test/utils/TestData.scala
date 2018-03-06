@@ -21,7 +21,7 @@ object TestData {
                           Some("Donald"),
                           Some("Duck"),
                           Some("donald@duck.net"))
-    val hueyDuck = User(Id[User](4),
+    val hueyDuck = User(Id[User](5),
                         Some("huey_duck"),
                         Some(
                           "48d87a99f85058309d8bba9f27862009148187094350cd7eb49fadee280ce776&5acc98a4390449bf1707d85d07e7c8b3334a5739da072385583abf8f6454bbba1dc7d37ae1936217c5c6f615f7525ac49cd0a5b85b2430d5f5443789a1297206"
@@ -30,7 +30,7 @@ object TestData {
                         Some("Duck"),
                         Some("notdonald@duck.net"),
                         role = Role.Employee)
-    val all = Seq(gyroGearloose, donaldDuck)
+    val all = Seq(gyroGearloose, donaldDuck, hueyDuck)
   }
 
   object Competences {

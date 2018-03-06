@@ -5,7 +5,7 @@ import org.scalatestplus.play.{FirefoxFactory, OneBrowserPerTest, PlaySpec}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.test.Injecting
 import play.api.test.Helpers._
-import utils.DbOneServerPerTest
+import utils.{DbOneServerPerTest, TestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -33,7 +33,13 @@ class ApplyFlowSpec
       )
       textArea(name("description")).value =
         "Well, I probably wouldn't, to be honest..."
-      numberField(name("competences[1].experienceYears")).value = "3.2"
+      val competenceFieldSel = {
+        val quot = "\""
+        cssSelector(
+          s"input[data-competence-id=$quot${TestData.Competences.cooking.id.raw}$quot][name$$=${quot}.experienceYears$quot]"
+        )
+      }
+      numberField(competenceFieldSel).value = "3.2"
       click on dateField(name("availabilities[0].from"))
       pressKeys("2015-02-03")
       click on dateField(name("availabilities[0].to"))
