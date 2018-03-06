@@ -32,22 +32,20 @@ class ErrorHandler @Inject()(env: Environment,
     }
 
   override protected def onNotFound(request: RequestHeader,
-                                    message: String): Future[Result] = {
+                                    message: String): Future[Result] =
     Future.successful(
       Results.NotFound(
         views.html.error.notFound()(Security.addNoUserToRequest(request))
       )
     )
-  }
 
   override protected def onProdServerError(
     request: RequestHeader,
     exception: UsefulException
-  ): Future[Result] = {
+  ): Future[Result] =
     Future.successful(
       Results.InternalServerError(
         views.html.error.internalError()(Security.addNoUserToRequest(request))
       )
     )
-  }
 }

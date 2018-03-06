@@ -17,7 +17,7 @@ class DbFailureSpec
     with FakeApplicationFactory
     with BaseOneAppPerTest
     with Injecting {
-  override def fakeApplication(): Application = {
+  override def fakeApplication(): Application =
     new GuiceApplicationBuilder()
       .loadConfig(
         env =>
@@ -28,7 +28,6 @@ class DbFailureSpec
                       "play.evolutions.db.default.enabled"  -> "false"))
       )
       .build
-  }
 
   "calling UserManager.login()" when {
     "the database is unavailable" should {

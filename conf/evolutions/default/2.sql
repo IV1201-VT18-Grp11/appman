@@ -18,4 +18,12 @@ VALUES (2, 2, 'Sous Chef', '2018-03-01', '2018-10-01', 'Denmark',
         'Yummy', 'Cooking skills')
 ON CONFLICT DO NOTHING;
 
+INSERT INTO competences (id, name)
+VALUES (1, 'Erlang')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO competences (id, name)
+VALUES (2, 'Trapezoid Balancing')
+ON CONFLICT DO NOTHING;
+
 # --- !Downs

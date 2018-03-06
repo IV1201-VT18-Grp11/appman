@@ -1,6 +1,6 @@
 package utils
 
-import database.{Competence, Field, Id, Job, User}
+import database.{Competence, Field, Id, Job, Role, User}
 import java.time.Instant
 
 object TestData {
@@ -21,12 +21,21 @@ object TestData {
                           Some("Donald"),
                           Some("Duck"),
                           Some("donald@duck.net"))
+    val hueyDuck = User(Id[User](4),
+                        Some("huey_duck"),
+                        Some(
+                          "48d87a99f85058309d8bba9f27862009148187094350cd7eb49fadee280ce776&5acc98a4390449bf1707d85d07e7c8b3334a5739da072385583abf8f6454bbba1dc7d37ae1936217c5c6f615f7525ac49cd0a5b85b2430d5f5443789a1297206"
+                        ), // 123456
+                        Some("Huey"),
+                        Some("Duck"),
+                        Some("notdonald@duck.net"),
+                        role = Role.Employee)
     val all = Seq(gyroGearloose, donaldDuck)
   }
 
   object Competences {
-    val it      = Competence(Id[Competence](1), Some("IT"))
-    val cooking = Competence(Id[Competence](2), Some("Cooking"))
+    val it      = Competence(Id[Competence](500), Some("IT"))
+    val cooking = Competence(Id[Competence](650), Some("Cooking"))
 
     val all = Seq(it, cooking)
   }

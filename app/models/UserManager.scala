@@ -138,8 +138,7 @@ class DbUserManager @Inject()(
     task
   }
 
-  private def guessRegistrationFailureReasons(username: String,
-                                              email: String) = {
+  private def guessRegistrationFailureReasons(username: String, email: String) =
     DBIO
       .sequence(
         Seq(
@@ -156,7 +155,6 @@ class DbUserManager @Inject()(
         )
       )
       .map(_.flatten)
-  }
 
   override def register(
     username: String,
