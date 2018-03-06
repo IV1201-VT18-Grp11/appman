@@ -20,7 +20,7 @@ webpackGen := {
 
 sourceGenerators in Assets += webpackGen.taskValue
 
-testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/test-report")
+testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/test-report", "-h", "target/test-reports")
 
 libraryDependencies ++= Seq(
   guice,
@@ -32,6 +32,8 @@ libraryDependencies ++= Seq(
   "commons-codec" % "commons-codec" % "1.11",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
   "org.mockito" % "mockito-core" % "2.13.0" % Test,
+  // Used for ScalaTest's HTML reports
+  "org.pegdown" % "pegdown" % "1.6.0",
 )
 
 // Adds additional packages into Twirl
