@@ -37,7 +37,7 @@ trait UserManager {
     * Registration MAY return more than one error at once, but this behaviour
     * MUST NOT be relied upon.
     *
-    * @return Left(reasons) if the user creation failed, otherwise Right(user)
+    * @return Left(reasons) if the user creation failed, otherwise Right(session)
     */
   def register(
     username: String,

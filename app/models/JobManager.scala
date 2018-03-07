@@ -30,9 +30,6 @@ class DbJobManager @Inject()(
 ) extends JobManager
     with HasDatabaseConfigProvider[PgProfile] {
 
-  /**
-    * @return and show the job lists
-    */
   override def jobListings(): Future[Seq[(Job, Field)]] = db.run {
     (for {
       job   <- Jobs
