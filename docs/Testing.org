@@ -6,13 +6,9 @@
   username, or logging in with an incorrect password. These tests shall follow
   the naming convention ~controllers.${name}FlowSpec~.
 
-  All exposed HTTP endpoints that do not only show static information shall have
-  integration tests covering all success and failure cases. These tests follow
-  the naming convention ~controllers.${controller}Spec~.
-
-  All non-trivial public methods shall have accompanying tests documenting the
-  success and failure cases. These are located in classes following the naming
-  convention ~${className}Spec~.
+  All non-trivial public methods in the model and integration layers shall have
+  accompanying tests documenting the success and failure cases. These are located
+  in classes following the naming convention ~${className}Spec~.
 
   However, database failure does not need to be tested for unless the method
   handles database failures specifically. The primary example of this is
