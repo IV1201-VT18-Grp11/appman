@@ -51,6 +51,14 @@ play.sbt.routes.RoutesKeys.routesImport ++= Seq(
 
 coverageExcludedPackages := "controllers\\.javascript\\..+;controllers\\.Reverse.+;router\\..router+"
 
-debianPackageDependencies += "postgresql-9.6"
+debianPackageDependencies ++= Seq("postgresql-9.6", "openjdk-8-jre-headless")
 // We start it ourselves after creating the database
 serviceAutostart := false
+
+import DebianConstants._
+maintainerScripts in Debian := maintainerScriptsAppend((maintainerScripts in Debian).value)(
+  Preinst -> """
+addGroup appman 957
+addUser appman 957
+"""
+)
