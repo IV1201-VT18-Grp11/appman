@@ -24,4 +24,8 @@ class HomeController @Inject()(implicit jobManager: JobManager,
   def index() = userAction().apply { implicit request: Request[AnyContent] =>
     Ok(views.html.index())
   }
+
+  def show500() = userAction().apply { implicit request: Request[AnyContent] =>
+    throw new Exception("Whoopsie, this shouldn't have happened!")
+  }
 }
