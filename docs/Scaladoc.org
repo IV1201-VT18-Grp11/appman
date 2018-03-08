@@ -53,6 +53,6 @@
    - It tries to create a user session
    - It returns Some(session) if the username and password were correct, and None otherwise
 
-   The Scaladoc tells us that the surprising reasons that can make this crash. This is vital information,
-   and such a comment should be added where applicable, but it is also a smell that the method should
-   probably be redesigned as time allows.
+   The Scaladoc tells us the surprising behaviour, such as that specific input can make this crash.
+   This is vital information, and such a comment should be added where applicable, but it is also a
+   smell that the method should probably be redesigned when time allows.
