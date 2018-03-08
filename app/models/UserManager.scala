@@ -174,7 +174,7 @@ class DbUserManager @Inject()(
           email = Some(email)
         )
         session <- UserSessions.map(_.userId).returning(UserSessions) += userId
-      } yield session).transactionally.asTry.flatMap {
+      } yield session).asTry.flatMap {
         case Success(user) =>
           DBIO.successful(Right(user))
         case Failure(exception) =>
@@ -182,12 +182,12 @@ class DbUserManager @Inject()(
             .map {
               case Success(Seq()) | Failure(_) =>
                 // We can't find a good reason for this to fail,
-                // so it was probably our faulet...
+                // so it was probably our fault...
                 throw exception
               case Success(userErrors) =>
                 Left(userErrors)
             }
-      }
+      }.transactionally
     }
     task.foreach {
       case Right(session) =>
