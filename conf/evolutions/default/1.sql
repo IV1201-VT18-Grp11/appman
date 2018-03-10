@@ -22,7 +22,7 @@ CREATE TABLE sessions (
 
 CREATE TABLE fields (
   id   SERIAL NOT NULL PRIMARY KEY,
-  NAME TEXT   NOT NULL
+  name TEXT   NOT NULL
 );
 
 CREATE TABLE jobs (
